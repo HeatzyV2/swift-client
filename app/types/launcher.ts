@@ -104,7 +104,7 @@ export interface LauncherPaths {
   logs: string
 }
 
-export interface MultiProgress { instance_id: string; current: number; total: number }
+export interface MultiProgress { instance_id: string; current: number; total: number; kind?: string }
 export interface FileProgress { instance_id: string; path: string; current: number; total: number }
 export interface ModpackProgress { instance_id: string; name: string; current: number; total: number }
 export interface ExitInfo { instance_id: string; code: number | null }

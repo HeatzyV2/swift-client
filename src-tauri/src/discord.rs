@@ -5,6 +5,11 @@ use crate::AppState;
 
 const CLIENT_ID: &str = env!("DISCORD_CLIENT_ID");
 
+/// Rich Presence needs a Discord application id baked in at build time.
+pub fn is_configured() -> bool {
+    !CLIENT_ID.trim().is_empty()
+}
+
 pub fn update_presence(state: &AppState) {
     let snapshot: Vec<(String, String)> = match state.discord_playing.lock() {
         Ok(map) => map.values().cloned().collect(),

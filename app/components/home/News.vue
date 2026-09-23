@@ -1,26 +1,31 @@
 <template>
-  <section v-if="NEWS.length">
+  <section v-if="items.length">
     <div class="mb-4 flex items-baseline gap-2.5">
       <h2 class="font-display text-lg font-semibold text-highlighted">{{ $t('home.news') }}</h2>
-      <span class="font-mono text-xs text-dimmed">{{ NEWS.length }}</span>
+      <span class="font-mono text-xs text-dimmed">{{ items.length }}</span>
     </div>
 
-    <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))">
+    <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))">
       <button
-        v-for="(item, i) in NEWS"
+        v-for="(item, i) in items"
         :key="item.id"
         type="button"
-        class="sw-rise-in group flex flex-col overflow-hidden rounded-2xl border border-[var(--sw-line)] bg-[var(--sw-surface)] text-left transition-[border-color,transform] duration-200 ease-[var(--ease-swift)] hover:-translate-y-0.5 hover:border-[var(--sw-line-strong)]"
-        :style="{ animationDelay: `${120 + i * 50}ms` }"
+        class="sw-rise-in group relative block aspect-[16/9] overflow-hidden rounded-2xl border border-white/[0.07] bg-[var(--sw-surface)] text-left transition-[transform,border-color] duration-200 ease-[var(--ease-swift)] hover:-translate-y-1 hover:border-white/20"
+        :style="{ animationDelay: `${140 + i * 60}ms` }"
         @click="open = item"
       >
-        <div class="relative aspect-[16/8] overflow-hidden">
-          <img :src="item.image" alt="" draggable="false" class="size-full object-cover transition-transform duration-300 ease-[var(--ease-swift)] group-hover:scale-[1.05]">
-        </div>
-        <div class="flex flex-1 flex-col gap-1.5 p-4">
-          <span class="text-[11px] font-medium uppercase tracking-[0.1em] text-dimmed">{{ formatDate(item.date) }}</span>
-          <span class="font-display text-[15px] font-semibold leading-snug text-highlighted">{{ tr(item.title) }}</span>
-          <span class="line-clamp-2 text-[13px] leading-relaxed text-muted">{{ tr(item.summary) }}</span>
+        <img
+          :src="item.image"
+          alt=""
+          draggable="false"
+          loading="lazy"
+          class="absolute inset-0 size-full object-cover transition-[scale] duration-300 ease-[var(--ease-swift)] group-hover:scale-[1.05]"
+        >
+        <div class="absolute inset-0 bg-[linear-gradient(to_top,rgb(6_8_12/0.95)_0%,rgb(6_8_12/0.6)_38%,transparent_70%)]" />
+        <div class="absolute inset-x-0 bottom-0 p-4">
+          <p class="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/55">{{ formatDate(item.date) }}</p>
+          <p class="mt-1 font-display text-[16px] font-semibold leading-snug text-white">{{ tr(item.title) }}</p>
+          <p class="mt-1 line-clamp-2 text-[12.5px] leading-relaxed text-white/65">{{ tr(item.summary) }}</p>
         </div>
       </button>
     </div>
@@ -48,8 +53,12 @@
 import { NEWS, type NewsItem } from '~/content/news'
 
 const tr = useLocalized()
+const backend = useBackend()
 const { locale } = useI18n()
 const open = ref<NewsItem | null>(null)
+
+// Items tied to a build capability (Discord) only show when it is available.
+const items = computed(() => NEWS.filter(item => item.requires !== 'discord' || backend.discord.value))
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString(locale.value, { day: 'numeric', month: 'long', year: 'numeric' })

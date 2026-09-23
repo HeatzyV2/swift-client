@@ -739,46 +739,24 @@
     "signIn": "Sign in"
   },
   "home": {
-    "selected": "Selected instance",
-    "memory": "Memory",
-    "logs": "Logs",
     "preparing": "Preparing",
     "starting": "Starting",
     "status": {
-      "ready": "Ready to launch",
       "installing": "Downloading game files",
-      "running": "Minecraft is running",
       "noAccount": "No Minecraft account — add one to play."
     },
-    "recent": "Recent instances",
-    "viewAll": "View all",
-    "noOtherInstances": "Your other instances will show up here.",
-    "shortcuts": "Shortcuts",
-    "overview": "Overview",
-    "instancesCount": "Instances",
-    "totalPlaytime": "Total playtime",
-    "actions": {
-      "content": "Mods & content",
-      "gameFolder": "Open game folder",
-      "details": "Instance details",
-      "modpacks": "Browse modpacks"
-    },
     "welcome": {
-      "title": "Welcome to Swift Client",
-      "text": "Create your first instance — pick a Minecraft version and a loader, then hit Play.",
       "create": "Create an instance",
       "addAccount": "Add account",
       "createHint": "Pick a version and a loader, then play"
     },
     "switchInstance": "Switch instance",
     "manageInstances": "All instances",
-    "openLogs": "Open the live console",
-    "jumpBackIn": "Jump back in",
-    "jumpBackInEmpty": "Worlds and servers from this instance will show up here after you play.",
-    "jumpBackInNoInstance": "Create an instance to see your worlds and servers here.",
-    "quickPlayUnsupported": "Quick Play needs Minecraft 1.20 or newer",
     "news": "Latest news",
-    "readMore": "Read more"
+    "readMore": "Read more",
+    "playedAgo": "Played {when}",
+    "background": "Background {n}",
+    "noInstances": "No instances yet"
   },
   "removeInstance": {
     "title": "Delete instance",
@@ -794,5 +772,21 @@
   "status": {
     "idle": "No game running",
     "runningMany": "{n} games running"
+  },
+  "play": {
+    "launching": "Launching…",
+    "stop": "Stop",
+    "stopping": "Stopping…",
+    "forceStop": "Force stop",
+    "forceStopHint": "The game did not close. Click to end the process.",
+    "retry": "Try again",
+    "installing": "Installing Minecraft {version}",
+    "installingFiles": "Installing Minecraft {version} · {current} / {total} files",
+    "step": {
+      "assets": "Downloading assets",
+      "libraries": "Downloading libraries",
+      "java": "Downloading Java",
+      "files": "Downloading files"
+    }
   }
 }

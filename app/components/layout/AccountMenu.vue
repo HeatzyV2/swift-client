@@ -23,10 +23,11 @@ const { t } = useI18n()
 
 onMounted(() => accounts.ensureLoaded())
 
-const { skin } = usePlayerSkin()
+// Only a real skin gives a face; the fallback skin is not the player's own.
+const { skin, isDefault } = usePlayerSkin()
 const face = ref<string | null>(null)
-watch(skin, async (s) => {
-  face.value = s ? await skinFace(s.src).catch(() => null) : null
+watch([skin, isDefault], async ([s, fallback]) => {
+  face.value = s && !fallback ? await skinFace(s.src).catch(() => null) : null
 }, { immediate: true })
 
 async function signInMicrosoft() {

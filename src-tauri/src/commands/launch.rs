@@ -28,6 +28,8 @@ struct MultiProgress {
     instance_id: String,
     current: u64,
     total: u64,
+    /// What the last finished file was: "Asset", "Library", "Java" or "Custom".
+    kind: String,
 }
 
 const CONSOLE_CAPACITY: usize = 5_000;
@@ -214,13 +216,14 @@ async fn build_emitter(app: &AppHandle, id: &str) -> Emitter {
     emitter
         .on(
             Event::MultipleDownloadProgress,
-            move |(_, current, total, _): (String, u64, u64, String)| {
+            move |(_, current, total, kind): (String, u64, u64, String)| {
                 let _ = app_multi.emit(
                     "mc://multi-progress",
                     MultiProgress {
                         instance_id: id_multi.clone(),
                         current,
                         total,
+                        kind,
                     },
                 );
             },

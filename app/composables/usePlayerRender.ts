@@ -1,3 +1,4 @@
+import { toValue, type MaybeRefOrGetter } from 'vue'
 import type { SkinSource } from './usePlayerSkin'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,9 +50,9 @@ export function renderPlayer(skin: SkinSource): Promise<string> {
   return task
 }
 
-export const usePlayerRender = (skin: Ref<SkinSource | null>) => {
+export const usePlayerRender = (skin: MaybeRefOrGetter<SkinSource | null>) => {
   const image = ref<string | null>(null)
-  watch(skin, async (s) => {
+  watch(() => toValue(skin), async (s) => {
     if (!s) {
       image.value = null
       return

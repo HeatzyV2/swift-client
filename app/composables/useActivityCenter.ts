@@ -12,6 +12,8 @@ export interface Activity {
   kind: 'install' | 'running'
   current: number
   total: number
+  /** Kind of file being downloaded, as reported by the engine (Asset, Library, Java, Custom). */
+  step?: string
 }
 
 const PRIORITY: Record<Activity['kind'], number> = {
@@ -96,7 +98,7 @@ export const useActivityCenter = () => {
       attachPromise = (async () => {
         unlisteners.push(
           await listen<MultiProgress>('mc://multi-progress', (e) => {
-            upsert(e.payload.instance_id, { kind: 'install', current: e.payload.current, total: e.payload.total })
+            upsert(e.payload.instance_id, { kind: 'install', current: e.payload.current, total: e.payload.total, step: e.payload.kind })
           }),
           await listen<ExitInfo>('mc://exited', (e) => {
             void pumpConsole(e.payload.instance_id)
@@ -148,6 +150,11 @@ export const useActivityCenter = () => {
     upsert(id, { kind: 'running' })
   }
 
+  /** The game process is up: replaces any finished download state. */
+  const setRunning = (id: string) => {
+    upsert(id, { kind: 'running', current: 0, total: 0, step: undefined })
+  }
+
   const activityFor = (id: string) => computed(() => activities.value[id] ?? null)
   const logsFor = (id: string) => computed(() => logs.value[id] ?? [])
   const clearLog = (id: string) => {
@@ -175,5 +182,5 @@ export const useActivityCenter = () => {
     crashes.value = next
   }
 
-  return { activities, logs, tasks, taskLabels, startTask, endTask, withTask, attach, detach, list, top, activityFor, logsFor, clear, clearLog, markRunning, modpack, liveLogsOpen, liveLogsInstance, openLiveLogs, crashOpen, crashInstance, crashFor, clearCrash }
+  return { activities, logs, tasks, taskLabels, startTask, endTask, withTask, attach, detach, list, top, activityFor, logsFor, clear, clearLog, markRunning, setRunning, modpack, liveLogsOpen, liveLogsInstance, openLiveLogs, crashOpen, crashInstance, crashFor, clearCrash }
 }

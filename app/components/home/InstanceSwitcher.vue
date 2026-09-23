@@ -28,7 +28,7 @@
           <UIcon v-if="inst.id === instances.selectedId" name="i-lucide-check" class="size-4 shrink-0 text-primary" />
         </button>
       </li>
-      <li v-if="!list.length" class="px-3 py-6 text-center text-xs text-dimmed">{{ $t('library.noResults') }}</li>
+      <li v-if="!list.length" class="px-3 py-6 text-center text-xs text-dimmed">{{ instances.instances.length ? $t('library.noResults') : $t('home.noInstances') }}</li>
     </ul>
 
     <div class="grid grid-cols-2 gap-1 border-t border-[var(--sw-line)] p-1.5">

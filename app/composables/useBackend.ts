@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/core'
 interface BackendStatus {
   configured: boolean
   accounts: boolean
+  discord: boolean
 }
 
 let request: Promise<void> | null = null
@@ -13,7 +14,7 @@ let request: Promise<void> | null = null
  * code — stay hidden when it is not configured.
  */
 export const useBackend = () => {
-  const status = useState<BackendStatus>('backend-status', () => ({ configured: false, accounts: false }))
+  const status = useState<BackendStatus>('backend-status', () => ({ configured: false, accounts: false, discord: false }))
 
   request ??= invoke<BackendStatus>('backend_status')
     .then((s) => { status.value = s })
@@ -23,5 +24,6 @@ export const useBackend = () => {
     ready: request,
     configured: computed(() => status.value.configured),
     accounts: computed(() => status.value.accounts),
+    discord: computed(() => status.value.discord),
   }
 }

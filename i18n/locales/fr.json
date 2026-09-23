@@ -739,46 +739,24 @@
     "signIn": "Se connecter"
   },
   "home": {
-    "selected": "Instance sélectionnée",
-    "memory": "Mémoire",
-    "logs": "Logs",
     "preparing": "Préparation",
     "starting": "Lancement",
     "status": {
-      "ready": "Prêt à lancer",
       "installing": "Téléchargement des fichiers du jeu",
-      "running": "Minecraft est lancé",
       "noAccount": "Aucun compte Minecraft — ajoutez-en un pour jouer."
     },
-    "recent": "Instances récentes",
-    "viewAll": "Tout voir",
-    "noOtherInstances": "Vos autres instances apparaîtront ici.",
-    "shortcuts": "Raccourcis",
-    "overview": "Aperçu",
-    "instancesCount": "Instances",
-    "totalPlaytime": "Temps de jeu total",
-    "actions": {
-      "content": "Mods et contenu",
-      "gameFolder": "Ouvrir le dossier du jeu",
-      "details": "Détails de l'instance",
-      "modpacks": "Parcourir les modpacks"
-    },
     "welcome": {
-      "title": "Bienvenue sur Swift Client",
-      "text": "Créez votre première instance : choisissez une version de Minecraft et un loader, puis lancez.",
       "create": "Créer une instance",
       "addAccount": "Ajouter un compte",
       "createHint": "Choisissez une version et un loader, puis jouez"
     },
     "switchInstance": "Changer d'instance",
     "manageInstances": "Toutes les instances",
-    "openLogs": "Ouvrir la console en direct",
-    "jumpBackIn": "Reprendre",
-    "jumpBackInEmpty": "Les mondes et serveurs de cette instance apparaîtront ici après avoir joué.",
-    "jumpBackInNoInstance": "Créez une instance pour retrouver vos mondes et serveurs ici.",
-    "quickPlayUnsupported": "Quick Play nécessite Minecraft 1.20 ou plus récent",
-    "news": "Dernières nouvelles",
-    "readMore": "En savoir plus"
+    "news": "Actualités",
+    "readMore": "En savoir plus",
+    "playedAgo": "Joué {when}",
+    "background": "Arrière-plan {n}",
+    "noInstances": "Aucune instance"
   },
   "removeInstance": {
     "title": "Supprimer l'instance",
@@ -794,5 +772,21 @@
   "status": {
     "idle": "Aucune partie en cours",
     "runningMany": "{n} parties en cours"
+  },
+  "play": {
+    "launching": "Lancement…",
+    "stop": "Arrêter",
+    "stopping": "Arrêt…",
+    "forceStop": "Forcer l’arrêt",
+    "forceStopHint": "Le jeu ne s’est pas fermé. Cliquez pour terminer le processus.",
+    "retry": "Réessayer",
+    "installing": "Installation de Minecraft {version}",
+    "installingFiles": "Installation de Minecraft {version} · {current} / {total} fichiers",
+    "step": {
+      "assets": "Téléchargement des ressources",
+      "libraries": "Téléchargement des bibliothèques",
+      "java": "Téléchargement de Java",
+      "files": "Téléchargement des fichiers"
+    }
   }
 }

@@ -41,6 +41,9 @@ pub fn session_token() -> Option<String> {
 pub struct BackendStatus {
     pub configured: bool,
     pub accounts: bool,
+    /// Whether this build can show Discord Rich Presence (not a server feature,
+    /// but reported here so the UI learns every build capability in one call).
+    pub discord: bool,
 }
 
 #[tauri::command]
@@ -48,6 +51,7 @@ pub fn backend_status() -> BackendStatus {
     BackendStatus {
         configured: is_configured(),
         accounts: session_token().is_some(),
+        discord: crate::discord::is_configured(),
     }
 }
 

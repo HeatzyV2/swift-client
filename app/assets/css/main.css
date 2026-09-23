@@ -194,6 +194,22 @@ textarea::placeholder {
 	opacity: 0;
 }
 
+/* Home scene: slow crossfade with a slight settle in scale */
+.sw-scene-enter-active {
+	transition: opacity 900ms var(--ease-swift), scale 1600ms var(--ease-swift);
+}
+.sw-scene-leave-active {
+	position: absolute;
+	transition: opacity 900ms var(--ease-swift);
+}
+.sw-scene-enter-from {
+	opacity: 0;
+	scale: 1.08;
+}
+.sw-scene-leave-to {
+	opacity: 0;
+}
+
 /* Content swap (instance change, player render) */
 .sw-rise-enter-active {
 	transition: opacity 220ms var(--ease-swift), transform 220ms var(--ease-swift);
