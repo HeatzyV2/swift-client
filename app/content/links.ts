@@ -3,5 +3,5 @@
  */
 export const LINKS = {
   /** Discord invite, e.g. https://discord.gg/xxxx */
-  discord: '',
+  discord: 'https://discord.gg/elysiasmp',
 }
