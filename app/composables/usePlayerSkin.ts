@@ -1,5 +1,4 @@
 import { invoke } from '@tauri-apps/api/core'
-import { DEFAULT_SKIN } from '~/content/media'
 import type { PlayerSkin, SavedSkin } from '~/types/launcher'
 
 export interface SkinSource {
@@ -7,7 +6,10 @@ export interface SkinSource {
   model: 'classic' | 'slim'
 }
 
+interface DefaultSkin { name: string, model: 'classic' | 'slim', path: string | null, url: string | null }
+
 const cache = new Map<string, Promise<SkinSource | null>>()
+const defaults = new Map<string, Promise<SkinSource | null>>()
 
 /**
  * The real skin of the active account: the Microsoft profile skin, else the
@@ -27,40 +29,70 @@ async function resolveSkin(uuid: string, kind: 'microsoft' | 'offline'): Promise
   return null
 }
 
+/** Java's UUID.hashCode(): Minecraft used its low bit to pick Alex over Steve. */
+function prefersAlex(uuid: string): boolean {
+  const hex = uuid.replace(/-/g, '')
+  if (hex.length !== 32) return false
+  const hilo = BigInt(`0x${hex.slice(0, 16)}`) ^ BigInt(`0x${hex.slice(16)}`)
+  const hash = Number((hilo >> 32n) ^ (hilo & 0xffffffffn)) | 0
+  return (hash & 1) === 1
+}
+
 /**
- * What the player model wears. `isDefault` is true when no real skin exists and
- * Swift's fallback skin is shown instead — never presented as the player's own.
+ * Minecraft's own default skin — taken from an installed game jar, or Mojang's
+ * skin template when the game has never been installed.
+ */
+function defaultSkin(name: 'Steve' | 'Alex'): Promise<SkinSource | null> {
+  let task = defaults.get(name)
+  if (!task) {
+    task = (async () => {
+      try {
+        const list = await invoke<DefaultSkin[]>('list_default_skins')
+        const skin = list.find(d => d.name === name) ?? list.find(d => d.name === 'Steve')
+        if (!skin) return null
+        const src = skin.path
+          ? await invoke<string>('read_image_data_url', { path: skin.path })
+          : await invoke<string>('fetch_skin_data_url', { url: skin.url })
+        return { src, model: skin.model }
+      } catch {
+        return null
+      }
+    })()
+    defaults.set(name, task)
+  }
+  return task
+}
+
+/**
+ * What the player model wears: the account's real skin, else Minecraft's
+ * default Steve or Alex. `isDefault` marks the latter, which is never presented
+ * as the player's own (no face in the header).
  */
 export const usePlayerSkin = () => {
   const accounts = useAccountStore()
-  const own = ref<SkinSource | null>(null)
+  const skin = ref<SkinSource | null>(null)
+  const isDefault = ref(false)
   const loading = ref(true)
 
   watch(
-    () => accounts.activeAccount ? `${accounts.activeAccount.kind}:${accounts.activeAccount.uuid}` : null,
+    () => accounts.loaded ? (accounts.activeAccount ? `${accounts.activeAccount.kind}:${accounts.activeAccount.uuid}` : 'none') : null,
     async (key) => {
+      if (!key) return
       const account = accounts.activeAccount
-      if (!key || !account) {
-        own.value = null
-        loading.value = !accounts.loaded
-        return
-      }
       loading.value = true
-      if (!cache.has(key)) cache.set(key, resolveSkin(account.uuid, account.kind))
-      const resolved = await cache.get(key)!
-      if (accounts.activeAccount?.uuid !== account.uuid) return
-      own.value = resolved
+      let own: SkinSource | null = null
+      if (account) {
+        if (!cache.has(key)) cache.set(key, resolveSkin(account.uuid, account.kind))
+        own = await cache.get(key)!
+      }
+      const fallback = own ? null : await defaultSkin(account && prefersAlex(account.uuid) ? 'Alex' : 'Steve')
+      if (accounts.activeAccount?.uuid !== account?.uuid) return
+      skin.value = own ?? fallback
+      isDefault.value = !own
       loading.value = false
     },
     { immediate: true },
   )
-
-  watch(() => accounts.loaded, (loaded) => {
-    if (loaded && !accounts.activeAccount) loading.value = false
-  })
-
-  const skin = computed<SkinSource | null>(() => (loading.value ? null : own.value ?? DEFAULT_SKIN))
-  const isDefault = computed(() => !loading.value && !own.value)
 
   return { skin, isDefault, loading }
 }

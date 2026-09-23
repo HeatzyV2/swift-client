@@ -21,6 +21,3 @@ export const HERO_ROTATE_MS = 14_000
 
 /** Shown when HERO_BACKGROUNDS is empty. */
 export const HERO_FALLBACK: HeroBackground = { src: '/art/hero-default.svg' }
-
-/** Worn by the player model when there is no real skin (no account, or an offline account without one). */
-export const DEFAULT_SKIN = { src: '/skins/default.png', model: 'classic' as const }
