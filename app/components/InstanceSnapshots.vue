@@ -155,7 +155,7 @@ onMounted(load)
         <div class="min-w-[180px] flex-1">
           <p class="text-sm">
             {{ s.label || $t('snapshots.manual') }}
-            <span v-if="s.auto" class="ml-1 rounded-full bg-white/6 px-1.5 py-0.5 text-[10px] text-neutral-400">
+            <span v-if="s.auto" class="ml-1 rounded-full bg-[var(--sw-line-soft)] px-1.5 py-0.5 text-[10px] text-neutral-400">
               {{ $t('snapshots.autoBadge') }}
             </span>
           </p>

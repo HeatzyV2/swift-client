@@ -27,7 +27,6 @@
     "dialog:allow-open",
     "fs:default",
     "store:default",
-    "updater:default",
     "process:default",
     "process:allow-restart"
   ]

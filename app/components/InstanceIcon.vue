@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-none items-center justify-center overflow-hidden font-bold text-white"
+    class="flex flex-none items-center justify-center overflow-hidden font-display font-bold"
     :style="bgStyle"
   >
     <img v-if="src" :src="src" :alt="instance.name" draggable="false" class="size-full object-cover" />
@@ -24,5 +24,5 @@ watch(
 )
 
 const initial = computed(() => instanceInitial(props.instance))
-const bgStyle = computed(() => (src.value ? {} : { background: instanceIconBg(props.instance) }))
+const bgStyle = computed(() => (src.value ? {} : instanceIconStyle(props.instance)))
 </script>

@@ -8,15 +8,9 @@
     "lastPlayed": "Jugado por última vez",
     "newInstance": "Nueva instancia"
   },
-  "instanceCard": {
-    "title": "JUGADO POR ÚLTIMA VEZ",
-    "play": "JUGAR",
-    "empty": "Aún no has jugado"
-  },
   "create": {
     "title": "Crear instancia",
     "chooseType": "¿Cómo quieres empezar?",
-    "comingSoon": "Próximamente",
     "back": "Atrás",
     "create": "Crear",
     "choice": {
@@ -42,12 +36,9 @@
       "other": "Otra",
       "pickLoaderVersion": "Selecciona la versión del cargador"
     },
-    "modpack": {
-      "blurb": "El explorador de modpacks de Modrinth con búsqueda y filtros de categoría / versión / cargador llegará pronto."
-    },
     "import": {
       "fromFile": "Desde un archivo",
-      "fromFileDesc": "Elige un .mrpack de Modrinth o una copia de seguridad .zip de Spectra de tu disco.",
+      "fromFileDesc": "Elige un .mrpack de Modrinth o una copia de seguridad .zip de Swift Client de tu disco.",
       "chooseFile": "Elegir archivo",
       "fromLauncher": "Desde otro launcher",
       "fromLauncherDesc": "Instancias detectadas de Prism, CurseForge y la app de Modrinth.",
@@ -73,15 +64,7 @@
     "groupHint": "Los grupos ordenan la biblioteca en este equipo. En el disco no se mueve nada.",
     "deleteGroup": "Eliminar grupo",
     "copied": "Ruta copiada al portapapeles",
-    "comingSoon": "Próximamente",
-    "dragGroup": "Arrastrar grupo",
-    "sponsored": "Patrocinado",
-    "sponsoredBadge": "Patrocinador",
-    "sponsorServer": "Servidor",
-    "sponsorHosting": "Hosting",
-    "sponsorVisit": "Visitar",
-    "dismissSponsor": "Ocultar patrocinador",
-    "install": "Instalar"
+    "dragGroup": "Arrastrar grupo"
   },
   "ctx": {
     "play": "Jugar",
@@ -120,10 +103,8 @@
       "servers": "Servidores",
       "logs": "Registros",
       "settings": "Ajustes",
-      "share": "Compartir",
       "snapshots": "Puntos de restauración"
     },
-    "modsHint": "La gestión de mods llegará pronto; por ahora puedes añadir mods desde Modrinth.",
     "playtime": "Tiempo de juego",
     "updateAvailable": "Nueva versión del modpack disponible: {v}",
     "showChangelog": "Registro de cambios",
@@ -206,7 +187,7 @@
     "cfDesc": "Compártelo en CurseForge o impórtalo en otro sitio.",
     "author": "Autor",
     "backup": "Copia de seguridad (.zip)",
-    "backupDesc": "Copia local completa, restaurable en Spectra.",
+    "backupDesc": "Copia local completa, restaurable en Swift Client.",
     "version": "Versión del paquete",
     "summary": "Resumen",
     "summaryPlaceholder": "Opcional",
@@ -244,19 +225,17 @@
     "settingsHint": "Cambia entre Fabric, Forge, NeoForge, Quilt o Vanilla."
   },
   "onboarding": {
-    "welcomeTitle": "Bienvenido a Spectra Launcher",
+    "welcomeTitle": "Bienvenido a Swift Client",
     "welcomeText": "Un launcher de Minecraft rápido y moderno. Configurémoslo en unos pasos.",
     "accountTitle": "Iniciar sesión",
     "accountText": "Inicia sesión con Microsoft para jugar en línea, o añade una cuenta offline.",
     "signedInAs": "Sesión iniciada como {name}",
-    "themeTitle": "Personalízalo",
-    "themeText": "Elige un tema y un color de acento.",
     "javaTitle": "Java y memoria",
-    "javaText": "Spectra gestiona Java automáticamente. Define cuánta RAM reciben las instancias por defecto.",
+    "javaText": "Swift Client gestiona Java automáticamente. Define cuánta RAM reciben las instancias por defecto.",
     "javaFound": "{n} instalación(es) de Java encontrada(s)",
     "ram": "Memoria predeterminada",
     "privacyTitle": "Privacidad y datos",
-    "privacyText": "Elige qué datos puede recopilar Spectra. Puedes cambiarlo en cualquier momento en Ajustes → Privacidad.",
+    "privacyText": "Elige qué datos puede recopilar Swift Client. Puedes cambiarlo en cualquier momento en Ajustes → Privacidad.",
     "doneTitle": "¡Todo listo!",
     "doneText": "Crea o importa una instancia y empieza a jugar.",
     "skip": "Omitir",
@@ -310,35 +289,13 @@
     "confirmAll": "Confirmar todo",
     "done": "{n} mod(s) vinculado(s)"
   },
-  "update": {
-    "check": "Buscar actualizaciones",
-    "checking": "Buscando…",
-    "available": "Actualizar a v{version}",
-    "downloading": "Actualizando… {progress}%",
-    "ready": "Reiniciando…",
-    "uptodate": "Estás al día",
-    "error": "Error en la actualización",
-    "titlebar": "Actualizando el launcher",
-    "titlebarReady": "Actualizar a v{version}",
-    "startupTitle": "Actualizando Spectra Launcher",
-    "startupChecking": "Buscando actualizaciones…",
-    "startupDownloading": "Descargando la versión {version}…",
-    "startupInstalling": "Instalando: el launcher se reiniciará solo."
-  },
   "settings": {
     "title": "Ajustes",
     "appearance": {
-      "title": "Apariencia",
       "theme": "Tema",
       "themeDark": "Oscuro",
       "themeOled": "OLED (negro puro)",
-      "themeSquared": "Cuadrado (sin esquinas redondeadas)",
-      "accent": "Color de acento",
-      "themeDesc": "Elige la oscuridad de la interfaz.",
-      "accentDesc": "Color de acento usado en todo el launcher.",
-      "sponsor": "Contenido patrocinado",
-      "sponsorDesc": "Muestra modpacks, servidores y hostings patrocinados en la parte superior de la página de inicio.",
-      "sponsorEmpty": "No se ha configurado contenido patrocinado (edita useSponsor.ts para añadir entradas)."
+      "themeDesc": "Elige la oscuridad de la interfaz."
     },
     "language": {
       "title": "Idioma",
@@ -362,25 +319,15 @@
       "memoryDesc": "Memoria predeterminada para instancias sin su propia configuración."
     },
     "sections": {
-      "appearance": "Apariencia",
-      "language": "Idioma",
       "privacy": "Privacidad",
-      "java": "Instalaciones de Java",
-      "defaults": "Opciones predeterminadas de instancia",
       "accounts": "Cuentas",
       "sync": "Sincronizacion"
     },
     "privacy": {
       "track_playtime": "Registrar tiempo de juego",
       "track_playtimeDesc": "Medir y guardar el tiempo total de juego de cada instancia.",
-      "share_activity": "Mostrar actividad en mi perfil",
-      "share_activityDesc": "Envía el número de inicios y el tiempo de juego a tu perfil público de Spectra, para el gráfico de actividad y las estadísticas. Requiere iniciar sesión.",
       "discord_rpc": "Discord Rich Presence",
-      "discord_rpcDesc": "Mostrar a qué juegas en Discord.",
-      "crash_reports": "Informes de fallos",
-      "crash_reportsDesc": "Enviar informes de fallos anónimos para ayudar a corregir errores.",
-      "anonymous_stats": "Estadísticas anónimas",
-      "anonymous_statsDesc": "Comparte estadísticas de uso anónimas para ayudar a mejorar el launcher. Los datos recopilados son: nombre del sistema operativo, versión del launcher, versión de Minecraft lanzada, nombre del mod loader, idioma de la interfaz y funciones del launcher utilizadas. No se envían datos personales — esta información se usa únicamente para saber qué funciones vale la pena desarrollar y cuáles son prescindibles."
+      "discord_rpcDesc": "Mostrar a qué juegas en Discord."
     },
     "java": {
       "title": "Instalaciones de Java",
@@ -637,100 +584,8 @@
     "upload": "Subir icono"
   },
   "share": {
-    "title": "Compartir «{name}»",
-    "intro": "Crea un código corto con el que cualquiera puede clonar esta instancia. Los mods viajan como enlaces a Modrinth/CurseForge, no como archivos.",
-    "codeLabel": "Código",
-    "copyCode": "Copiar código",
-    "copyLink": "Copiar enlace",
-    "createBtn": "Crear código",
-    "expires": "El código caduca {when}",
-    "privacyNote": "Los mundos, las capturas y los informes de fallos nunca se comparten.",
     "needsCurseforge": "{n} mods necesitan una clave de API de CurseForge: añádela en Ajustes y vuelve a intentarlo.",
-    "someFailed": "No se pudieron descargar {n} mods.",
-    "tabTitle": "Compartir esta instancia",
-    "signInTitle": "Envíala sin códigos",
-    "signInHint": "Inicia sesión en tu cuenta de Spectra para invitar a tus amigos desde el launcher.",
-    "sharedWith": "Quién la tiene",
-    "nobodyYet": "Nadie todavía. Invita a un amigo abajo.",
-    "invite": "Invitar a un amigo",
-    "inviteBtn": "Invitar",
-    "uninvite": "Dejar de compartir con él",
-    "noFriendsToInvite": "Todos tus amigos ya la tienen.",
-    "notInstalled": "Sin instalar",
-    "outdated": "Desactualizada",
-    "upToDate": "Al día",
-    "revision": "Revisión {n}",
-    "push": "Enviar actualización",
-    "pushHint": "Sube la instancia tal y como está y avisa a todos los que la tienen.",
-    "extraFiles": "Archivos que nadie puede volver a descargar ({n})",
-    "extraFilesHint": "No coinciden con ningún proyecto de Modrinth ni CurseForge, así que solo pueden viajar como bytes ({size} en total). Elige los que merezcan la pena.",
-    "extraFilesSelected": "Se enviarán {n} · {size}",
-    "scanning": "Revisando la instancia…",
-    "working": "Compartiendo {name}",
-    "stage": {
-      "scanning": "Comprobando el contenido…",
-      "packing": "Empaquetando los archivos…",
-      "uploading": "Subiendo…",
-      "done": "Casi listo…",
-      "finishing": "Terminando…"
-    },
-    "overall": "Total",
-    "expiresDays": "en {n} días",
-    "expiresHours": "en {n} h",
-    "extend": "Ampliar una semana",
-    "extendHint": "Se puede ampliar en las últimas 48 horas",
-    "revoke": "Caducar el código",
-    "revokeConfirm": "Haz clic otra vez para confirmar",
-    "revokeHint": "El código deja de funcionar al instante. Tus amigos conservan lo instalado, pero ya no recibirán actualizaciones."
-  },
-  "spectra": {
-    "title": "Cuenta de Spectra",
-    "signIn": "Iniciar sesión",
-    "viewProfile": "Abrir mi perfil en el sitio web",
-    "signOut": "Cerrar sesión",
-    "signedOutTitle": "Juega con tus amigos",
-    "signedOutHint": "Inicia sesión para tener una lista de amigos y enviarles paquetes directamente a su launcher.",
-    "browserHint": "Se abrirá tu navegador para terminar de iniciar sesión.",
-    "inbox": "Novedades",
-    "requests": "Solicitudes de amistad",
-    "friends": "Amigos",
-    "add": "Enviar solicitud",
-    "addPlaceholder": "Usuario, correo o nick de Minecraft",
-    "requestSent": "Solicitud enviada.",
-    "accept": "Aceptar",
-    "reject": "Rechazar",
-    "install": "Instalar",
-    "removeFriend": "Eliminar amigo",
-    "noFriends": "Aún no tienes amigos. Añade a alguien por su usuario para compartir paquetes.",
-    "outgoing": "Enviadas ({n})",
-    "note": {
-      "friend_request": "{who} quiere ser tu amigo",
-      "friend_accepted": "{who} aceptó tu solicitud",
-      "instance_invite": "{who} ha compartido «{name}» contigo",
-      "instance_update": "{who} ha publicado una actualización de «{name}»"
-    },
-    "update": "Actualizar",
-    "updating": "Actualizando {name}…",
-    "inGame": "en el juego: {name}",
-    "alreadyFriends": "ya sois amigos",
-    "pendingShort": "invitado",
-    "noMatches": "Nadie con ese nombre. Un correo completo también sirve.",
-    "cancelRequest": "Cancelar la solicitud",
-    "dismiss": "Descartar",
-    "status": {
-      "online": "En línea",
-      "in_game": "Jugando",
-      "dnd": "No molestar",
-      "offline": "Desconectado"
-    },
-    "mode": {
-      "visible": "Visible",
-      "visibleHint": "Tus amigos ven cuándo estás en línea y jugando",
-      "dnd": "Ocupado",
-      "dndHint": "Tus amigos ven un punto rojo: estás, pero prefieres que no te molesten",
-      "hidden": "Oculto",
-      "hiddenHint": "Todos te ven desconectado, hagas lo que hagas"
-    }
+    "someFailed": "No se pudieron descargar {n} mods."
   },
   "snapshots": {
     "title": "Puntos de restauración",
@@ -809,23 +664,5 @@
     "instancesTitle": "Qué instancias participan",
     "instancesDesc": "Cada instancia participa por defecto. Desmarca para dejarla fuera.",
     "instanceColumn": "Instancia"
-  },
-  "syncAnnounce": {
-    "badge": "Novedad de esta actualización",
-    "title": "Sincroniza tus instancias",
-    "body": "Ahora puedes mantener iguales los ajustes del juego, los servidores, los paquetes de recursos y más en todas tus instancias, para que todo siga donde lo dejaste.",
-    "later": "Actívalo ahora o configúralo más tarde en los ajustes del launcher.",
-    "skip": "Omitir",
-    "syncAll": "Sincronizar todo",
-    "syncSelected": "Sincronizar selección",
-    "done": "Sincronizando {n} categorías",
-    "failed": "No se pudo activar la sincronización",
-    "options": {
-      "game_options": "Sincronizar ajustes del juego",
-      "multiplayer_servers": "Sincronizar servidores multijugador",
-      "resource_packs": "Sincronizar paquetes de recursos",
-      "command_history": "Sincronizar historial de comandos",
-      "creative_hotbars": "Sincronizar barras creativas"
-    }
   }
 }

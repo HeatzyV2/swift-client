@@ -1,9 +1,9 @@
 <template>
-  <div class="h-full overflow-y-auto p-6 lg:p-8">
+  <div class="h-full overflow-y-auto px-8 py-7">
     <div class="mx-auto max-w-6xl space-y-6">
       <div class="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-bold tracking-tight">{{ $t('screenshotsPage.title') }}</h1>
+          <h1 class="font-display text-[26px] font-semibold leading-tight text-highlighted">{{ $t('screenshotsPage.title') }}</h1>
           <p class="mt-1 text-sm text-muted">
             {{ $t('screenshotsPage.count', { shots: totalShots, instances: groups.length }) }}
           </p>
@@ -22,13 +22,13 @@
       <div v-if="loading" class="space-y-8">
         <div v-for="g in 2" :key="`g-sk-${g}`" class="space-y-3">
           <div class="flex items-center gap-2.5">
-            <div class="size-8 animate-pulse rounded-lg bg-white/5" />
-            <div class="h-4 w-40 animate-pulse rounded bg-white/5" />
+            <div class="size-8 sw-skeleton" />
+            <div class="h-4 w-40 sw-skeleton" />
           </div>
           <div class="grid gap-3" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
-            <div v-for="n in 4" :key="`s-sk-${n}`" class="overflow-hidden rounded-xl border border-default bg-white/3">
-              <div class="aspect-video w-full animate-pulse bg-white/5" />
-              <div class="px-2.5 py-1.5"><div class="h-3 w-2/3 animate-pulse rounded bg-white/5" /></div>
+            <div v-for="n in 4" :key="`s-sk-${n}`" class="overflow-hidden sw-panel">
+              <div class="aspect-video w-full sw-skeleton" />
+              <div class="px-2.5 py-1.5"><div class="h-3 w-2/3 sw-skeleton" /></div>
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@
             <InstanceIcon :instance="group.instance" class="size-8 rounded-lg text-[14px]" />
             <span class="font-semibold transition group-hover/h:text-primary-400">{{ group.instance.name }}</span>
             <span class="font-mono text-[11px] text-neutral-500">{{ group.instance.mc_version }}</span>
-            <div class="h-px flex-1 bg-white/6" />
+            <div class="h-px flex-1 bg-[var(--sw-line-soft)]" />
             <span class="text-xs text-neutral-500">{{ $t('screenshotsPage.instanceShots', { n: group.shots.length }) }}</span>
           </button>
 
@@ -58,7 +58,7 @@
               v-for="s in group.shots"
               :key="s.path"
               type="button"
-              class="group overflow-hidden rounded-xl border border-default bg-white/3 text-left transition hover:border-primary-500/40"
+              class="group overflow-hidden sw-panel text-left transition hover:border-primary-500/40"
               @click="openLightbox(s)"
             >
               <ThumbImage :path="s.path" :size="440" :alt="s.name" class="aspect-video w-full object-cover transition group-hover:opacity-90" />

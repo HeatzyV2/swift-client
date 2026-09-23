@@ -14,7 +14,7 @@ interface RawGroup {
   ids: string[]
 }
 
-const KEY = 'spectra-library-layout'
+const KEY = 'swift-library-layout'
 const UNGROUPED_ID = '__ungrouped'
 
 function loadRaw(): RawGroup[] {

@@ -1,13 +1,13 @@
-# Contributing to Spectra Launcher
+# Contributing to Swift Client
 
-Thanks for your interest in improving Spectra Launcher. Bug reports, ideas, translations, testing and code are all
+Thanks for your interest in improving Swift Client. Bug reports, ideas, translations, testing and code are all
 welcome.
 
 ## Ways to help
 
-- **Report bugs** with the [bug report form](https://github.com/SpectraLauncher/Launcher/issues/new?template=bug_report.yml).
+- **Report bugs** with the [bug report form](../../issues/new?template=bug_report.yml).
   Include launcher logs and the crash report when the game crashes.
-- **Suggest features** with the [feature request form](https://github.com/SpectraLauncher/Launcher/issues/new?template=feature_request.yml).
+- **Suggest features** with the [feature request form](../../issues/new?template=feature_request.yml).
 - **Translate** the launcher, see [Translations](#translations).
 - **Test** new releases with your favorite modpacks and mod loaders.
 

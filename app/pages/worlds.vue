@@ -1,9 +1,9 @@
 <template>
-  <div class="h-full overflow-y-auto p-6 lg:p-8">
+  <div class="h-full overflow-y-auto px-8 py-7">
     <div class="mx-auto max-w-5xl space-y-6">
       <div class="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-bold tracking-tight">{{ $t('worldsPage.title') }}</h1>
+          <h1 class="font-display text-[26px] font-semibold leading-tight text-highlighted">{{ $t('worldsPage.title') }}</h1>
           <p class="mt-1 text-sm text-muted">
             {{ $t('worldsPage.count', { worlds: totalWorlds, instances: groups.length }) }}
           </p>
@@ -22,15 +22,15 @@
       <div v-if="loading" class="space-y-8">
         <div v-for="g in 2" :key="`g-sk-${g}`" class="space-y-3">
           <div class="flex items-center gap-2.5">
-            <div class="size-8 animate-pulse rounded-lg bg-white/5" />
-            <div class="h-4 w-40 animate-pulse rounded bg-white/5" />
+            <div class="size-8 sw-skeleton" />
+            <div class="h-4 w-40 sw-skeleton" />
           </div>
           <div class="space-y-2">
-            <div v-for="n in 3" :key="`r-sk-${n}`" class="flex items-center gap-3 rounded-xl border border-default bg-white/3 p-3">
-              <div class="size-11 shrink-0 animate-pulse rounded-lg bg-white/5" />
+            <div v-for="n in 3" :key="`r-sk-${n}`" class="flex items-center gap-3 sw-panel p-3">
+              <div class="size-11 shrink-0 sw-skeleton" />
               <div class="min-w-0 flex-1 space-y-2">
-                <div class="h-3.5 w-1/3 animate-pulse rounded bg-white/5" />
-                <div class="h-2.5 w-1/2 animate-pulse rounded bg-white/5" />
+                <div class="h-3.5 w-1/3 sw-skeleton" />
+                <div class="h-2.5 w-1/2 sw-skeleton" />
               </div>
             </div>
           </div>
@@ -52,7 +52,7 @@
             <InstanceIcon :instance="group.instance" class="size-8 rounded-lg text-[14px]" />
             <span class="font-semibold transition group-hover/h:text-primary-400">{{ group.instance.name }}</span>
             <span class="font-mono text-[11px] text-neutral-500">{{ group.instance.mc_version }}</span>
-            <div class="h-px flex-1 bg-white/6" />
+            <div class="h-px flex-1 bg-[var(--sw-line-soft)]" />
             <span class="text-xs text-neutral-500">{{ $t('worldsPage.instanceWorlds', { n: group.worlds.length }) }}</span>
           </button>
 
@@ -60,7 +60,7 @@
             <div
               v-for="w in group.worlds"
               :key="w.folder"
-              class="flex items-center gap-3 rounded-xl border border-default bg-white/3 p-3"
+              class="flex items-center gap-3 sw-panel p-3"
             >
               <img
                 v-if="w.icon_path"

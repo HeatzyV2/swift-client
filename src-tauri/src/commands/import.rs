@@ -81,8 +81,16 @@ struct BackupManifest {
     instance: Instance,
 }
 
-const BACKUP_FORMAT: &str = "spectra-instance-backup";
-pub const BACKUP_MANIFEST: &str = "spectra-instance.json";
+const BACKUP_FORMAT: &str = "swift-instance-backup";
+const BACKUP_MANIFEST: &str = "swift-instance.json";
+// Backups made by Spectra Launcher, the project Swift Client started from.
+const LEGACY_BACKUP_MANIFEST: &str = "spectra-instance.json";
+
+fn has_backup_manifest<R: Read + std::io::Seek>(archive: &mut zip::ZipArchive<R>) -> Option<&'static str> {
+    [BACKUP_MANIFEST, LEGACY_BACKUP_MANIFEST]
+        .into_iter()
+        .find(|name| archive.by_name(name).is_ok())
+}
 
 #[derive(Serialize)]
 pub struct DirChild {
@@ -164,7 +172,7 @@ fn is_instance_archive(path: &Path) -> bool {
     let Ok(mut z) = zip::ZipArchive::new(Cursor::new(bytes)) else { return false };
     z.by_name("modrinth.index.json").is_ok()
         || z.by_name("manifest.json").is_ok()
-        || z.by_name(BACKUP_MANIFEST).is_ok()
+        || has_backup_manifest(&mut z).is_some()
 }
 
 fn copy_dropped_content(instance_id: &str, path: &Path) -> AppResult<()> {
@@ -319,7 +327,7 @@ fn zip_game_files(
 
 pub fn is_backup_zip(bytes: &[u8]) -> bool {
     let Ok(mut archive) = zip::ZipArchive::new(Cursor::new(bytes)) else { return false };
-    let found = archive.by_name(BACKUP_MANIFEST).is_ok();
+    let found = has_backup_manifest(&mut archive).is_some();
     found
 }
 
@@ -328,9 +336,8 @@ pub fn restore_backup_from_bytes(bytes: &[u8]) -> AppResult<Instance> {
         zip::ZipArchive::new(Cursor::new(bytes)).map_err(|e| format!("open backup: {e}"))?;
 
     let manifest: BackupManifest = {
-        let mut f = archive
-            .by_name(BACKUP_MANIFEST)
-            .map_err(|_| "not a Spectra backup".to_string())?;
+        let name = has_backup_manifest(&mut archive).ok_or("not a Swift Client backup")?;
+        let mut f = archive.by_name(name).map_err(|e| e.to_string())?;
         let mut s = String::new();
         f.read_to_string(&mut s).map_err(|e| e.to_string())?;
         serde_json::from_str(&s).map_err(|e| format!("parse manifest: {e}"))?

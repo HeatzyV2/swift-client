@@ -28,7 +28,7 @@ pub async fn open_content_window(app: AppHandle, config: Value) -> AppResult<()>
     }
 
     let builder = WebviewWindowBuilder::new(&app, LABEL, WebviewUrl::App("browser".into()))
-        .title("Spectra")
+        .title("Swift Client")
         .inner_size(1320.0, 860.0)
         .min_inner_size(960.0, 600.0);
 

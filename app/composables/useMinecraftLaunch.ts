@@ -5,7 +5,6 @@ import type { QuickPlay } from '~/types/launcher'
 export const useMinecraftLaunch = (instanceId?: MaybeRefOrGetter<string | undefined>) => {
   const ac = useActivityCenter()
   const instances = useInstancesStore()
-  const telemetry = useTelemetry()
 
   const launchingIds = useState<Record<string, boolean>>('mc-launching-ids', () => ({}))
   const errors = useState<Record<string, string | null>>('mc-errors', () => ({}))
@@ -39,11 +38,11 @@ export const useMinecraftLaunch = (instanceId?: MaybeRefOrGetter<string | undefi
     launchingIds.value = { ...launchingIds.value, [launchId]: true }
     const inst = instances.instances.find(i => i.id === launchId)
     if (inst) inst.last_played = new Date().toISOString()
+    instances.select(launchId)
     await ac.attach()
     ac.markRunning(launchId)
     try {
       await invoke('launch_instance', { id: launchId, quickPlay: quickPlay ?? null })
-      telemetry.track('launch', { loader: inst?.loader.type, mc: inst?.mc_version })
       instances.load()
     } catch (e) {
       errors.value = { ...errors.value, [launchId]: errorText(e) }

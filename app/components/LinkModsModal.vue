@@ -11,7 +11,7 @@
               <UIcon name="i-lucide-loader-circle" class="size-3.5 animate-spin" /> {{ $t('common.loading') }}
             </span>
           </div>
-          <div class="flex items-center gap-2 rounded-lg border border-default bg-white/3 px-3 py-2">
+          <div class="flex items-center gap-2 sw-panel px-3 py-2">
             <UIcon name="i-lucide-file" class="size-4 shrink-0 text-neutral-500" />
             <span class="min-w-0 flex-1 truncate font-mono text-xs">{{ currentFile }}</span>
           </div>

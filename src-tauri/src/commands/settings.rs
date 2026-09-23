@@ -16,6 +16,18 @@ pub async fn save_settings(settings: Settings) -> AppResult<()> {
     crate::blocking(move || store::write_json(&paths::launcher_config_file(), &settings)).await
 }
 
+/// Remembers the instance the Home screen launches, without touching the rest
+/// of the settings file (the Settings page may be saving it at the same time).
+#[tauri::command]
+pub async fn set_last_instance(id: Option<String>) -> AppResult<()> {
+    crate::blocking(move || {
+        let mut settings = load()?;
+        settings.last_instance_id = id;
+        store::write_json(&paths::launcher_config_file(), &settings)
+    })
+    .await
+}
+
 #[tauri::command]
 pub fn get_system_memory_mb() -> u64 {
     let mut sys = sysinfo::System::new();

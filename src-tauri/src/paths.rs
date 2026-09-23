@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-const APP_DIR_NAME: &str = "SpectraLauncher";
+const APP_DIR_NAME: &str = "SwiftClient";
 
 #[cfg(test)]
 pub static DATA_DIR_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
@@ -11,7 +11,7 @@ pub fn lock_data_dir() -> std::sync::MutexGuard<'static, ()> {
 }
 
 pub fn data_root() -> PathBuf {
-    if let Ok(custom) = std::env::var("SPECTRA_DATA_DIR") {
+    if let Ok(custom) = std::env::var("SWIFT_DATA_DIR") {
         if !custom.trim().is_empty() {
             return PathBuf::from(custom);
         }
@@ -29,9 +29,6 @@ pub fn accounts_file() -> PathBuf {
     data_root().join("accounts.json")
 }
 
-pub fn spectra_account_file() -> PathBuf {
-    data_root().join("spectra-account.json")
-}
 
 pub fn instances_dir() -> PathBuf {
     data_root().join("instances")

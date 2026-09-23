@@ -7,6 +7,7 @@ export const useAccountStore = defineStore('accounts', {
     accounts: [] as Account[],
     activeUuid: null as string | null,
     loading: false,
+    loaded: false,
     error: null as string | null,
   }),
   getters: {
@@ -25,11 +26,16 @@ export const useAccountStore = defineStore('accounts', {
         const file = await invoke<AccountsFile>('list_accounts')
         this.accounts = file.accounts
         this.activeUuid = file.active_uuid ?? null
+        this.loaded = true
       } catch (e) {
         this.error = errorText(e)
       } finally {
         this.loading = false
       }
+    },
+
+    async ensureLoaded() {
+      if (!this.loaded) await this.load()
     },
 
     async login() {

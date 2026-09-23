@@ -6,17 +6,14 @@
     "skins": "Skins",
     "settings": "Settings",
     "lastPlayed": "Last played",
-    "newInstance": "New instance"
-  },
-  "instanceCard": {
-    "title": "LAST PLAYED",
-    "play": "PLAY",
-    "empty": "You haven't played yet"
+    "newInstance": "New instance",
+    "instances": "Instances",
+    "recent": "Recent",
+    "noRecent": "No instances yet"
   },
   "create": {
     "title": "Create instance",
     "chooseType": "How do you want to start?",
-    "comingSoon": "Coming soon",
     "back": "Back",
     "create": "Create",
     "choice": {
@@ -40,14 +37,13 @@
       "stable": "Stable",
       "latest": "Latest",
       "other": "Other",
-      "pickLoaderVersion": "Select loader version"
-    },
-    "modpack": {
-      "blurb": "Modrinth modpack browser with search and category / version / loader filters is coming soon."
+      "pickLoaderVersion": "Select loader version",
+      "advanced": "Advanced options",
+      "advancedVanilla": "Vanilla has no extra options. Memory, Java and window size can be changed in the instance settings."
     },
     "import": {
       "fromFile": "From a file",
-      "fromFileDesc": "Pick a Modrinth .mrpack or a Spectra backup .zip from your disk.",
+      "fromFileDesc": "A Modrinth .mrpack, a CurseForge .zip or a Swift Client backup.",
       "chooseFile": "Choose file",
       "fromLauncher": "From another launcher",
       "fromLauncherDesc": "Detected instances from Prism, CurseForge and the Modrinth App.",
@@ -56,7 +52,8 @@
       "fromCode": "From a share code",
       "fromCodeDesc": "Paste the code (or link) a friend sent you.",
       "useCode": "Use code"
-    }
+    },
+    "done": "\"{name}\" created"
   },
   "library": {
     "title": "Instances",
@@ -73,15 +70,11 @@
     "groupHint": "Groups arrange the library on this computer. Nothing moves on disk.",
     "deleteGroup": "Delete group",
     "copied": "Path copied to clipboard",
-    "comingSoon": "Coming soon",
     "dragGroup": "Drag group",
-    "sponsored": "Sponsored",
-    "sponsoredBadge": "Sponsor",
-    "sponsorServer": "Server",
-    "sponsorHosting": "Hosting",
-    "sponsorVisit": "Visit",
-    "dismissSponsor": "Hide sponsor",
-    "install": "Install"
+    "emptyHint": "An instance is a separate Minecraft install with its own version, mods and worlds.",
+    "loadError": "Could not load your instances",
+    "select": "Set as selected",
+    "selected": "Selected on Home"
   },
   "ctx": {
     "play": "Play",
@@ -92,7 +85,7 @@
     "copyPath": "Copy path"
   },
   "instance": {
-    "back": "Library",
+    "back": "Instances",
     "notFound": "Instance not found",
     "play": "Play",
     "running": "Running",
@@ -120,10 +113,8 @@
       "servers": "Servers",
       "logs": "Logs",
       "settings": "Settings",
-      "share": "Share",
       "snapshots": "Restore points"
     },
-    "modsHint": "Mod management is coming soon — for now you can add mods from Modrinth.",
     "playtime": "Playtime",
     "updateAvailable": "New modpack version available: {v}",
     "showChangelog": "Changelog",
@@ -134,7 +125,8 @@
     "shortcutCreated": "Shortcut added to the desktop",
     "exported": "Instance exported",
     "changeIcon": "Change icon",
-    "iconChanged": "Icon changed"
+    "iconChanged": "Icon changed",
+    "more": "More actions"
   },
   "common": {
     "save": "Save",
@@ -206,7 +198,7 @@
     "cfDesc": "Share on CurseForge or import elsewhere.",
     "author": "Author",
     "backup": "Backup (.zip)",
-    "backupDesc": "Full local backup, restorable in Spectra.",
+    "backupDesc": "Full local backup, restorable in Swift Client.",
     "version": "Pack version",
     "summary": "Summary",
     "summaryPlaceholder": "Optional",
@@ -244,24 +236,23 @@
     "settingsHint": "Switch between Fabric, Forge, NeoForge, Quilt or Vanilla."
   },
   "onboarding": {
-    "welcomeTitle": "Welcome to Spectra Launcher",
-    "welcomeText": "A fast, modern Minecraft launcher. Let's set things up in a few steps.",
+    "welcomeTitle": "Welcome to Swift Client",
+    "welcomeText": "A fast, focused Minecraft launcher. A few quick steps and you are ready to play.",
     "accountTitle": "Sign in",
     "accountText": "Sign in with Microsoft to play online, or add an offline account.",
     "signedInAs": "Signed in as {name}",
-    "themeTitle": "Make it yours",
-    "themeText": "Pick a theme and an accent color.",
     "javaTitle": "Java & memory",
-    "javaText": "Spectra manages Java automatically. Set how much RAM instances get by default.",
+    "javaText": "Swift Client installs the right Java for every version on its own. Choose how much memory instances get by default.",
     "javaFound": "{n} Java installation(s) found",
     "ram": "Default memory",
     "privacyTitle": "Privacy & data",
-    "privacyText": "Choose what data Spectra may collect. You can change these at any time in Settings → Privacy.",
+    "privacyText": "Choose what Swift Client does on your computer. You can change this any time in Settings → Privacy.",
     "doneTitle": "You're all set!",
     "doneText": "Create or import an instance and start playing.",
     "skip": "Skip",
     "next": "Next",
-    "start": "Start"
+    "start": "Start",
+    "or": "or"
   },
   "conflicts": {
     "title": "{n} potential conflict(s)",
@@ -310,39 +301,17 @@
     "confirmAll": "Confirm all",
     "done": "Linked {n} mod(s)"
   },
-  "update": {
-    "check": "Check for updates",
-    "checking": "Checking…",
-    "available": "Update to v{version}",
-    "downloading": "Updating… {progress}%",
-    "ready": "Restarting…",
-    "uptodate": "You're up to date",
-    "error": "Update failed",
-    "titlebar": "Updating launcher",
-    "titlebarReady": "Update v{version}",
-    "startupTitle": "Updating Spectra Launcher",
-    "startupChecking": "Checking for updates…",
-    "startupDownloading": "Downloading version {version}…",
-    "startupInstalling": "Installing — the launcher will restart on its own."
-  },
   "settings": {
     "title": "Settings",
     "appearance": {
-      "title": "Appearance",
       "theme": "Theme",
       "themeDark": "Dark",
-      "themeOled": "OLED (pure black)",
-      "themeSquared": "Squared (no rounded corners)",
-      "accent": "Accent color",
-      "themeDesc": "Choose the interface darkness.",
-      "accentDesc": "Accent color used across the launcher.",
-      "sponsor": "Sponsored content",
-      "sponsorDesc": "Show sponsored modpacks, servers and hosting at the top of the home page.",
-      "sponsorEmpty": "No sponsored content configured (edit useSponsor.ts to add entries)."
+      "themeOled": "OLED",
+      "themeDesc": "How dark the interface is."
     },
     "language": {
       "title": "Language",
-      "label": "Interface language",
+      "label": "Language",
       "auto": "Detected automatically on first run, remembered after that."
     },
     "accounts": {
@@ -362,25 +331,20 @@
       "memoryDesc": "Default memory for instances without their own setting."
     },
     "sections": {
-      "appearance": "Appearance",
-      "language": "Language",
       "privacy": "Privacy",
-      "java": "Java installations",
-      "defaults": "Default instance options",
       "accounts": "Accounts",
-      "sync": "Sync"
+      "sync": "Sync",
+      "general": "General",
+      "minecraft": "Minecraft",
+      "advanced": "Advanced",
+      "about": "About"
     },
     "privacy": {
       "track_playtime": "Track playtime",
       "track_playtimeDesc": "Measure and store total playtime for each instance.",
-      "share_activity": "Share activity on my profile",
-      "share_activityDesc": "Send launch count and playtime to your public Spectra profile, for the activity graph and statistics. Requires being signed in.",
       "discord_rpc": "Discord Rich Presence",
       "discord_rpcDesc": "Show what you are playing on Discord.",
-      "crash_reports": "Crash reports",
-      "crash_reportsDesc": "Send anonymous crash reports to help fix bugs.",
-      "anonymous_stats": "Anonymous statistics",
-      "anonymous_statsDesc": "Share anonymous usage statistics to help improve the launcher. The following data is collected: operating system name, launcher version, launched Minecraft version, mod loader name, interface language, and which launcher features are used. No personal data is ever sent — this data is used only to understand which features are worth developing further and which are redundant."
+      "noTelemetry": "Swift Client sends no telemetry, analytics or crash data. Nothing leaves your computer except what is needed to download and play Minecraft."
     },
     "java": {
       "title": "Java installations",
@@ -392,7 +356,39 @@
       "isDefault": "Default",
       "defaultPath": "Default Java path",
       "defaultPathHint": "Used when an instance has none (the engine still manages Java itself).",
-      "detectedDesc": "Java versions found on your system and in the launcher."
+      "detectedDesc": "Java versions found on your system and in the launcher.",
+      "managed": "Managed automatically",
+      "browse": "Browse"
+    },
+    "minecraft": {
+      "memoryTitle": "Memory",
+      "windowTitle": "Game window",
+      "resolution": "Resolution",
+      "resolutionDesc": "Default window size when not in fullscreen."
+    },
+    "advanced": {
+      "launchTitle": "Default launch options",
+      "hooksTitle": "Launch hooks",
+      "filesTitle": "Files",
+      "show": "Show",
+      "folders": {
+        "data": "Launcher data",
+        "instances": "Instances",
+        "logs": "Launcher logs"
+      }
+    },
+    "about": {
+      "updates": "Updates",
+      "updatesDesc": "Automatic updates are not available yet. New versions have to be installed manually for now.",
+      "manual": "Manual",
+      "online": "Online services",
+      "onlineOn": "CurseForge and instance sharing are available.",
+      "onlineOff": "CurseForge and instance sharing need the Swift Client online service, which is not available yet. Modrinth works normally.",
+      "connected": "Connected",
+      "offline": "Not available",
+      "license": "License",
+      "licenseDesc": "Swift Client is free software under the GPL-3.0, based on {upstream} by {author}.",
+      "source": "Original project"
     }
   },
   "activity": {
@@ -446,7 +442,8 @@
     "worldDeleted": "World deleted",
     "deleteScreenshotTitle": "Delete screenshot",
     "deleteScreenshotConfirm": "Delete this screenshot? This cannot be undone.",
-    "screenshotDeleted": "Screenshot deleted"
+    "screenshotDeleted": "Screenshot deleted",
+    "emptyMods": "No mods yet. Add some from Modrinth with the button above."
   },
   "modrinth": {
     "title": {
@@ -637,100 +634,8 @@
     "upload": "Upload icon"
   },
   "share": {
-    "title": "Share “{name}”",
-    "intro": "Creates a short code anyone can use to clone this instance. Mods travel as links to Modrinth/CurseForge, not as files.",
-    "codeLabel": "Share code",
-    "copyCode": "Copy code",
-    "copyLink": "Copy link",
-    "createBtn": "Create code",
-    "expires": "Code expires {when}",
-    "privacyNote": "Worlds, screenshots and crash reports are never shared.",
     "needsCurseforge": "{n} mods need a CurseForge API key — add one in Settings and retry.",
-    "someFailed": "{n} mods could not be downloaded.",
-    "tabTitle": "Share this instance",
-    "signInTitle": "Send it without a code",
-    "signInHint": "Sign in to your Spectra account to invite friends straight from the launcher.",
-    "sharedWith": "Who has it",
-    "nobodyYet": "Nobody yet. Invite a friend below.",
-    "invite": "Invite a friend",
-    "inviteBtn": "Invite",
-    "uninvite": "Stop sharing with them",
-    "noFriendsToInvite": "All of your friends already have this one.",
-    "notInstalled": "Not installed",
-    "outdated": "Out of date",
-    "upToDate": "Up to date",
-    "revision": "Revision {n}",
-    "push": "Push update",
-    "pushHint": "Uploads the instance as it is now and tells everyone who has it.",
-    "extraFiles": "Files nobody can re-download ({n})",
-    "extraFilesHint": "These match no Modrinth or CurseForge project, so they can only travel as raw bytes ({size} in total). Pick the ones worth sending.",
-    "extraFilesSelected": "Sending {n} of them · {size}",
-    "scanning": "Looking through the instance…",
-    "working": "Sharing {name}",
-    "stage": {
-      "scanning": "Checking the content…",
-      "packing": "Packing the files…",
-      "uploading": "Uploading…",
-      "done": "Almost there…",
-      "finishing": "Finishing up…"
-    },
-    "overall": "Overall",
-    "expiresDays": "in {n} days",
-    "expiresHours": "in {n} h",
-    "extend": "Extend by a week",
-    "extendHint": "Can be extended in the last 48 hours",
-    "revoke": "Expire the code",
-    "revokeConfirm": "Click again to confirm",
-    "revokeHint": "The code stops working right away. Friends keep what they already installed, they just stop getting updates."
-  },
-  "spectra": {
-    "title": "Spectra account",
-    "signIn": "Sign in",
-    "viewProfile": "Open my profile on the website",
-    "signOut": "Sign out",
-    "signedOutTitle": "Play with your friends",
-    "signedOutHint": "Sign in to build a friends list and send modpacks straight to their launcher.",
-    "browserHint": "Your browser will open to finish signing in.",
-    "inbox": "Inbox",
-    "requests": "Friend requests",
-    "friends": "Friends",
-    "add": "Send request",
-    "addPlaceholder": "Username, e-mail or Minecraft nick",
-    "requestSent": "Request sent.",
-    "accept": "Accept",
-    "reject": "Reject",
-    "install": "Install",
-    "removeFriend": "Remove friend",
-    "noFriends": "No friends yet. Add someone by their username to share modpacks with them.",
-    "outgoing": "Sent ({n})",
-    "note": {
-      "friend_request": "{who} wants to be friends",
-      "friend_accepted": "{who} accepted your friend request",
-      "instance_invite": "{who} shared \"{name}\" with you",
-      "instance_update": "{who} pushed an update to \"{name}\""
-    },
-    "update": "Update",
-    "updating": "Updating {name}…",
-    "inGame": "in game: {name}",
-    "alreadyFriends": "already friends",
-    "pendingShort": "invited",
-    "noMatches": "Nobody with that name. A full e-mail address works too.",
-    "cancelRequest": "Cancel the request",
-    "dismiss": "Dismiss",
-    "status": {
-      "online": "Online",
-      "in_game": "In game",
-      "dnd": "Do not disturb",
-      "offline": "Offline"
-    },
-    "mode": {
-      "visible": "Visible",
-      "visibleHint": "Friends see when you are online and in game",
-      "dnd": "Busy",
-      "dndHint": "Friends see a red dot — you are around but would rather not be pulled in",
-      "hidden": "Hidden",
-      "hiddenHint": "Everyone sees you as offline, whatever you are doing"
-    }
+    "someFailed": "{n} mods could not be downloaded."
   },
   "snapshots": {
     "title": "Restore points",
@@ -762,7 +667,8 @@
     "not_found": "Not found",
     "panic": "Internal error",
     "permission": "No permission",
-    "unknown": "Error"
+    "unknown": "Error",
+    "backend_unavailable": "Not available yet"
   },
   "sync": {
     "title": "Sync across instances",
@@ -810,22 +716,68 @@
     "instancesDesc": "Every instance joins a category by default. Untick one to leave it out.",
     "instanceColumn": "Instance"
   },
-  "syncAnnounce": {
-    "badge": "New this update",
-    "title": "Sync your instances",
-    "body": "You can now keep game settings, servers, resource packs and more the same across all your instances, so everything stays where you left it.",
-    "later": "Turn it on now, or set it up later in launcher settings.",
-    "skip": "Skip",
-    "syncAll": "Sync all",
-    "syncSelected": "Sync selected",
-    "done": "Syncing {n} categories",
-    "failed": "Could not turn syncing on",
-    "options": {
-      "game_options": "Sync game settings",
-      "multiplayer_servers": "Sync multiplayer servers",
-      "resource_packs": "Sync resource packs",
-      "command_history": "Sync command history",
-      "creative_hotbars": "Sync creative hotbars"
+  "window": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore",
+    "close": "Close"
+  },
+  "browserWindow": {
+    "title": "Content browser"
+  },
+  "account": {
+    "none": "No account",
+    "signInHint": "Add an account to play",
+    "manage": "Manage accounts",
+    "added": "Account added",
+    "microsoftTitle": "Microsoft account",
+    "microsoftDesc": "Required to play online and on most servers.",
+    "kind": {
+      "microsoft": "Microsoft",
+      "offline": "Offline"
     }
+  },
+  "home": {
+    "selected": "Selected instance",
+    "memory": "Memory",
+    "logs": "Logs",
+    "preparing": "Preparing",
+    "starting": "Starting",
+    "status": {
+      "ready": "Ready to launch",
+      "installing": "Downloading game files",
+      "running": "Minecraft is running",
+      "noAccount": "No Minecraft account — add one to play."
+    },
+    "recent": "Recent instances",
+    "viewAll": "View all",
+    "noOtherInstances": "Your other instances will show up here.",
+    "shortcuts": "Shortcuts",
+    "overview": "Overview",
+    "instancesCount": "Instances",
+    "totalPlaytime": "Total playtime",
+    "actions": {
+      "content": "Mods & content",
+      "gameFolder": "Open game folder",
+      "details": "Instance details",
+      "modpacks": "Browse modpacks"
+    },
+    "welcome": {
+      "title": "Welcome to Swift Client",
+      "text": "Create your first instance — pick a Minecraft version and a loader, then hit Play.",
+      "create": "Create an instance",
+      "addAccount": "Add account"
+    }
+  },
+  "removeInstance": {
+    "title": "Delete instance",
+    "body": "\"{name}\" and everything in it — worlds, mods, screenshots — will be permanently deleted from this computer.",
+    "confirm": "Delete",
+    "done": "\"{name}\" deleted"
+  },
+  "appError": {
+    "title": "Something went wrong",
+    "text": "Swift Client ran into an unexpected error. Your instances and files are safe.",
+    "reload": "Reload"
   }
 }

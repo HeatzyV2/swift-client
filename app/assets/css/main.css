@@ -1,61 +1,210 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-@theme {
-	--font-sans: 'Space Grotesk', system-ui, sans-serif;
-	--font-mono: 'JetBrains Mono', ui-monospace, monospace;
+/*
+ * Swift Client design tokens.
+ *
+ * One accent (electric blue, `swift`) on a cool charcoal base. The neutral scale
+ * replaces Tailwind's own so every `neutral-*` class in the app shares it.
+ * Nuxt UI reads the `--ui-*` variables below for all of its components.
+ */
+@theme static {
+	--font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+
+	--color-swift-50: #eef5ff;
+	--color-swift-100: #d9e8ff;
+	--color-swift-200: #bcd7ff;
+	--color-swift-300: #8ebfff;
+	--color-swift-400: #5aa0ff;
+	--color-swift-500: #2e7cff;
+	--color-swift-600: #1a5ff0;
+	--color-swift-700: #164bd6;
+	--color-swift-800: #183fab;
+	--color-swift-900: #1a3a86;
+	--color-swift-950: #142452;
+
+	--color-neutral-50: #f4f5f7;
+	--color-neutral-100: #e6e8ec;
+	--color-neutral-200: #cdd1d8;
+	--color-neutral-300: #a8aeb9;
+	--color-neutral-400: #7d8491;
+	--color-neutral-500: #5e6571;
+	--color-neutral-600: #474d57;
+	--color-neutral-700: #33373f;
+	--color-neutral-800: #22252b;
+	--color-neutral-900: #16181c;
+	--color-neutral-950: #0e0f12;
+
+	--ease-swift: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:root,
+.dark {
+	--sw-canvas: #0a0b0d;
+	--sw-stage: #0d0e11;
+	--sw-surface: #111317;
+	--sw-surface-2: #15171b;
+	--sw-surface-3: #1c1f24;
+	--sw-line: #1f2228;
+	--sw-line-soft: #17191e;
+	--sw-line-strong: #2b2f36;
+	--sw-accent: var(--color-swift-500);
+	--sw-accent-hover: #4a8fff;
+	--sw-accent-soft: rgb(46 124 255 / 0.12);
+	--sw-success: #3ecf8e;
+	--sw-warning: #f5b544;
+	--sw-danger: #f2555a;
+
+	--ui-bg: var(--sw-canvas);
+	--ui-bg-muted: var(--sw-surface);
+	--ui-bg-elevated: var(--sw-surface-2);
+	--ui-bg-accented: var(--sw-surface-3);
+	--ui-bg-inverted: var(--color-neutral-50);
+	--ui-border: var(--sw-line);
+	--ui-border-muted: var(--sw-line-soft);
+	--ui-border-accented: var(--sw-line-strong);
+	--ui-border-inverted: var(--color-neutral-50);
+	--ui-text-dimmed: var(--color-neutral-500);
+	--ui-text-muted: var(--color-neutral-400);
+	--ui-text-toned: var(--color-neutral-300);
+	--ui-text: var(--color-neutral-200);
+	--ui-text-highlighted: #f3f4f6;
+	--ui-text-inverted: var(--color-neutral-950);
+	--ui-primary: var(--sw-accent);
+	--ui-radius: 0.375rem;
+}
+
+html.oled {
+	--sw-canvas: #000000;
+	--sw-stage: #000000;
+	--sw-surface: #07080a;
+	--sw-surface-2: #0c0d10;
+	--sw-surface-3: #131519;
+	--sw-line: #181a1f;
+	--sw-line-soft: #101215;
+}
+
+html,
+body {
+	background: var(--sw-canvas);
 }
 
 body {
-	margin:0;
-	font-family: 'Space Grotesk', system-ui, sans-serif;
-	font-size:14px;
-	line-height:1.45;
-	color:#eef1f5;
-	-webkit-font-smoothing:antialiased;
-	text-rendering:optimizeLegibility;
-	background: #0c0e12;
+	margin: 0;
+	font-family: var(--font-sans);
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--ui-text);
+	font-feature-settings: 'cv11', 'ss01';
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
 }
 
-.font-mono {
-	font-family: 'JetBrains Mono', ui-monospace, monospace;
+.font-display {
+	font-family: var(--font-display);
+	letter-spacing: -0.02em;
 }
 
-::selection { background:#36a9e159; }
-input::placeholder, textarea::placeholder { color:#5b626d; }
-
-@keyframes mk-float {
-	0%,100% { transform:translate(0,0) }
-	50% { transform:translate(24px,-30px) }
+::selection {
+	background: rgb(46 124 255 / 0.35);
 }
 
-html.oled body {
-	background: #000000;
-}
-html.oled {
-	--ui-bg: #000000;
-	--ui-bg-muted: #050505;
-	--ui-bg-elevated: #0a0a0a;
+input::placeholder,
+textarea::placeholder {
+	color: var(--color-neutral-600);
 }
 
-html.squared,
-html.squared *,
-html.squared *::before,
-html.squared *::after {
-	border-radius: 0 !important;
+:focus-visible {
+	outline: 2px solid var(--sw-accent);
+	outline-offset: 2px;
 }
 
-*::-webkit-scrollbar{
-	width:10px;
-	height:10px
+/* ---------- primitives ---------- */
+
+/* Small uppercase section label */
+.sw-eyebrow {
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--ui-text-dimmed);
 }
-*::-webkit-scrollbar-thumb{
-	background:rgba(255,255,255,0.10);
-	border-radius:8px
+
+/* Flat panel: the only "card" style in the app */
+.sw-panel {
+	background: var(--sw-surface);
+	border: 1px solid var(--sw-line);
+	border-radius: 10px;
 }
-*::-webkit-scrollbar-thumb:hover{
-	background:rgba(255,255,255,0.20)
+
+.sw-panel-interactive {
+	transition: border-color 120ms var(--ease-swift), background-color 120ms var(--ease-swift);
 }
-*::-webkit-scrollbar-track{
-	background:transparent
+.sw-panel-interactive:hover {
+	background: var(--sw-surface-2);
+	border-color: var(--sw-line-strong);
+}
+
+/* Skeleton block */
+.sw-skeleton {
+	background: var(--sw-surface-3);
+	border-radius: 6px;
+	animation: sw-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes sw-pulse {
+	50% { opacity: 0.45; }
+}
+
+/* ---------- motion ---------- */
+
+.page-enter-active,
+.page-leave-active {
+	transition: opacity 120ms var(--ease-swift), transform 120ms var(--ease-swift);
+}
+.page-enter-from {
+	opacity: 0;
+	transform: translateY(4px);
+}
+.page-leave-to {
+	opacity: 0;
+}
+
+.sw-fade-enter-active,
+.sw-fade-leave-active {
+	transition: opacity 120ms var(--ease-swift);
+}
+.sw-fade-enter-from,
+.sw-fade-leave-to {
+	opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/* ---------- scrollbars ---------- */
+
+*::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+	background: rgb(255 255 255 / 0.08);
+	border: 3px solid transparent;
+	background-clip: padding-box;
+	border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+	background-color: rgb(255 255 255 / 0.16);
+}
+*::-webkit-scrollbar-track {
+	background: transparent;
 }

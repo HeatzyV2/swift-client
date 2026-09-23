@@ -6,7 +6,7 @@
         :key="s.key"
         type="button"
         class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition"
-        :class="section === s.key ? 'bg-primary-500/15 text-primary-400' : 'text-neutral-400 hover:bg-white/5 hover:text-neutral-200'"
+        :class="section === s.key ? 'bg-[var(--sw-surface-2)] text-highlighted' : 'text-neutral-400 hover:bg-white/5 hover:text-neutral-200'"
         @click="section = s.key"
       >
         <UIcon :name="s.icon" class="size-4" />
@@ -73,7 +73,7 @@
       </template>
 
       <template v-else-if="section === 'install'">
-        <div class="rounded-xl border border-default bg-white/3 p-4 text-sm">
+        <div class="sw-panel p-4 text-sm">
           <div class="flex justify-between py-1"><span class="text-muted">{{ $t('instSettings.platform') }}</span><span class="font-medium">{{ loaderLabel(form.loader.type) }}</span></div>
           <div class="flex justify-between py-1"><span class="text-muted">{{ $t('instSettings.gameVersion') }}</span><span class="font-mono">{{ form.mc_version }}</span></div>
           <div v-if="loaderVersion" class="flex justify-between py-1"><span class="text-muted">{{ $t('instSettings.loaderVersion') }}</span><span class="font-mono">{{ loaderVersion }}</span></div>
@@ -105,7 +105,7 @@
       </template>
 
       <template v-else-if="section === 'java'">
-        <div class="flex items-start gap-3 rounded-xl border border-default bg-white/3 p-3">
+        <div class="flex items-start gap-3 sw-panel p-3">
           <UIcon name="i-lucide-coffee" class="mt-0.5 size-5 shrink-0 text-primary-400" />
           <div class="min-w-0 text-sm">
             <p class="font-medium">{{ $t('instSettings.requiredJava', { version: form.mc_version, major: requiredJava }) }}</p>

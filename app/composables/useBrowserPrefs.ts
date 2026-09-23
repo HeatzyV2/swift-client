@@ -3,7 +3,7 @@ import type { ModrinthHit, ModrinthSortIndex } from '~/types/modrinth'
 export type BrowserView = 'grid' | 'list'
 export type BrowserDensity = 'cosy' | 'compact'
 
-const PREFS_KEY = 'spectra-content-browser'
+const PREFS_KEY = 'swift-content-browser'
 const RECENT_LIMIT = 12
 
 export function useBrowserPrefs() {

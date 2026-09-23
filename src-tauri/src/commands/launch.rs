@@ -392,7 +392,6 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
 
     let track_playtime = settings.track_playtime;
     let discord_rpc = settings.discord_rpc;
-    let share_activity = settings.share_activity;
     let started = std::time::Instant::now();
 
     if let Some(pid) = child.id() {
@@ -407,38 +406,6 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
             map.insert(id.to_string(), (instance.name.clone(), instance.mc_version.clone()));
         }
         crate::discord::update_presence(&app_state);
-    }
-
-    if share_activity {
-        let app_hb = app.clone();
-        let id_hb = id.to_string();
-        tauri::async_runtime::spawn(async move {
-            crate::commands::spectra::report_activity(true, 0).await;
-
-            let mut reported = 0u64;
-            loop {
-                tokio::time::sleep(std::time::Duration::from_secs(60)).await;
-
-                let running = app_hb
-                    .try_state::<AppState>()
-                    .and_then(|state| state.running.lock().ok().map(|set| set.contains(&id_hb)))
-                    .unwrap_or(false);
-
-                if running {
-                    let due = started.elapsed().as_secs().saturating_sub(reported);
-                    if due >= 300 {
-                        crate::commands::spectra::report_activity(false, due).await;
-                        reported += due.min(crate::commands::spectra::ACTIVITY_MAX_SECONDS);
-                    }
-                    continue;
-                }
-
-                for chunk in crate::commands::spectra::activity_chunks(started.elapsed().as_secs(), reported) {
-                    crate::commands::spectra::report_activity(false, chunk).await;
-                }
-                break;
-            }
-        });
     }
 
     let app_bg = app.clone();
@@ -724,7 +691,7 @@ fn kill_process_tree(pid: u32, force: bool) -> AppResult<()> {
 }
 
 pub fn instance_id_from_url(url: &str) -> Option<String> {
-    let rest = url.strip_prefix("spectra://")?.trim_start_matches('/');
+    let rest = url.strip_prefix("swift://")?.trim_start_matches('/');
     let id = rest.strip_prefix("launch/")?.trim_end_matches('/');
     let plain = !id.is_empty()
         && id.len() <= 64
@@ -787,12 +754,12 @@ mod deep_link_tests {
     #[test]
     fn parses_launch_links() {
         let id = "2f2a1ad4-0bb4-4e03-8251-ecfc8a5b8fd7";
-        assert_eq!(instance_id_from_url(&format!("spectra://launch/{id}")), Some(id.into()));
-        assert_eq!(instance_id_from_url(&format!("spectra://launch/{id}/")), Some(id.into()));
-        assert_eq!(instance_id_from_url("spectra://share/ABC123"), None);
-        assert_eq!(instance_id_from_url("spectra://launch/"), None);
-        assert_eq!(instance_id_from_url("spectra://launch/../../etc/passwd"), None);
-        assert_eq!(instance_id_from_url("spectra://launch/a b"), None);
+        assert_eq!(instance_id_from_url(&format!("swift://launch/{id}")), Some(id.into()));
+        assert_eq!(instance_id_from_url(&format!("swift://launch/{id}/")), Some(id.into()));
+        assert_eq!(instance_id_from_url("swift://share/ABC123"), None);
+        assert_eq!(instance_id_from_url("swift://launch/"), None);
+        assert_eq!(instance_id_from_url("swift://launch/../../etc/passwd"), None);
+        assert_eq!(instance_id_from_url("swift://launch/a b"), None);
     }
 }
 
@@ -811,8 +778,8 @@ mod shared_dir_tests {
     #[test]
     fn migrates_existing_instances_and_links_new_ones() {
         let _guard = paths::lock_data_dir();
-        let root = std::env::temp_dir().join(format!("spectra-{}", uuid::Uuid::new_v4()));
-        std::env::set_var("SPECTRA_DATA_DIR", &root);
+        let root = std::env::temp_dir().join(format!("swift-{}", uuid::Uuid::new_v4()));
+        std::env::set_var("SWIFT_DATA_DIR", &root);
 
         seed("old", "assets", "a.bin", "one");
         seed("old", "libraries", "l.jar", "lib");
@@ -854,7 +821,7 @@ mod shared_dir_tests {
         assert!(!paths::instance_game_dir("stray").join("assets").symlink_metadata().unwrap().is_symlink());
 
         fs::remove_dir_all(&root).unwrap();
-        std::env::remove_var("SPECTRA_DATA_DIR");
+        std::env::remove_var("SWIFT_DATA_DIR");
     }
 }
 

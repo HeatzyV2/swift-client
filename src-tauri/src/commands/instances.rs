@@ -323,7 +323,7 @@ fn desktop_shortcut(id: &str) -> AppResult<String> {
         .ok_or_else(|| format!("instance '{id}' not found"))?;
     let desktop = dirs::desktop_dir().ok_or("no desktop folder")?;
     let name = shortcut_file_name(&instance.name);
-    let url = format!("spectra://launch/{id}");
+    let url = format!("swift://launch/{id}");
 
     #[cfg(target_os = "windows")]
     {
@@ -362,7 +362,7 @@ fn desktop_shortcut(id: &str) -> AppResult<String> {
     }
 
     // No icon here on purpose: a .webloc carries a URL and nothing else, so
-    // Finder shows the icon of whichever app handles `spectra://`.
+    // Finder shows the icon of whichever app handles `swift://`.
     #[cfg(target_os = "macos")]
     {
         let body = format!(
@@ -636,7 +636,7 @@ mod copy_tests {
 
     #[test]
     fn copies_a_tree_whichever_path_it_takes() {
-        let root = std::env::temp_dir().join(format!("spectra-cp-{}", uuid::Uuid::new_v4()));
+        let root = std::env::temp_dir().join(format!("swift-cp-{}", uuid::Uuid::new_v4()));
         let src = root.join("src");
         fs::create_dir_all(src.join("nested")).unwrap();
         fs::write(src.join("a.txt"), "one").unwrap();

@@ -159,12 +159,6 @@ pub struct Settings {
     pub track_playtime: bool,
     #[serde(default = "default_true")]
     pub discord_rpc: bool,
-    #[serde(default = "default_true")]
-    pub crash_reports: bool,
-    #[serde(default = "default_true")]
-    pub anonymous_stats: bool,
-    #[serde(default = "default_true")]
-    pub share_activity: bool,
 
     #[serde(default)]
     pub sync_announced: bool,
@@ -208,9 +202,6 @@ impl Default for Settings {
             snapshot_keep: default_snapshot_keep(),
             track_playtime: true,
             discord_rpc: true,
-            crash_reports: true,
-            anonymous_stats: true,
-            share_activity: true,
             sync_announced: false,
             sync_announce_seen: false,
         }

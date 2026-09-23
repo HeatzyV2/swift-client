@@ -1,3 +1,4 @@
+mod backend;
 mod commands;
 mod discord;
 mod error;
@@ -14,7 +15,7 @@ pub fn http() -> &'static reqwest::Client {
     static CLIENT: std::sync::OnceLock<reqwest::Client> = std::sync::OnceLock::new();
     CLIENT.get_or_init(|| {
         reqwest::Client::builder()
-            .user_agent(concat!("Spectra-Launcher/", env!("CARGO_PKG_VERSION")))
+            .user_agent(concat!("SwiftClient/", env!("CARGO_PKG_VERSION")))
             .pool_max_idle_per_host(64)
             .build()
             .expect("build http client")
@@ -51,17 +52,6 @@ pub struct AppState {
 fn handle_deep_link(app: &tauri::AppHandle, url: &str) {
     use tauri::{Emitter, Manager};
 
-    if let Some(token) = commands::spectra::login_token_from_url(url) {
-        let handle = app.clone();
-        tauri::async_runtime::spawn(async move {
-            commands::spectra::redeem_login(handle, token).await;
-        });
-        if let Some(window) = app.get_webview_window("main") {
-            let _ = window.unminimize();
-            let _ = window.set_focus();
-        }
-        return;
-    }
 
     if let Some(id) = commands::launch::instance_id_from_url(url) {
         if let Some(state) = app.try_state::<AppState>() {
@@ -77,6 +67,11 @@ fn handle_deep_link(app: &tauri::AppHandle, url: &str) {
         return;
     }
 
+    // Share codes are redeemed through the online service; without it there is
+    // nothing to open them with.
+    if !backend::is_configured() {
+        return;
+    }
     let Some(code) = commands::share::code_from_url(url) else { return };
     if let Some(state) = app.try_state::<AppState>() {
         if let Ok(mut pending) = state.pending_share.lock() {
@@ -138,10 +133,6 @@ pub fn run() {
                     .build(),
             )?;
 
-            #[cfg(desktop)]
-            {
-                let _ = app.handle().plugin(tauri_plugin_updater::Builder::new().build());
-            }
 
             #[cfg(desktop)]
             {
@@ -149,8 +140,8 @@ pub fn run() {
                 let _ = app.deep_link().register_all();
 
                 #[cfg(windows)]
-                if let Ok(key) = windows_registry::CURRENT_USER.create("Software\\Classes\\spectra") {
-                    let _ = key.set_string("", "URL:Spectra Launcher protocol");
+                if let Ok(key) = windows_registry::CURRENT_USER.create("Software\\Classes\\swift") {
+                    let _ = key.set_string("", "URL:Swift Client protocol");
                 }
 
                 let handle = app.handle().clone();
@@ -178,6 +169,7 @@ pub fn run() {
             commands::images::get_image_thumbnail,
             commands::settings::get_settings,
             commands::settings::save_settings,
+            commands::settings::set_last_instance,
             commands::settings::get_system_memory_mb,
             commands::instances::list_instances,
             commands::instances::get_instance,
@@ -298,12 +290,8 @@ pub fn run() {
             commands::content_window::content_window_config,
             commands::content_window::close_content_window,
             commands::content_window::content_installed,
-            commands::spectra::spectra_login_url,
-            commands::spectra::spectra_profile_url,
-            commands::spectra::spectra_session,
-            commands::spectra::spectra_logout,
-            commands::spectra::spectra_api,
-            commands::spectra::spectra_link_minecraft,
+            backend::backend_status,
+
             commands::mods::list_mods,
             commands::mods::list_content,
             commands::mods::set_mod_enabled,

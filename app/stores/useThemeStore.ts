@@ -1,94 +1,35 @@
 import { defineStore } from 'pinia'
 
-export type ThemeMode = 'dark' | 'oled' | 'squared'
+/** Swift Client has one visual identity; the only choice is how dark the base is. */
+export type ThemeMode = 'dark' | 'oled'
 
-export const ACCENT_COLORS = [
-  'sky',
-  'blue',
-  'indigo',
-  'violet',
-  'purple',
-  'pink',
-  'rose',
-  'red',
-  'orange',
-  'amber',
-  'green',
-  'emerald',
-  'teal',
-  'cyan',
-] as const
+const STORAGE_KEY = 'swift-theme'
 
-export type AccentColor = (typeof ACCENT_COLORS)[number]
-
-const STORAGE_KEY = 'spectra-theme'
-
-interface PersistedTheme {
-  mode: ThemeMode
-  accent: AccentColor
-}
-
-function loadPersisted(): PersistedTheme {
-  const fallback: PersistedTheme = { mode: 'dark', accent: 'sky' }
-  if (!import.meta.client) return fallback
+function loadMode(): ThemeMode {
+  if (!import.meta.client) return 'dark'
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return fallback
-    const saved = { ...fallback, ...JSON.parse(raw) }
-    if ((saved.mode as string) === 'zebatkowo') saved.mode = 'squared'
-    return saved
+    return localStorage.getItem(STORAGE_KEY) === 'oled' ? 'oled' : 'dark'
   } catch {
-    return fallback
+    return 'dark'
   }
 }
 
 export const useThemeStore = defineStore('theme', {
-  state: () => loadPersisted() as PersistedTheme,
-  getters: {
-    bgClass(state): string {
-      if (state.mode === 'oled') return 'bg-black'
-      return 'bg-primary-950/5'
-    },
-  },
+  state: () => ({ mode: loadMode() as ThemeMode }),
   actions: {
-    persist() {
-      if (!import.meta.client) return
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({ mode: this.mode, accent: this.accent }),
-      )
-    },
-
     apply() {
       if (!import.meta.client) return
-
       try {
-        const colorMode = useColorMode()
-        colorMode.preference = 'dark'
+        useColorMode().preference = 'dark'
       } catch {
         document.documentElement.classList.add('dark')
       }
-
       document.documentElement.classList.toggle('oled', this.mode === 'oled')
-      document.documentElement.classList.toggle('squared', this.mode === 'squared')
-
-      try {
-        const appConfig = useAppConfig()
-        // @ts-expect-error – ui.colors is augmented by @nuxt/ui
-        appConfig.ui.colors.primary = this.accent
-      } catch {
-      }
     },
 
     setMode(mode: ThemeMode) {
       this.mode = mode
-      this.persist()
-      this.apply()
-    },
-
-    setAccent(accent: AccentColor) {
-      this.accent = accent
-      this.persist()
+      if (import.meta.client) localStorage.setItem(STORAGE_KEY, mode)
       this.apply()
     },
   },

@@ -35,6 +35,9 @@ export interface Instance {
   pre_launch?: string
   wrapper?: string
   post_exit?: string
+
+  modpack_project_id?: string | null
+  modpack_version_id?: string | null
 }
 
 export interface EnvVar {
@@ -74,10 +77,7 @@ export interface Settings {
   default_wrapper?: string
   default_post_exit?: string
   track_playtime: boolean
-  share_activity: boolean
   discord_rpc: boolean
-  crash_reports: boolean
-  anonymous_stats: boolean
   snapshot_before_updates: boolean
   snapshot_keep: number
 }

@@ -1,17 +1,16 @@
 [package]
-name = "app"
-version = "0.8.2"
-description = "A modern launcher for Minecraft that allows you to easily manage multiple installations of Minecraft at once"
-authors = ["MakotoPD"]
-license = "MIT"
-repository = "https://github.com/MakotoPD/Spectra-Launcher"
+name = "swift-client"
+version = "0.1.0"
+description = "Swift Client — a fast, modern Minecraft launcher"
+authors = ["Swift Client contributors", "MakotoPD (Spectra Launcher)"]
+license = "GPL-3.0-only"
 edition = "2021"
 rust-version = "1.77.2"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "spectra_launcher_lib"
+name = "swift_client_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
@@ -31,10 +30,9 @@ tauri-plugin-shell = "2"
 tauri-plugin-store = "2"
 tauri-plugin-os = "2"
 
-# Background auto-update (Discord-style: silent download + install + relaunch)
 tauri-plugin-process = "2"
 
-# `spectra://share/<code>` links from the website open the launcher directly
+# `swift://launch/<id>` desktop shortcuts open the launcher directly
 tauri-plugin-deep-link = "2"
 
 # Minecraft engine: install/launch, Microsoft auth, Fabric/Quilt/Forge/NeoForge,
@@ -74,9 +72,7 @@ sha1 = "0.10"
 # Decoding and downscaling screenshots and pack icons into the thumbnail cache
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp", "gif"] }
 
-# Background auto-update — desktop only
 [target."cfg(any(target_os = \"macos\", windows, target_os = \"linux\"))".dependencies]
-tauri-plugin-updater = "2"
 # Windows/Linux deliver deep links by launching a second process; single-instance
 # forwards the URL to the running launcher instead (must be registered first).
 tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
@@ -85,12 +81,12 @@ tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
 [target.'cfg(not(windows))'.dependencies]
 libc = "0.2"
 
-# Renames the `spectra://` handler shown in browser prompts (the deep-link plugin
+# Renames the `swift://` handler shown in browser prompts (the deep-link plugin
 # registers it under the raw bundle identifier). Already in the tree via that plugin.
 [target.'cfg(windows)'.dependencies]
 windows-registry = "0.5"
 # DPAPI, to encrypt the token files at rest. Windows has no equivalent of the
 # 0600 mode the Unix build relies on, so without this the Microsoft refresh
-# token and the Spectra session sit in plaintext for every process on the
+# token sits in plaintext for every process on the
 # account to read. Version matches the copy Tauri already pulls in.
 windows = { version = "0.61", features = ["Win32_Security_Cryptography", "Win32_Foundation"] }

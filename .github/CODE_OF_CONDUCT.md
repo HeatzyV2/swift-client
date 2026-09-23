@@ -1,6 +1,6 @@
 # Code of conduct
 
-Spectra Launcher follows the
+Swift Client follows the
 [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/). It applies to
 the repository, issues, pull requests and discussions.
 
@@ -13,6 +13,6 @@ the repository, issues, pull requests and discussions.
 
 ## Enforcement
 
-Report unacceptable behavior to the maintainer, [MakotoPD](https://github.com/MakotoPD). All reports are reviewed and
+Report unacceptable behavior to the Swift Client maintainers. All reports are reviewed and
 kept confidential. Maintainers may remove content, warn, or temporarily or permanently ban anyone who violates this
 code of conduct.

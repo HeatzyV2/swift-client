@@ -2,7 +2,7 @@ export interface AppError { code: string, message: string }
 
 const CODES = new Set([
   'network', 'http', 'not_found', 'permission', 'disk_full',
-  'io', 'invalid', 'auth', 'busy', 'panic', 'unknown',
+  'io', 'invalid', 'auth', 'busy', 'panic', 'backend_unavailable', 'unknown',
 ])
 
 export function errorCode(e: unknown): string {

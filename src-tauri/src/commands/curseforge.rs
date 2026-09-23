@@ -11,10 +11,12 @@ use crate::models::{Instance, Loader};
 use crate::paths;
 use crate::error::{AppError, AppResult};
 
-// Calls go through the Spectra server, which holds the CurseForge key. Shipping
-// the key in the binary made it readable with `strings` and broke CurseForge's
-// terms; nothing about it can be kept secret on the user's machine.
-const API: &str = concat!(crate::spectra_site!(), "/api/curseforge");
+// Calls go through the Swift Client backend, which holds the CurseForge key.
+// Shipping the key in the binary would make it readable with `strings` and break
+// CurseForge's terms. Without a configured backend CurseForge is simply off.
+fn api() -> String {
+    format!("{}/api/curseforge", crate::backend::base_url().unwrap_or_default())
+}
 const GAME_ID: i64 = 432;
 
 // Whether the server has a key configured. Assumed yes until it answers 501,
@@ -23,14 +25,14 @@ static CF_AVAILABLE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBo
 
 #[tauri::command]
 pub fn cf_enabled() -> bool {
-    CF_AVAILABLE.load(std::sync::atomic::Ordering::Relaxed)
+    crate::backend::is_configured() && CF_AVAILABLE.load(std::sync::atomic::Ordering::Relaxed)
 }
 
 fn http() -> &'static reqwest::Client {
     static CLIENT: std::sync::OnceLock<reqwest::Client> = std::sync::OnceLock::new();
     CLIENT.get_or_init(|| {
         reqwest::Client::builder()
-            .user_agent(concat!("MakotoPD/Spectra-Launcher/", env!("CARGO_PKG_VERSION")))
+            .user_agent(concat!("SwiftClient/", env!("CARGO_PKG_VERSION")))
             .build()
             .expect("build curseforge client")
     })
@@ -39,6 +41,10 @@ fn http() -> &'static reqwest::Client {
 async fn send(req: reqwest::RequestBuilder) -> AppResult<reqwest::Response> {
     use std::sync::atomic::Ordering;
 
+    if !crate::backend::is_configured() {
+        return Err(crate::backend::unavailable());
+    }
+
     let mut attempt = 0u32;
     loop {
         let r = req.try_clone().ok_or("request is not retryable")?;
@@ -46,7 +52,7 @@ async fn send(req: reqwest::RequestBuilder) -> AppResult<reqwest::Response> {
 
         if resp.status().as_u16() == 501 {
             CF_AVAILABLE.store(false, Ordering::Relaxed);
-            return Err("CurseForge is not configured on the Spectra server".into());
+            return Err("CurseForge is not configured on the Swift Client server".into());
         }
 
         if resp.status().as_u16() != 429 || attempt >= 3 {
@@ -466,7 +472,7 @@ pub async fn curseforge_search(params: SearchParams) -> AppResult<SearchResponse
         }
     }
 
-    let resp = send(http().get(format!("{API}/mods/search")).query(&query)).await?;
+    let resp = send(http().get(format!("{}/mods/search", api())).query(&query)).await?;
     if !resp.status().is_success() {
         return Err(AppError::network(format!("CurseForge search failed: {}", resp.status())));
     }
@@ -490,7 +496,7 @@ pub async fn curseforge_versions(
         query.push(("modLoaderType".into(), id.to_string()));
     }
 
-    let resp = send(http().get(format!("{API}/mods/{project_id}/files")).query(&query)).await?;
+    let resp = send(http().get(format!("{}/mods/{project_id}/files", api())).query(&query)).await?;
     if !resp.status().is_success() {
         return Err(AppError::network(format!("CurseForge versions failed: {}", resp.status())));
     }
@@ -500,14 +506,14 @@ pub async fn curseforge_versions(
 
 #[tauri::command]
 pub async fn curseforge_project(id: String) -> AppResult<ProjectFull> {
-    let resp = send(http().get(format!("{API}/mods/{id}"))).await?;
+    let resp = send(http().get(format!("{}/mods/{id}", api()))).await?;
     if !resp.status().is_success() {
         return Err(AppError::network(format!("CurseForge project failed: {}", resp.status())));
     }
     let m: CfDataResponse<CfMod> = resp.json().await.map_err(|e| e.to_string())?;
     let m = m.data;
 
-    let body = match send(http().get(format!("{API}/mods/{id}/description"))).await {
+    let body = match send(http().get(format!("{}/mods/{id}/description", api()))).await {
         Ok(r) if r.status().is_success() => r
             .json::<CfDataResponse<String>>()
             .await
@@ -568,7 +574,7 @@ async fn categories_for(class_id: i64) -> Vec<(String, i64)> {
     }
     let fetched = match send(
         http()
-            .get(format!("{API}/categories"))
+            .get(format!("{}/categories", api()))
             .query(&[("gameId", GAME_ID.to_string()), ("classId", class_id.to_string())]),
     )
     .await
@@ -750,7 +756,7 @@ fn install_rec<'a>(
 }
 
 async fn fetch_file(project_id: &str, file_id: &str) -> AppResult<CfFile> {
-    let resp = send(http().get(format!("{API}/mods/{project_id}/files/{file_id}"))).await?;
+    let resp = send(http().get(format!("{}/mods/{project_id}/files/{file_id}", api()))).await?;
     if !resp.status().is_success() {
         return Err(AppError::network(format!("CurseForge file failed: {}", resp.status())));
     }
@@ -759,7 +765,7 @@ async fn fetch_file(project_id: &str, file_id: &str) -> AppResult<CfFile> {
 }
 
 async fn fetch_mod(project_id: &str) -> AppResult<CfMod> {
-    let resp = send(http().get(format!("{API}/mods/{project_id}"))).await?;
+    let resp = send(http().get(format!("{}/mods/{project_id}", api()))).await?;
     if !resp.status().is_success() {
         return Err(AppError::network(format!("CurseForge mod failed: {}", resp.status())));
     }
@@ -779,7 +785,7 @@ async fn resolve_latest_file(
     if let Some(id) = loader.as_ref().and_then(|l| loader_id(l)) {
         query.push(("modLoaderType".into(), id.to_string()));
     }
-    let resp = send(http().get(format!("{API}/mods/{project_id}/files")).query(&query)).await?;
+    let resp = send(http().get(format!("{}/mods/{project_id}/files", api())).query(&query)).await?;
     if !resp.status().is_success() {
         return Ok(None);
     }
@@ -999,7 +1005,7 @@ pub async fn curseforge_match_local(instance_id: String) -> AppResult<usize> {
     let fingerprints: Vec<u64> = by_fp.keys().copied().collect();
     let resp = send(
         http()
-            .post(format!("{API}/fingerprints"))
+            .post(format!("{}/fingerprints", api()))
             .json(&serde_json::json!({ "fingerprints": fingerprints })),
     )
     .await?;
@@ -1067,7 +1073,7 @@ pub async fn curseforge_match_file(instance_id: String, filename: String) -> App
 
     let resp = send(
         http()
-            .post(format!("{API}/fingerprints"))
+            .post(format!("{}/fingerprints", api()))
             .json(&serde_json::json!({ "fingerprints": [fp] })),
     )
     .await?;
@@ -1113,7 +1119,7 @@ async fn bulk_mods(mod_ids: &[i64]) -> AppResult<HashMap<i64, CfMod>> {
     }
     let resp = send(
         http()
-            .post(format!("{API}/mods"))
+            .post(format!("{}/mods", api()))
             .json(&serde_json::json!({ "modIds": mod_ids })),
     )
     .await?;
@@ -1485,7 +1491,7 @@ async fn bulk_files(file_ids: &[i64]) -> AppResult<HashMap<i64, CfFile>> {
     }
     let resp = send(
         http()
-            .post(format!("{API}/mods/files"))
+            .post(format!("{}/mods/files", api()))
             .json(&serde_json::json!({ "fileIds": file_ids })),
     )
     .await?;
@@ -1621,11 +1627,11 @@ pub async fn export_curseforge(
 
     let mut files: Vec<CfExportFile> = Vec::new();
     let mut matched: std::collections::HashSet<String> = std::collections::HashSet::new();
-    if !cands.is_empty() {
+    if !cands.is_empty() && crate::backend::is_configured() {
         let fingerprints: Vec<u64> = cands.iter().map(|c| c.fp).collect();
         let resp = send(
             http()
-                .post(format!("{API}/fingerprints"))
+                .post(format!("{}/fingerprints", api()))
                 .json(&serde_json::json!({ "fingerprints": fingerprints })),
         )
         .await?;

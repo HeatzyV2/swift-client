@@ -1,54 +1,66 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'sky',
+      primary: 'swift',
       neutral: 'neutral',
+    },
+
+    button: {
+      slots: {
+        base: 'font-medium transition-colors duration-150',
+      },
+      compoundVariants: [
+        {
+          color: 'primary',
+          variant: 'solid',
+          class: 'text-white bg-primary hover:bg-[var(--sw-accent-hover)] active:bg-primary disabled:bg-primary aria-disabled:bg-primary',
+        },
+      ],
     },
 
     card: {
       slots: {
-        root: 'rounded-lg overflow-hidden',
-        header: 'p-4 sm:px-6',
+        root: 'rounded-[10px] overflow-hidden',
+        header: 'p-4 sm:px-5',
         title: 'text-highlighted font-semibold',
         description: 'mt-1 text-muted text-sm',
-        body: 'p-4 sm:p-6',
-        footer: 'p-4 sm:px-6'
+        body: 'p-4 sm:p-5',
+        footer: 'p-4 sm:px-5',
       },
       variants: {
         variant: {
-          solid: {
-            root: 'bg-inverted text-inverted',
-            title: 'text-inverted',
-            description: 'text-dimmed'
-          },
-          outline: {
-            root: 'bg-white/3 backdrop-blur-xs ring ring-default divide-y divide-default'
-          },
-          soft: {
-            root: 'bg-white/3 backdrop-blur-xs divide-y divide-default'
-          },
-          subtle: {
-            root: 'bg-white/3 backdrop-blur-xs ring-default divide-y divide-default'
-          }
-        }
+          outline: { root: 'bg-muted ring ring-default divide-y divide-default' },
+          soft: { root: 'bg-muted divide-y divide-default' },
+          subtle: { root: 'bg-muted ring ring-default divide-y divide-default' },
+        },
       },
       defaultVariants: {
-        variant: 'outline'
-      }
+        variant: 'outline',
+      },
     },
 
     modal: {
       slots: {
-        overlay: 'fixed inset-0 backdrop-blur-sm'
+        content: 'bg-elevated divide-y divide-default flex flex-col focus:outline-none',
+        title: 'text-highlighted font-semibold font-display text-base',
       },
       variants: {
         overlay: {
-          true: {
-            overlay: 'bg-primary-500/10 '
-          }
+          true: { overlay: 'bg-black/70' },
         },
-      }
-    }
-  },
+      },
+    },
 
+    input: {
+      slots: {
+        base: 'transition-colors duration-150',
+      },
+    },
+
+    tooltip: {
+      slots: {
+        content: 'bg-elevated ring ring-default text-highlighted',
+      },
+    },
+  },
 })

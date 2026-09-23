@@ -7,7 +7,7 @@
         type="button"
         class="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition"
         :class="kind === k.key
-          ? 'bg-primary-500/15 text-primary-400'
+          ? 'bg-[var(--sw-surface-2)] text-highlighted'
           : 'text-neutral-400 hover:bg-white/5 hover:text-neutral-200'"
         @click="kind = k.key"
       >
@@ -93,18 +93,18 @@
 
     <div v-if="loading" class="overflow-hidden rounded-xl border border-default">
       <div v-for="n in 8" :key="`mod-sk-${n}`" class="flex items-center gap-3 border-b border-default/50 px-3 py-2.5 last:border-0">
-        <div class="size-9 shrink-0 animate-pulse rounded-lg bg-white/5" />
+        <div class="size-9 shrink-0 sw-skeleton" />
         <div class="min-w-0 flex-1 space-y-2">
-          <div class="h-3.5 w-1/3 animate-pulse rounded bg-white/5" />
-          <div class="h-2.5 w-1/2 animate-pulse rounded bg-white/5" />
+          <div class="h-3.5 w-1/3 sw-skeleton" />
+          <div class="h-2.5 w-1/2 sw-skeleton" />
         </div>
-        <div class="h-3 w-16 shrink-0 animate-pulse rounded bg-white/5" />
+        <div class="h-3 w-16 shrink-0 sw-skeleton" />
       </div>
     </div>
 
     <div v-else-if="!ofKind.length" class="flex flex-col items-center justify-center gap-3 py-16 text-center">
       <UIcon :name="kindIcon(browserKind)" class="size-10 text-neutral-600" />
-      <p class="max-w-sm text-sm text-muted">{{ kind === 'mod' || kind === 'all' ? $t('instance.modsHint') : $t('content.empty') }}</p>
+      <p class="max-w-sm text-sm text-muted">{{ kind === 'mod' || kind === 'all' ? $t('content.emptyMods') : $t('content.empty') }}</p>
       <UButton icon="i-lucide-package-search" :label="$t('modrinth.add')" @click="openBrowser" />
     </div>
 
@@ -244,7 +244,7 @@
           <div
             v-for="v in modVersions"
             :key="v.id"
-            class="flex items-center gap-3 rounded-lg border border-default bg-white/3 p-2.5"
+            class="flex items-center gap-3 sw-panel p-2.5"
           >
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2">
@@ -276,7 +276,7 @@
           <label
             v-for="d in deps"
             :key="d.filename"
-            class="flex cursor-pointer items-center gap-3 rounded-lg border border-default bg-white/3 p-2.5"
+            class="flex cursor-pointer items-center gap-3 sw-panel p-2.5"
           >
             <UCheckbox
               :model-value="depsChecked.has(d.filename)"

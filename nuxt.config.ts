@@ -10,7 +10,20 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-    }
+      title: 'Swift Client',
+      htmlAttrs: { class: 'dark' },
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'alternate icon', href: '/favicon.ico' },
+      ],
+      meta: [{ name: 'color-scheme', content: 'dark' }],
+    },
+    pageTransition: { name: 'page', mode: 'out-in' },
+  },
+
+  // Bundled at build time by @nuxt/fonts, so the launcher never loads fonts at runtime.
+  fonts: {
+    defaults: { weights: [400, 500, 600, 700], styles: ['normal'], subsets: ['latin', 'latin-ext'] },
   },
 
   vite: {
@@ -41,8 +54,6 @@ export default defineNuxtConfig({
         '@tauri-apps/api/app',
         '@tauri-apps/api/window',
         '@tauri-apps/plugin-os',
-        '@tauri-apps/plugin-process',
-        '@tauri-apps/plugin-updater',
       ],
     },
   },
@@ -85,7 +96,7 @@ export default defineNuxtConfig({
 
     detectBrowserLanguage: {
       useCookie: true,
-      cookieKey: 'spectra_locale',
+      cookieKey: 'swift_locale',
       fallbackLocale: 'en',
       alwaysRedirect: false,
     },

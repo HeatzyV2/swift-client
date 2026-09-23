@@ -12,7 +12,7 @@
             size="sm"
           />
           <span class="flex items-center gap-1.5 text-xs text-muted">
-            <span class="size-2 rounded-full bg-[#3fb877] shadow-[0_0_8px_#3fb877]" />
+            <span class="size-2 rounded-full bg-[var(--sw-success)]" />
             {{ $t('logs.live') }} · {{ lines.length }}
           </span>
           <div class="ml-auto flex items-center gap-1.5">

@@ -921,8 +921,8 @@ mod tests {
     #[test]
     fn joining_picks_the_right_action_for_what_already_exists() {
         let guard = paths::lock_data_dir();
-        let root = std::env::temp_dir().join(format!("spectra-sync-{}", uuid::Uuid::new_v4()));
-        std::env::set_var("SPECTRA_DATA_DIR", &root);
+        let root = std::env::temp_dir().join(format!("swift-sync-{}", uuid::Uuid::new_v4()));
+        std::env::set_var("SWIFT_DATA_DIR", &root);
         let state = SyncState::default();
 
         let game = paths::instance_game_dir("i1");
@@ -948,7 +948,7 @@ mod tests {
         );
 
         std::fs::remove_dir_all(&root).unwrap();
-        std::env::remove_var("SPECTRA_DATA_DIR");
+        std::env::remove_var("SWIFT_DATA_DIR");
         drop(guard);
     }
 
@@ -956,8 +956,8 @@ mod tests {
     fn the_announcement_fires_after_an_upgrade_but_never_after_a_fresh_install() {
         let guard = paths::lock_data_dir();
 
-        let fresh = std::env::temp_dir().join(format!("spectra-fresh-{}", uuid::Uuid::new_v4()));
-        std::env::set_var("SPECTRA_DATA_DIR", &fresh);
+        let fresh = std::env::temp_dir().join(format!("swift-fresh-{}", uuid::Uuid::new_v4()));
+        std::env::set_var("SWIFT_DATA_DIR", &fresh);
         std::fs::create_dir_all(&fresh).unwrap();
         assert!(
             !resolve_announcement(),
@@ -967,8 +967,8 @@ mod tests {
         assert!(!resolve_announcement(), "and it stays quiet on every later start");
         std::fs::remove_dir_all(&fresh).unwrap();
 
-        let unseen = std::env::temp_dir().join(format!("spectra-keep-{}", uuid::Uuid::new_v4()));
-        std::env::set_var("SPECTRA_DATA_DIR", &unseen);
+        let unseen = std::env::temp_dir().join(format!("swift-keep-{}", uuid::Uuid::new_v4()));
+        std::env::set_var("SWIFT_DATA_DIR", &unseen);
         std::fs::create_dir_all(&unseen).unwrap();
         std::fs::write(paths::launcher_config_file(), "{\"default_memory_mb\":4096}").unwrap();
         assert!(resolve_announcement(), "an upgrade is offered the announcement");
@@ -979,8 +979,8 @@ mod tests {
         );
         std::fs::remove_dir_all(&unseen).unwrap();
 
-        let upgraded = std::env::temp_dir().join(format!("spectra-upg-{}", uuid::Uuid::new_v4()));
-        std::env::set_var("SPECTRA_DATA_DIR", &upgraded);
+        let upgraded = std::env::temp_dir().join(format!("swift-upg-{}", uuid::Uuid::new_v4()));
+        std::env::set_var("SWIFT_DATA_DIR", &upgraded);
         std::fs::create_dir_all(&upgraded).unwrap();
         std::fs::write(paths::launcher_config_file(), "{\"default_memory_mb\":4096}").unwrap();
         assert!(resolve_announcement(), "an existing install upgrading sees it");
@@ -999,8 +999,8 @@ mod tests {
         );
         std::fs::remove_dir_all(&upgraded).unwrap();
 
-        let no_config = std::env::temp_dir().join(format!("spectra-inst-{}", uuid::Uuid::new_v4()));
-        std::env::set_var("SPECTRA_DATA_DIR", &no_config);
+        let no_config = std::env::temp_dir().join(format!("swift-inst-{}", uuid::Uuid::new_v4()));
+        std::env::set_var("SWIFT_DATA_DIR", &no_config);
         std::fs::create_dir_all(paths::instance_dir("old")).unwrap();
         std::fs::write(paths::instance_config_file("old"), "{}").unwrap();
         assert!(
@@ -1009,8 +1009,8 @@ mod tests {
         );
         std::fs::remove_dir_all(&no_config).unwrap();
 
-        let already = std::env::temp_dir().join(format!("spectra-on-{}", uuid::Uuid::new_v4()));
-        std::env::set_var("SPECTRA_DATA_DIR", &already);
+        let already = std::env::temp_dir().join(format!("swift-on-{}", uuid::Uuid::new_v4()));
+        std::env::set_var("SWIFT_DATA_DIR", &already);
         std::fs::create_dir_all(paths::shared_sync_dir()).unwrap();
         std::fs::write(paths::launcher_config_file(), "{\"default_memory_mb\":4096}").unwrap();
         let mut state = SyncState::default();
@@ -1022,15 +1022,15 @@ mod tests {
         );
         std::fs::remove_dir_all(&already).unwrap();
 
-        std::env::remove_var("SPECTRA_DATA_DIR");
+        std::env::remove_var("SWIFT_DATA_DIR");
         drop(guard);
     }
 
     #[test]
     fn options_round_trip_keeps_local_keys_and_takes_shared_ones() {
         let guard = paths::lock_data_dir();
-        let root = std::env::temp_dir().join(format!("spectra-opt-{}", uuid::Uuid::new_v4()));
-        std::env::set_var("SPECTRA_DATA_DIR", &root);
+        let root = std::env::temp_dir().join(format!("swift-opt-{}", uuid::Uuid::new_v4()));
+        std::env::set_var("SWIFT_DATA_DIR", &root);
 
         let game = paths::instance_game_dir("src");
         std::fs::create_dir_all(&game).unwrap();
@@ -1048,7 +1048,7 @@ mod tests {
         assert!(!result.contains_key("lastServer"), "non-whitelisted keys do not travel");
 
         std::fs::remove_dir_all(&root).unwrap();
-        std::env::remove_var("SPECTRA_DATA_DIR");
+        std::env::remove_var("SWIFT_DATA_DIR");
         drop(guard);
     }
 }

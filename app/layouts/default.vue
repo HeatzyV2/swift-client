@@ -1,52 +1,10 @@
 <template>
-  <div class="app h-full w-full flex">
+  <div class="flex h-full w-full">
+    <LayoutSidebar />
 
-      <div class="flex flex-col w-64 px-4 h-full py-4 backdrop-blur-lg">
-
-        <SelectedInstanceCard />
-
-        <div id="menu" class="flex flex-col gap-2">
-          <NuxtLink
-            v-for="item in menu"
-            :key="item.to"
-            :to="item.to"
-            class="flex items-center justify-start gap-2 relative py-1 px-3 rounded-lg overflow-hidden duration-300 hover:bg-primary-500/5"
-            exact-active-class="bg-primary-500/10"
-            v-slot="{ isExactActive }"
-          >
-            <div :class="['absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-md bg-primary-500 duration-300', isExactActive ? 'opacity-100 h-4' : ' h-0']"></div>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" v-html="item.icon"></svg>
-            <p>{{ $t(item.label) }}</p>
-          </NuxtLink>
-        </div>
-
-        <div class="flex flex-1 min-h-0 flex-col gap-2 py-4 mt-4 border-t border-gray-800">
-          <div class="flex-1 min-h-0 overflow-y-auto flex flex-col gap-1">
-            <template v-if="instances.loading && !instances.loaded">
-              <div v-for="n in 6" :key="`inst-sk-${n}`" class="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5">
-                <div class="size-7 shrink-0 animate-pulse rounded-md bg-white/5" />
-                <div class="min-w-0 flex-1 space-y-1.5">
-                  <div class="h-3 w-3/4 animate-pulse rounded bg-white/5" />
-                  <div class="h-2 w-2/5 animate-pulse rounded bg-white/5" />
-                </div>
-              </div>
-            </template>
-            <SidebarInstanceItem
-              v-for="instance in instances.instances"
-              :key="instance.id"
-              :instance="instance"
-            />
-          </div>
-
-          <button class="w-full py-1 px-3 duration-300 hover:bg-primary-500/5 flex justify-start items-center gap-2 rounded-lg" @click="openCreate()">
-            + {{ $t('nav.newInstance') }}
-          </button>
-        </div>
-
-      </div>
-      <div class="flex-1 w-full rounded-tl-xl border-t border-l border-[#13161d]">
-        <slot />
-      </div>
+    <main class="relative min-w-0 flex-1 overflow-hidden rounded-tl-xl border-l border-t border-default bg-[var(--sw-stage)]">
+      <slot />
+    </main>
 
     <CreateInstanceModal />
     <ExportInstanceModal />
@@ -54,24 +12,19 @@
     <LinkModsModal />
     <BlockedModsModal />
     <OnboardingModal />
-    <SyncAnnouncementModal />
+    <RemoveInstanceModal />
 
-    <Transition name="fade">
-      <div v-if="dragging" class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div class="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-primary-500/60 bg-primary-500/10 px-12 py-10">
-          <UIcon name="i-lucide-download" class="size-10 text-primary-400" />
-          <p class="text-lg font-semibold">{{ $t('drop.title') }}</p>
+    <Transition name="sw-fade">
+      <div v-if="dragging" class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-black/75">
+        <div class="flex flex-col items-center gap-3 rounded-xl border border-dashed border-primary/60 bg-[var(--sw-surface)] px-14 py-10">
+          <UIcon name="i-lucide-download" class="size-8 text-primary" />
+          <p class="font-display text-lg font-semibold text-highlighted">{{ $t('drop.title') }}</p>
           <p class="text-sm text-muted">{{ onInstance ? $t('drop.onInstance') : $t('drop.onHome') }}</p>
         </div>
       </div>
     </Transition>
-	</div>
+  </div>
 </template>
-
-<style scoped>
-.fade-enter-active, .fade-leave-active { transition: opacity 0.15s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
-</style>
 
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/core'
@@ -80,16 +33,13 @@ import type { UnlistenFn } from '@tauri-apps/api/event'
 import type { Instance } from '~/types/launcher'
 
 const instances = useInstancesStore()
-const accounts = useAccountStore()
 const router = useRouter()
 const route = useRoute()
 const toast = useToast()
 const { t } = useI18n()
-const { open: openCreate } = useCreateInstanceModal()
 
 onMounted(() => {
   instances.ensureLoaded()
-  accounts.load()
 })
 
 const dragging = ref(false)
@@ -137,43 +87,4 @@ async function handleDrop(paths: string[]) {
   }
 }
 
-const isMicrosoft = computed(() => accounts.activeAccount?.kind === 'microsoft')
-
-interface MenuItem {
-  to: string
-  label: string
-  icon: string
-  microsoftOnly?: boolean
-}
-
-const allMenu: MenuItem[] = [
-  {
-    to: '/',
-    label: 'nav.home',
-    icon: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
-  },
-  {
-    to: '/worlds',
-    label: 'nav.worlds',
-    icon: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/>',
-  },
-  {
-    to: '/screenshots',
-    label: 'nav.screenshots',
-    icon: '<rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/>',
-  },
-  {
-    to: '/skins',
-    label: 'nav.skins',
-    icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
-    microsoftOnly: true,
-  },
-  {
-    to: '/settings',
-    label: 'nav.settings',
-    icon: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
-  },
-]
-
-const menu = computed(() => allMenu.filter(i => !i.microsoftOnly || isMicrosoft.value))
 </script>

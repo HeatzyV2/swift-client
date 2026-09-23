@@ -28,6 +28,11 @@ fn main() {
         .unwrap_or_default();
 
     println!("cargo:rustc-env=DISCORD_CLIENT_ID={}", get("DISCORD_CLIENT_ID"));
+    let backend = get("SWIFT_BACKEND_URL");
+    if !backend.is_empty() {
+        println!("cargo:rustc-env=SWIFT_BACKEND_URL={backend}");
+    }
+    println!("cargo:rerun-if-env-changed=SWIFT_BACKEND_URL");
     println!("cargo:rerun-if-changed=.env");
 
     tauri_build::build()

@@ -11,7 +11,7 @@ use crate::{paths, store};
 use crate::error::{AppError, AppResult};
 
 const API: &str = "https://api.modrinth.com/v2";
-const USER_AGENT: &str = concat!("MakotoPD/Spectra-Launcher/", env!("CARGO_PKG_VERSION"), " (spectra launcher)");
+const USER_AGENT: &str = concat!("SwiftClient/", env!("CARGO_PKG_VERSION"), " (Swift Client Minecraft launcher)");
 
 fn http() -> reqwest::Client {
     static CLIENT: std::sync::OnceLock<reqwest::Client> = std::sync::OnceLock::new();

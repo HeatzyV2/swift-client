@@ -6,7 +6,7 @@ use tauri::{AppHandle, Emitter};
 
 use crate::commands::share::{
     self, folder_for_kind, loader_str, plan_sync, ShareManifest, SyncPlan, FORMAT, ICON,
-    KEEP_ON_SYNC, MANIFEST,
+    KEEP_ON_SYNC,
 };
 use crate::commands::{curseforge, import, modrinth, settings};
 use crate::models::Instance;
@@ -162,12 +162,7 @@ pub async fn restore_snapshot(
 
     let mut archive =
         zip::ZipArchive::new(std::io::Cursor::new(bytes)).map_err(|e| format!("open snapshot: {e}"))?;
-    let manifest: ShareManifest = {
-        let mut f = archive.by_name(MANIFEST).map_err(|_| "not a Spectra snapshot".to_string())?;
-        let mut text = String::new();
-        f.read_to_string(&mut text).map_err(|e| e.to_string())?;
-        serde_json::from_str(&text).map_err(|e| format!("parse manifest: {e}"))?
-    };
+    let manifest = share::read_manifest(&mut archive)?;
 
     let installed_now = modrinth::read_content_index(&id).items;
     let owned: HashSet<String> = installed_now.iter().map(|i| i.project_id.clone()).collect();

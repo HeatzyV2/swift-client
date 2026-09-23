@@ -149,9 +149,9 @@ mod tests {
     #[test]
     fn icons_are_deduplicated_and_thumbnails_stay_inside_the_data_root() {
         let _guard = crate::paths::lock_data_dir();
-        let root = std::env::temp_dir().join(format!("spectra-img-{}", uuid::Uuid::new_v4()));
+        let root = std::env::temp_dir().join(format!("swift-img-{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&root).unwrap();
-        std::env::set_var("SPECTRA_DATA_DIR", &root);
+        std::env::set_var("SWIFT_DATA_DIR", &root);
 
         let bytes = png_bytes();
         let first = cache_icon(&bytes, "png").unwrap();
@@ -171,12 +171,12 @@ mod tests {
             "a second call must reuse the cached file"
         );
 
-        let outside = std::env::temp_dir().join(format!("spectra-out-{}.png", uuid::Uuid::new_v4()));
+        let outside = std::env::temp_dir().join(format!("swift-out-{}.png", uuid::Uuid::new_v4()));
         std::fs::write(&outside, &bytes).unwrap();
         assert!(build_thumbnail(&outside, 32).is_err());
 
         std::fs::remove_file(&outside).unwrap();
         std::fs::remove_dir_all(&root).unwrap();
-        std::env::remove_var("SPECTRA_DATA_DIR");
+        std::env::remove_var("SWIFT_DATA_DIR");
     }
 }

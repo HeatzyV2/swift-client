@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in Spectra Launcher does not work as expected
+description: Something in Swift Client does not work as expected
 title: "[Bug]: "
 labels: ["bug", "triage"]
 body:
@@ -14,7 +14,7 @@ body:
       options:
         - label: I searched the existing issues and this problem has not been reported yet.
           required: true
-        - label: I am using the latest Spectra Launcher release.
+        - label: I am using the latest Swift Client release.
           required: false
   - type: textarea
     id: description
@@ -53,7 +53,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: Spectra Launcher version
+      label: Swift Client version
       placeholder: 0.8.2
     validations:
       required: true
@@ -90,7 +90,7 @@ body:
     attributes:
       label: Logs and crash report
       description: |
-        Launcher logs are in the `logs` folder of the data directory (`%APPDATA%\SpectraLauncher\logs` on Windows).
+        Launcher logs are in the `logs` folder of the data directory (`%APPDATA%\SwiftClient\logs` on Windows).
         For game crashes paste the crash report or the share link created by the launcher.
         Remove access tokens or other private data before posting.
       render: text

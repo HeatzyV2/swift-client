@@ -11,10 +11,35 @@ use crate::models::{Instance, Loader};
 use crate::{paths, store};
 use crate::error::{AppError, AppResult};
 
-const SHARE_API: &str = concat!(crate::spectra_site!(), "/api/share");
+fn share_api(path: &str) -> AppResult<String> {
+    crate::backend::endpoint(&format!("/api/share{path}"))
+}
 
-pub(crate) const MANIFEST: &str = "spectra-share.json";
-pub(crate) const FORMAT: &str = "spectra-share";
+pub(crate) const MANIFEST: &str = "swift-share.json";
+pub(crate) const FORMAT: &str = "swift-share";
+
+// Packs written by Spectra Launcher, the project Swift Client started from.
+const LEGACY_MANIFEST: &str = "spectra-share.json";
+const LEGACY_FORMAT: &str = "spectra-share";
+
+/// Reads the manifest of a share pack or snapshot, current or legacy.
+pub(crate) fn read_manifest<R: Read + std::io::Seek>(
+    archive: &mut zip::ZipArchive<R>,
+) -> AppResult<ShareManifest> {
+    let name = if archive.by_name(MANIFEST).is_ok() { MANIFEST } else { LEGACY_MANIFEST };
+    let mut s = String::new();
+    archive
+        .by_name(name)
+        .map_err(|_| "not a Swift Client pack".to_string())?
+        .read_to_string(&mut s)
+        .map_err(|e| e.to_string())?;
+    let manifest: ShareManifest =
+        serde_json::from_str(&s).map_err(|e| format!("parse manifest: {e}"))?;
+    if manifest.format != FORMAT && manifest.format != LEGACY_FORMAT {
+        return Err("not a Swift Client pack".into());
+    }
+    Ok(manifest)
+}
 
 pub(crate) const KEEP_ON_SYNC: &[&str] = &["options.txt", "servers.dat", "servers.dat_old"];
 
@@ -146,8 +171,9 @@ pub async fn share_instance(
 ) -> AppResult<ShareResult> {
     // Uploads are tied to an account — the server has no anonymous route any
     // more. Check before packing so a gigabyte of mods is not zipped for nothing.
-    let Some(token) = crate::commands::spectra::stored_token() else {
-        return Err("sign in to your Spectra account to share an instance".into());
+    share_api("")?;
+    let Some(token) = crate::backend::session_token() else {
+        return Err(AppError::auth("sign in to your Swift Client account to share an instance"));
     };
 
     emit_progress(&app, "scanning", 0, 0);
@@ -161,7 +187,7 @@ pub async fn share_instance(
     let include: HashSet<String> =
         include.into_iter().filter(|p| unresolved_paths.contains(p)).collect();
 
-    let tmp = std::env::temp_dir().join(format!("spectra-share-{id}.zip"));
+    let tmp = std::env::temp_dir().join(format!("swift-share-{id}.zip"));
     let manifest = ShareManifest {
         format: FORMAT.into(),
         version: 1,
@@ -239,8 +265,7 @@ async fn upload_to_storage(
 
     let ticket: Ticket = {
         let resp = client
-            .post(format!("{SHARE_API}/upload-url"))
-            .header("origin", crate::commands::spectra::ORIGIN)
+            .post(share_api("/upload-url")?)
             .bearer_auth(token)
             .json(&serde_json::json!({
                 "size": size,
@@ -288,8 +313,7 @@ async fn upload_to_storage(
 
     emit_progress(app, "finishing", 0, 0);
     let done = client
-        .post(format!("{SHARE_API}/{}/complete", ticket.code))
-        .header("origin", crate::commands::spectra::ORIGIN)
+        .post(share_api(&format!("/{}/complete", ticket.code))?)
         .bearer_auth(token)
         .json(&serde_json::json!({ "size": size }))
         .send()
@@ -387,7 +411,7 @@ fn extract_message(body: &str) -> Option<String> {
 #[tauri::command]
 pub async fn import_share(app: AppHandle, code: String) -> AppResult<ShareImportResult> {
     if code.to_lowercase().contains("curseforge.com") {
-        return Err("That's a CurseForge profile link. Spectra can't redeem those — \
+        return Err("That's a CurseForge profile link. Swift Client can't redeem those — \
                     ask the sender to use the CurseForge app's \"Export profile\" \
                     and import the .zip instead."
             .into());
@@ -514,9 +538,8 @@ fn normalize_code(raw: &str) -> AppResult<String> {
 
 async fn revision_of(code: &str) -> AppResult<u32> {
     let resp = crate::http()
-        .get(format!("{SHARE_API}/{code}"))
+        .get(share_api(&format!("/{code}"))?)
         .query(&[("meta", "1")])
-        .header("origin", crate::commands::spectra::ORIGIN)
         .send()
         .await
         .map_err(|e| format!("network error: {e}"))?;
@@ -545,10 +568,9 @@ struct ShareMeta {
 async fn fetch_pack(code: &str) -> AppResult<(ShareManifest, Vec<u8>)> {
     let client = crate::http();
     let mut req = client
-        .get(format!("{SHARE_API}/{code}"))
-        .query(&[("url", "1")])
-        .header("origin", crate::commands::spectra::ORIGIN);
-    if let Some(token) = crate::commands::spectra::stored_token() {
+        .get(share_api(&format!("/{code}"))?)
+        .query(&[("url", "1")]);
+    if let Some(token) = crate::backend::session_token() {
         req = req.bearer_auth(token);
     }
     let resp = req.send().await.map_err(|e| format!("download failed: {e}"))?;
@@ -584,17 +606,7 @@ async fn fetch_pack(code: &str) -> AppResult<(ShareManifest, Vec<u8>)> {
 
     let mut archive = zip::ZipArchive::new(std::io::Cursor::new(bytes.clone()))
         .map_err(|e| format!("open pack: {e}"))?;
-    let manifest: ShareManifest = {
-        let mut f = archive
-            .by_name(MANIFEST)
-            .map_err(|_| "not a Spectra share pack".to_string())?;
-        let mut s = String::new();
-        f.read_to_string(&mut s).map_err(|e| e.to_string())?;
-        serde_json::from_str(&s).map_err(|e| format!("parse manifest: {e}"))?
-    };
-    if manifest.format != FORMAT {
-        return Err("not a Spectra share pack".into());
-    }
+    let manifest = read_manifest(&mut archive)?;
     Ok((manifest, bytes))
 }
 
@@ -754,7 +766,7 @@ pub async fn sync_share(app: AppHandle, id: String, code: String) -> AppResult<S
 }
 
 pub fn code_from_url(url: &str) -> Option<String> {
-    let rest = url.strip_prefix("spectra://")?.trim_start_matches('/');
+    let rest = url.strip_prefix("swift://")?.trim_start_matches('/');
     let rest = rest.strip_prefix("share/").or_else(|| rest.strip_prefix("share"))?;
     let code: String = rest.trim_matches('/').chars().filter(|c| c.is_ascii_alphanumeric()).collect();
     (code.len() == 6).then(|| code.to_uppercase())
@@ -767,7 +779,8 @@ pub fn take_pending_share(state: tauri::State<'_, crate::AppState>) -> Option<St
 
 #[cfg(test)]
 mod tests {
-    use super::{code_from_url, plan_sync};
+    use super::{code_from_url, plan_sync, read_manifest, FORMAT, LEGACY_FORMAT, LEGACY_MANIFEST, MANIFEST};
+    use std::io::Write;
     use crate::commands::modrinth::InstalledItem;
     use std::collections::HashSet;
 
@@ -811,10 +824,29 @@ mod tests {
 
     #[test]
     fn parses_deep_links() {
-        assert_eq!(code_from_url("spectra://share/ABC123"), Some("ABC123".into()));
-        assert_eq!(code_from_url("spectra://share/abc123/"), Some("ABC123".into()));
-        assert_eq!(code_from_url("spectra://share?x=1"), None);
-        assert_eq!(code_from_url("spectra://share/AB"), None);
-        assert_eq!(code_from_url("https://usespectra.app/s/ABC123"), None);
+        assert_eq!(code_from_url("swift://share/ABC123"), Some("ABC123".into()));
+        assert_eq!(code_from_url("swift://share/abc123/"), Some("ABC123".into()));
+        assert_eq!(code_from_url("swift://share?x=1"), None);
+        assert_eq!(code_from_url("swift://share/AB"), None);
+        assert_eq!(code_from_url("spectra://share/ABC123"), None);
+    }
+
+    fn pack_with(name: &str, format: &str) -> zip::ZipArchive<std::io::Cursor<Vec<u8>>> {
+        let mut zip = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
+        zip.start_file(name, zip::write::SimpleFileOptions::default()).unwrap();
+        let manifest = serde_json::json!({
+            "format": format, "version": 1, "name": "Pack", "mc_version": "1.21.1",
+            "loader": { "type": "vanilla" }, "items": [],
+        });
+        zip.write_all(manifest.to_string().as_bytes()).unwrap();
+        zip::ZipArchive::new(zip.finish().unwrap()).unwrap()
+    }
+
+    #[test]
+    fn reads_current_and_legacy_packs() {
+        assert_eq!(read_manifest(&mut pack_with(MANIFEST, FORMAT)).unwrap().name, "Pack");
+        assert_eq!(read_manifest(&mut pack_with(LEGACY_MANIFEST, LEGACY_FORMAT)).unwrap().name, "Pack");
+        assert!(read_manifest(&mut pack_with(MANIFEST, "something-else")).is_err());
+        assert!(read_manifest(&mut pack_with("other.json", FORMAT)).is_err());
     }
 }

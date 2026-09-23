@@ -37,17 +37,17 @@
       :style="tab === 'screenshots' ? 'grid-template-columns:repeat(auto-fill,minmax(220px,1fr))' : undefined"
     >
       <template v-if="tab === 'screenshots'">
-        <div v-for="n in 6" :key="`ss-sk-${n}`" class="overflow-hidden rounded-xl border border-default bg-white/3">
-          <div class="aspect-video w-full animate-pulse bg-white/5" />
-          <div class="px-2.5 py-1.5"><div class="h-3 w-2/3 animate-pulse rounded bg-white/5" /></div>
+        <div v-for="n in 6" :key="`ss-sk-${n}`" class="overflow-hidden sw-panel">
+          <div class="aspect-video w-full sw-skeleton" />
+          <div class="px-2.5 py-1.5"><div class="h-3 w-2/3 sw-skeleton" /></div>
         </div>
       </template>
       <template v-else>
-        <div v-for="n in 6" :key="`row-sk-${n}`" class="flex items-center gap-3 rounded-xl border border-default bg-white/3 p-3">
-          <div class="size-11 shrink-0 animate-pulse rounded-lg bg-white/5" />
+        <div v-for="n in 6" :key="`row-sk-${n}`" class="flex items-center gap-3 sw-panel p-3">
+          <div class="size-11 shrink-0 sw-skeleton" />
           <div class="min-w-0 flex-1 space-y-2">
-            <div class="h-3.5 w-1/3 animate-pulse rounded bg-white/5" />
-            <div class="h-2.5 w-1/2 animate-pulse rounded bg-white/5" />
+            <div class="h-3.5 w-1/3 sw-skeleton" />
+            <div class="h-2.5 w-1/2 sw-skeleton" />
           </div>
         </div>
       </template>
@@ -62,7 +62,7 @@
         v-for="(s, i) in screenshots"
         :key="s.path"
         type="button"
-        class="group overflow-hidden rounded-xl border border-default bg-white/3 text-left transition hover:border-primary-500/40"
+        class="group overflow-hidden sw-panel text-left transition hover:border-primary-500/40"
         @click="lightboxIndex = i"
       >
         <ThumbImage :path="s.path" :size="440" :alt="s.name" class="aspect-video w-full object-cover transition group-hover:opacity-90" />
@@ -74,7 +74,7 @@
       <div
         v-for="w in worlds"
         :key="w.folder"
-        class="flex items-center gap-3 rounded-xl border border-default bg-white/3 p-3"
+        class="flex items-center gap-3 sw-panel p-3"
       >
         <img
           v-if="w.icon_path"
@@ -130,7 +130,7 @@
       <div
         v-for="(s, i) in servers"
         :key="`${s.ip}-${i}`"
-        class="flex items-center gap-3 rounded-xl border border-default bg-white/3 p-3"
+        class="flex items-center gap-3 sw-panel p-3"
         :class="{ 'opacity-55': s.hidden }"
       >
         <div class="relative size-11 shrink-0">

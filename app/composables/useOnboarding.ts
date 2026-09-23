@@ -1,4 +1,4 @@
-const KEY = 'spectra-onboarded'
+const KEY = 'swift-onboarded'
 
 export const useOnboarding = () => {
   const open = useState('onboarding-open', () => false)

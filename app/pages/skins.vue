@@ -1,11 +1,11 @@
 <template>
   <div class="flex h-full flex-col">
-    <div class="min-h-0 flex-1 overflow-y-auto p-6 lg:p-8">
+    <div class="min-h-0 flex-1 overflow-y-auto px-8 py-7">
       <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[360px_1fr]">
         <div class="lg:sticky lg:top-0 lg:self-start">
-          <h1 class="mb-4 text-2xl font-bold tracking-tight">{{ $t('skins.title') }}</h1>
+          <h1 class="mb-4 font-display text-[26px] font-semibold leading-tight text-highlighted">{{ $t('skins.title') }}</h1>
 
-          <div class="flex flex-col items-center gap-4 rounded-2xl border border-default bg-linear-[160deg] from-primary-500/10 to-transparent p-5">
+          <div class="flex flex-col items-center gap-4 rounded-2xl border border-default bg-[var(--sw-surface)] p-5">
             <canvas ref="viewerCanvas" class="rounded-xl" />
 
             <div v-if="selectedSavedSkin" class="flex w-full max-w-52 rounded-lg border border-default p-0.5 text-xs">
@@ -14,7 +14,7 @@
                 :key="m"
                 type="button"
                 class="flex-1 rounded-md py-1 font-medium transition"
-                :class="selectedSavedSkin.model === m ? 'bg-primary-500/20 text-primary-300' : 'text-neutral-400 hover:text-neutral-200'"
+                :class="selectedSavedSkin.model === m ? 'bg-[var(--sw-surface-3)] text-highlighted' : 'text-neutral-400 hover:text-neutral-200'"
                 @click="setModel(m)"
               >
                 {{ $t(`skins.${m}`) }}
@@ -69,8 +69,8 @@
               </button>
 
               <template v-if="savedLoading">
-                <div v-for="n in 4" :key="`sk-${n}`" class="w-24 rounded-xl border border-default bg-white/3 p-2">
-                  <div class="h-20 animate-pulse rounded-lg bg-white/5" />
+                <div v-for="n in 4" :key="`sk-${n}`" class="w-24 sw-panel p-2">
+                  <div class="h-20 sw-skeleton" />
                 </div>
               </template>
 
@@ -82,7 +82,7 @@
                 @click="previewSaved(s)"
               >
                 <img v-if="savedBust[s.id]" :src="savedBust[s.id]" class="h-20 w-full object-contain" :alt="s.name" >
-                <div v-else class="h-20 w-full animate-pulse rounded-lg bg-white/5" />
+                <div v-else class="h-20 w-full sw-skeleton" />
                 <span class="w-full truncate text-center text-[11px] text-neutral-300" :title="s.name">{{ s.name }}</span>
                 <UIcon
                   v-if="s.active"
@@ -117,7 +117,7 @@
                 @click="previewDefault(d)"
               >
                 <img v-if="defaultBust[d.name]" :src="defaultBust[d.name]" class="h-20 w-full object-contain" :alt="d.name" >
-                <div v-else class="h-20 w-full animate-pulse rounded-lg bg-white/5" />
+                <div v-else class="h-20 w-full sw-skeleton" />
                 <span class="w-full truncate text-center text-[11px] text-neutral-300">{{ d.name }}</span>
               </button>
             </div>
@@ -149,7 +149,7 @@
         <p v-if="!isMicrosoft" class="mb-4 text-sm text-muted">{{ $t('skins.capesDemo') }}</p>
 
         <div v-if="capesLoading" class="flex flex-wrap gap-3">
-          <div v-for="n in 3" :key="`cape-sk-${n}`" class="h-28 w-24 animate-pulse rounded-xl bg-white/5" />
+          <div v-for="n in 3" :key="`cape-sk-${n}`" class="h-28 w-24 sw-skeleton" />
         </div>
 
         <div v-else class="flex flex-wrap gap-3">

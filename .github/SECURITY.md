@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Security fixes are released for the latest version of Spectra Launcher only. The launcher updates itself, so please
+Security fixes are released for the latest version of Swift Client only. Please
 make sure you are on the newest release before reporting.
 
 ## Reporting a vulnerability
@@ -10,7 +10,7 @@ make sure you are on the newest release before reporting.
 Please do not report security vulnerabilities in public issues or pull requests.
 
 Report them privately through
-[GitHub private vulnerability reporting](https://github.com/SpectraLauncher/Launcher/security/advisories/new). Include:
+[GitHub private vulnerability reporting](../../security/advisories/new). Include:
 
 - the affected version and operating system,
 - a description of the vulnerability and its impact,
@@ -27,4 +27,4 @@ Reports about these areas are especially welcome:
 - downloading and installing game files, Java runtimes, mods and modpacks,
 - importing instances and modpack archives from other launchers,
 - the self-updater and release signing,
-- communication with the Spectra website, such as share codes and crash report sharing.
+- communication with the optional Swift Client online service (CurseForge proxy, share codes).

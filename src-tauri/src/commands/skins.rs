@@ -445,7 +445,7 @@ mod default_skin_tests {
 
     #[test]
     fn pulls_every_default_skin_out_of_a_client_jar() {
-        let root = std::env::temp_dir().join(format!("spectra-skins-{}", uuid::Uuid::new_v4()));
+        let root = std::env::temp_dir().join(format!("swift-skins-{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&root).unwrap();
         let jar_path = root.join("client.jar");
 

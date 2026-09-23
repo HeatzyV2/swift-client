@@ -72,7 +72,7 @@
               type="button"
               class="rounded-md px-2 py-1 text-xs font-medium capitalize transition"
               :class="selectedCategories.includes(c.name)
-                ? 'bg-primary-500/15 text-primary-400'
+                ? 'bg-[var(--sw-surface-2)] text-highlighted'
                 : 'bg-white/5 text-neutral-400 hover:bg-white/10'"
               @click="toggleCategory(c.name)"
             >
@@ -300,7 +300,7 @@
                 <div
                   v-for="v in versions"
                   :key="v.id"
-                  class="flex items-center gap-3 rounded-lg border border-default bg-white/3 p-2.5"
+                  class="flex items-center gap-3 sw-panel p-2.5"
                 >
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2">
@@ -329,7 +329,7 @@
                   <button
                     type="button"
                     class="rounded-md px-3 py-1 text-sm font-medium transition"
-                    :class="detailTab === 'description' ? 'bg-primary-500/15 text-primary-400' : 'text-neutral-400 hover:bg-white/5 hover:text-neutral-200'"
+                    :class="detailTab === 'description' ? 'bg-[var(--sw-surface-2)] text-highlighted' : 'text-neutral-400 hover:bg-white/5 hover:text-neutral-200'"
                     @click="detailTab = 'description'"
                   >
                     {{ $t('modrinth.tabDescription') }}
@@ -337,7 +337,7 @@
                   <button
                     type="button"
                     class="flex items-center gap-1.5 rounded-md px-3 py-1 text-sm font-medium transition"
-                    :class="detailTab === 'gallery' ? 'bg-primary-500/15 text-primary-400' : 'text-neutral-400 hover:bg-white/5 hover:text-neutral-200'"
+                    :class="detailTab === 'gallery' ? 'bg-[var(--sw-surface-2)] text-highlighted' : 'text-neutral-400 hover:bg-white/5 hover:text-neutral-200'"
                     @click="detailTab = 'gallery'"
                   >
                     {{ $t('modrinth.tabGallery') }}
@@ -359,7 +359,7 @@
                       v-for="(g, i) in gallery"
                       :key="g.url"
                       type="button"
-                      class="overflow-hidden rounded-lg border border-default bg-white/3 transition hover:border-primary-500/40"
+                      class="overflow-hidden sw-panel transition hover:border-primary-500/40"
                       @click="galleryIndex = i"
                     >
                       <img :src="g.url" loading="lazy" class="aspect-video w-full object-cover" :alt="g.title ?? ''" >
