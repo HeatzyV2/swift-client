@@ -16,13 +16,14 @@
 <script setup lang="ts">
 import type { Account } from '~/types/launcher'
 
-const props = defineProps<{ account?: Account | null }>()
+/** `face` is a ready face image (e.g. cut from the active skin); otherwise Microsoft accounts use their profile head. */
+const props = defineProps<{ account?: Account | null, face?: string | null }>()
 const failed = ref(false)
 
-// Offline accounts have no real skin, so only Microsoft accounts get a face.
-const src = computed(() =>
-  props.account?.kind === 'microsoft' ? `https://crafatar.com/avatars/${props.account.uuid}?size=64&overlay` : null,
-)
+const src = computed(() => {
+  if (props.face) return props.face
+  return props.account?.kind === 'microsoft' ? `https://crafatar.com/avatars/${props.account.uuid}?size=64&overlay` : null
+})
 
-watch(() => props.account?.uuid, () => { failed.value = false })
+watch(src, () => { failed.value = false })
 </script>

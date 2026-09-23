@@ -181,6 +181,45 @@ textarea::placeholder {
 	opacity: 0;
 }
 
+/* Backdrop swap: the new image fades in over the old one */
+.sw-crossfade-enter-active,
+.sw-crossfade-leave-active {
+	transition: opacity 250ms var(--ease-swift);
+}
+.sw-crossfade-leave-active {
+	position: absolute;
+}
+.sw-crossfade-enter-from,
+.sw-crossfade-leave-to {
+	opacity: 0;
+}
+
+/* Content swap (instance change, player render) */
+.sw-rise-enter-active {
+	transition: opacity 220ms var(--ease-swift), transform 220ms var(--ease-swift);
+}
+.sw-rise-leave-active {
+	transition: opacity 120ms var(--ease-swift);
+}
+.sw-rise-enter-from {
+	opacity: 0;
+	transform: translateY(8px);
+}
+.sw-rise-leave-to {
+	opacity: 0;
+}
+
+/* One-off entrance for page sections; stagger with animation-delay */
+.sw-rise-in {
+	animation: sw-rise-in 240ms var(--ease-swift) both;
+}
+@keyframes sw-rise-in {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	*,
 	*::before,

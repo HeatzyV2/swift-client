@@ -735,7 +735,8 @@
     "kind": {
       "microsoft": "Microsoft",
       "offline": "Offline"
-    }
+    },
+    "signIn": "Sign in"
   },
   "home": {
     "selected": "Selected instance",
@@ -766,8 +767,18 @@
       "title": "Welcome to Swift Client",
       "text": "Create your first instance — pick a Minecraft version and a loader, then hit Play.",
       "create": "Create an instance",
-      "addAccount": "Add account"
-    }
+      "addAccount": "Add account",
+      "createHint": "Pick a version and a loader, then play"
+    },
+    "switchInstance": "Switch instance",
+    "manageInstances": "All instances",
+    "openLogs": "Open the live console",
+    "jumpBackIn": "Jump back in",
+    "jumpBackInEmpty": "Worlds and servers from this instance will show up here after you play.",
+    "jumpBackInNoInstance": "Create an instance to see your worlds and servers here.",
+    "quickPlayUnsupported": "Quick Play needs Minecraft 1.20 or newer",
+    "news": "Latest news",
+    "readMore": "Read more"
   },
   "removeInstance": {
     "title": "Delete instance",
@@ -779,5 +790,9 @@
     "title": "Something went wrong",
     "text": "Swift Client ran into an unexpected error. Your instances and files are safe.",
     "reload": "Reload"
+  },
+  "status": {
+    "idle": "No game running",
+    "runningMany": "{n} games running"
   }
 }

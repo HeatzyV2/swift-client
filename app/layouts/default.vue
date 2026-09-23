@@ -2,7 +2,7 @@
   <div class="flex h-full w-full">
     <LayoutSidebar />
 
-    <main class="relative min-w-0 flex-1 overflow-hidden rounded-tl-xl border-l border-t border-default bg-[var(--sw-stage)]">
+    <main class="relative min-w-0 flex-1 overflow-hidden">
       <slot />
     </main>
 

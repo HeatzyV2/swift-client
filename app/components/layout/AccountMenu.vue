@@ -1,19 +1,14 @@
 <template>
-  <UDropdownMenu :items="items" :content="{ side: 'top', align: 'start' }" :ui="{ content: 'w-56' }">
+  <UDropdownMenu :items="items" :content="{ align: 'end', sideOffset: 8 }" :ui="{ content: 'w-60' }">
     <button
       type="button"
-      class="flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-white/[0.03]"
+      class="flex h-9 items-center gap-2.5 rounded-lg border border-[var(--sw-line)] bg-[var(--sw-surface)] pl-1 pr-2.5 transition-colors hover:border-[var(--sw-line-strong)] hover:bg-[var(--sw-surface-2)]"
     >
-      <AccountAvatar :account="accounts.activeAccount" class="size-8" />
-      <span class="min-w-0 flex-1">
-        <span class="block truncate text-[13px] font-medium text-highlighted">
-          {{ accounts.activeAccount?.username ?? $t('account.none') }}
-        </span>
-        <span class="block truncate text-[11px] text-dimmed">
-          {{ accounts.activeAccount ? $t(`account.kind.${accounts.activeAccount.kind}`) : $t('account.signInHint') }}
-        </span>
+      <AccountAvatar :account="accounts.activeAccount" :face="face" class="size-7" />
+      <span class="max-w-36 truncate text-[13px] font-semibold text-highlighted">
+        {{ accounts.activeAccount?.username ?? $t('account.signIn') }}
       </span>
-      <UIcon name="i-lucide-chevrons-up-down" class="size-4 shrink-0 text-dimmed" />
+      <UIcon name="i-lucide-chevron-down" class="size-3.5 text-dimmed" />
     </button>
   </UDropdownMenu>
 </template>
@@ -28,6 +23,12 @@ const { t } = useI18n()
 
 onMounted(() => accounts.ensureLoaded())
 
+const { skin } = usePlayerSkin()
+const face = ref<string | null>(null)
+watch(skin, async (s) => {
+  face.value = s ? await skinFace(s.src).catch(() => null) : null
+}, { immediate: true })
+
 async function signInMicrosoft() {
   try {
     await accounts.login()
@@ -40,7 +41,8 @@ async function signInMicrosoft() {
 const items = computed<DropdownMenuItem[][]>(() => [
   accounts.accounts.map(acc => ({
     label: acc.username,
-    icon: acc.uuid === accounts.activeUuid ? 'i-lucide-check' : 'i-lucide-user',
+    description: t(`account.kind.${acc.kind}`),
+    icon: acc.uuid === accounts.activeUuid ? 'i-lucide-circle-check' : 'i-lucide-circle',
     onSelect: () => accounts.setActive(acc.uuid),
   })),
   [
