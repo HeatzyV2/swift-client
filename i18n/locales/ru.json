@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "Главная",
     "worlds": "Миры",
@@ -6,7 +6,8 @@
     "skins": "Скины",
     "settings": "Настройки",
     "lastPlayed": "Последний запуск",
-    "newInstance": "Новый профиль"
+    "newInstance": "Новый профиль",
+    "social": "Соцсеть"
   },
   "create": {
     "title": "Создать профиль",
@@ -41,7 +42,8 @@
       "fromFileDesc": "Выберите Modrinth .mrpack или резервную копию Swift Client .zip с диска.",
       "chooseFile": "Выбрать файл",
       "fromLauncher": "Из другого лаунчера",
-      "fromLauncherDesc": "Обнаруженные профили из Prism, CurseForge и приложения Modrinth.",
+      "fromLauncherDesc": "Lunar, Dawn, Spectra, Modrinth App, Prism и MultiMC.",
+      "allLaunchers": "Все",
       "none": "Профили в других лаунчерах не найдены.",
       "importBtn": "Импорт",
       "fromCode": "По коду",
@@ -294,13 +296,31 @@
     "appearance": {
       "theme": "Тема",
       "themeDark": "Тёмная",
-      "themeOled": "OLED (чистый чёрный)",
-      "themeDesc": "Выберите затемнённость интерфейса."
+      "themeOled": "OLED",
+      "themeDesc": "Выберите затемнённость интерфейса.",
+      "preview": "Предпросмотр",
+      "themes": {
+        "dark": "Тёмная",
+        "oled": "OLED",
+        "ash": "Ash",
+        "midnight": "Midnight",
+        "ember": "Ember",
+        "aurora": "Aurora"
+      }
     },
     "language": {
       "title": "Язык",
       "label": "Язык интерфейса",
-      "auto": "Определяется автоматически при первом запуске, затем запоминается."
+      "auto": "Определяется автоматически при первом запуске.",
+      "names": {
+        "en": "Английский",
+        "fr": "Французский",
+        "de": "Немецкий",
+        "es": "Испанский",
+        "pl": "Польский",
+        "ru": "Русский",
+        "zh": "Китайский"
+      }
     },
     "accounts": {
       "title": "Аккаунты",
@@ -319,27 +339,84 @@
       "memoryDesc": "Память по умолчанию для профилей без своей настройки."
     },
     "sections": {
-      "privacy": "Конфиденциальность",
+      "privacy": "Параметры",
       "accounts": "Аккаунты",
-      "sync": "Синхронизация"
+      "sync": "Синхронизация",
+      "general": "Общие",
+      "appearance": "Тема",
+      "minecraft": "Minecraft",
+      "advanced": "Папки",
+      "about": "Обновления"
     },
     "privacy": {
       "track_playtime": "Учитывать время в игре",
       "track_playtimeDesc": "Измерять и сохранять общее время игры для каждого профиля.",
       "discord_rpc": "Discord Rich Presence",
-      "discord_rpcDesc": "Показывать в Discord, во что вы играете."
+      "discord_rpcDesc": "Показывать в Discord, во что вы играете.",
+      "title": "Мои данные",
+      "noTelemetry": "Swift Client не отправляет телеметрию, аналитику и данные о сбоях."
     },
     "java": {
-      "title": "Установки Java",
+      "title": "Java",
       "detected": "Обнаруженные установки",
-      "autoDetect": "Автоопределение",
+      "autoDetect": "Обнаружить Java",
       "scanning": "Сканирование…",
       "noJava": "Установки Java не обнаружены.",
       "setDefault": "Сделать по умолчанию",
       "isDefault": "По умолчанию",
-      "defaultPath": "Путь к Java по умолчанию",
-      "defaultPathHint": "Используется, когда у профиля его нет (движок всё равно управляет Java сам).",
-      "detectedDesc": "Версии Java, найденные в системе и в лаунчере."
+      "defaultPath": "Свой путь к Java",
+      "defaultPathHint": "Оставьте пустым для автоопределения.",
+      "detectedDesc": "Версии Java, найденные в системе и в лаунчере.",
+      "managed": "Оставьте пустым для автоопределения",
+      "browse": "Обзор"
+    },
+    "subtitle": "Настройки лаунчера",
+    "nav": {
+      "display": "Экран",
+      "game": "Игра",
+      "launcher": "Лаунчер"
+    },
+    "sectionDesc": {
+      "appearance": "Тема и язык лаунчера.",
+      "accounts": "Профили Microsoft и офлайн для игры.",
+      "minecraft": "Память, окно и Java по умолчанию для новых профилей.",
+      "sync": "Общий контент между профилями.",
+      "privacy": "Время в игре и статус Discord.",
+      "advanced": "Папки лаунчера и хуки запуска.",
+      "about": "Версия, обновления и правовая информация."
+    },
+    "minecraft": {
+      "memoryTitle": "Память",
+      "memoryUsage": "{total} ГБ системной ОЗУ",
+      "memoryWarn": "Выделение велико относительно вашей ОЗУ.",
+      "memoryHint": "Рекомендуется: 4 ГБ для Vanilla, 6–8 ГБ с модами.",
+      "windowTitle": "Окно игры",
+      "resolution": "Разрешение",
+      "resolutionDesc": "Размер окна по умолчанию вне полноэкранного режима.",
+      "resetResolution": "Сбросить"
+    },
+    "advanced": {
+      "launchTitle": "Параметры запуска по умолчанию",
+      "hooksTitle": "Хуки запуска",
+      "filesTitle": "Игровая папка",
+      "show": "Показать",
+      "openFolder": "Открыть папку",
+      "folders": {
+        "data": "Данные лаунчера",
+        "instances": "Профили",
+        "logs": "Логи лаунчера"
+      }
+    },
+    "about": {
+      "updates": "Обновления",
+      "upToDate": "У вас актуальная версия",
+      "updatesDesc": "Автоматические обновления пока недоступны.",
+      "manual": "Вручную",
+      "online": "Онлайн-сервисы",
+      "onlineOn": "CurseForge и обмен профилями доступны.",
+      "onlineOff": "CurseForge и обмен требуют онлайн-сервис.",
+      "connected": "Подключено",
+      "offline": "Недоступно"
     }
   },
   "activity": {
@@ -538,6 +615,11 @@
     "repairHint": "Переустанавливает и проверяет файлы игры.",
     "repaired": "Восстановление завершено",
     "customWindow": "Свои настройки окна",
+    "displayMode": "Режим отображения",
+    "displayModeDesc": "Запуск Minecraft — безрамочный режим использует разрешение оконного режима.",
+    "displayWindowed": "В окне",
+    "displayFullscreen": "Полный экран",
+    "displayBorderless": "Полный экран без рамок",
     "fullscreen": "Полный экран",
     "width": "Ширина",
     "height": "Высота",

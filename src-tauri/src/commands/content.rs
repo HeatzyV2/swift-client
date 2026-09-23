@@ -421,6 +421,7 @@ fn remove_content(id: &str, kind: &str, filename: &str) -> AppResult<()> {
             std::fs::remove_file(&target).map_err(|e| format!("delete: {e}"))?;
         }
     }
+    crate::commands::modrinth::remove_index_entry(id, &safe);
     Ok(())
 }
 

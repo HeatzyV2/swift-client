@@ -1,4 +1,4 @@
-export type ModrinthProjectType = 'mod' | 'modpack' | 'resourcepack' | 'shader'
+export type ModrinthProjectType = 'mod' | 'modpack' | 'resourcepack' | 'shader' | 'datapack'
 
 export type ContentKind = 'mod' | 'modpack' | 'resourcepack' | 'shader' | 'datapack'
 

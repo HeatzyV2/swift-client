@@ -9,7 +9,8 @@
     "newInstance": "New instance",
     "instances": "Instances",
     "recent": "Recent",
-    "noRecent": "No instances yet"
+    "noRecent": "No instances yet",
+    "social": "Social"
   },
   "create": {
     "title": "Create instance",
@@ -22,7 +23,7 @@
       "modpackTitle": "Install modpack",
       "modpackDesc": "Browse modpacks and install one of them.",
       "importTitle": "Import install",
-      "importDesc": "Import from Prism, CurseForge, Modrinth or a zip/mrpack file."
+      "importDesc": "Import from Lunar, Dawn, Spectra, Prism, MultiMC, Modrinth App or a zip/mrpack file."
     },
     "custom": {
       "name": "Name",
@@ -46,7 +47,8 @@
       "fromFileDesc": "A Modrinth .mrpack, a CurseForge .zip or a Swift Client backup.",
       "chooseFile": "Choose file",
       "fromLauncher": "From another launcher",
-      "fromLauncherDesc": "Detected instances from Prism, CurseForge and the Modrinth App.",
+      "fromLauncherDesc": "Lunar, Dawn, Spectra, Modrinth App, Prism and MultiMC.",
+      "allLaunchers": "All",
       "none": "No instances found in other launchers.",
       "importBtn": "Import",
       "fromCode": "From a share code",
@@ -54,6 +56,27 @@
       "useCode": "Use code"
     },
     "done": "\"{name}\" created"
+  },
+  "social": {
+    "title": "Social",
+    "subtitleLocal": "Friends and chat on this device. Sync across launchers when the online service is ready.",
+    "subtitleRemote": "Friends and chat via your Swift Client account.",
+    "modeLocal": "Local",
+    "modeRemote": "Online",
+    "localHint": "Local mode stores friends and messages on this PC. Cross-device chat needs the Swift online service (same backend as share codes).",
+    "friends": "Friends",
+    "add": "Add",
+    "addPlaceholder": "Minecraft username",
+    "kindMicrosoft": "Microsoft",
+    "kindOffline": "Offline / cracked",
+    "noFriends": "No friends yet. Add someone by username.",
+    "added": "Added {name}",
+    "pickFriend": "Pick a friend to open the chat.",
+    "chatEmpty": "Say hi — or send a screenshot.",
+    "messagePlaceholder": "Write a message…",
+    "attachImage": "Attach image",
+    "send": "Send",
+    "imagePreview": "Image"
   },
   "library": {
     "title": "Instances",
@@ -265,6 +288,9 @@
     "ramHigh": "Allocated RAM ({mb} MB) is close to or above your system memory.",
     "conflict": "{name}: wrong loader ({detail})",
     "duplicate": "{name}: installed more than once",
+    "essential": "Essential is installed — Swift adapts the title menu around it.",
+    "missing_swift_mod": "Swift Client mod is not installed on this instance (UI features will be missing).",
+    "recent_crash": "This instance crashed recently. Check crash reports if launch fails again.",
     "launchAnyway": "Launch anyway"
   },
   "drop": {
@@ -303,16 +329,40 @@
   },
   "settings": {
     "title": "Settings",
+    "subtitle": "Launcher configuration",
+    "nav": {
+      "display": "Display",
+      "game": "Game",
+      "launcher": "Launcher"
+    },
     "appearance": {
       "theme": "Theme",
       "themeDark": "Dark",
       "themeOled": "OLED",
-      "themeDesc": "How dark the interface is."
+      "themeDesc": "How dark the interface is.",
+      "preview": "Live preview",
+      "themes": {
+        "dark": "Dark",
+        "oled": "OLED",
+        "ash": "Ash",
+        "midnight": "Midnight",
+        "ember": "Ember",
+        "aurora": "Aurora"
+      }
     },
     "language": {
       "title": "Language",
       "label": "Language",
-      "auto": "Detected automatically on first run, remembered after that."
+      "auto": "Detected automatically on first run, remembered after that.",
+      "names": {
+        "en": "English",
+        "fr": "French",
+        "de": "German",
+        "es": "Spanish",
+        "pl": "Polish",
+        "ru": "Russian",
+        "zh": "Chinese"
+      }
     },
     "accounts": {
       "title": "Accounts",
@@ -324,6 +374,19 @@
       "setActive": "Set active",
       "noAccounts": "No accounts yet. Sign in to play."
     },
+    "swift": {
+      "title": "Swift Client account",
+      "desc": "Required for CurseForge installs, sharing by code, and online friends chat.",
+      "username": "Username",
+      "password": "Password",
+      "login": "Sign in",
+      "register": "Create account",
+      "logout": "Sign out",
+      "signedIn": "Signed in",
+      "linkMinecraft": "Link Minecraft",
+      "linked": "Minecraft profile linked",
+      "welcome": "Signed in as {name}"
+    },
     "defaults": {
       "title": "Default instance options",
       "memory": "Default memory",
@@ -331,15 +394,26 @@
       "memoryDesc": "Default memory for instances without their own setting."
     },
     "sections": {
-      "privacy": "Privacy",
+      "privacy": "Options",
       "accounts": "Accounts",
       "sync": "Sync",
       "general": "General",
+      "appearance": "Theme",
       "minecraft": "Minecraft",
-      "advanced": "Advanced",
-      "about": "About"
+      "advanced": "Folders",
+      "about": "Updates"
+    },
+    "sectionDesc": {
+      "appearance": "Theme and language for the launcher.",
+      "accounts": "Microsoft and offline profiles used to play.",
+      "minecraft": "Default memory, window and Java for new instances.",
+      "sync": "Share content across your instances.",
+      "privacy": "Playtime tracking and Discord presence.",
+      "advanced": "Launcher folders and default launch hooks.",
+      "about": "Version, updates and legal information."
     },
     "privacy": {
+      "title": "Your data",
       "track_playtime": "Track playtime",
       "track_playtimeDesc": "Measure and store total playtime for each instance.",
       "discord_rpc": "Discord Rich Presence",
@@ -347,30 +421,35 @@
       "noTelemetry": "Swift Client sends no telemetry, analytics or crash data. Nothing leaves your computer except what is needed to download and play Minecraft."
     },
     "java": {
-      "title": "Java installations",
+      "title": "Java",
       "detected": "Detected installations",
-      "autoDetect": "Auto-detect",
+      "autoDetect": "Detect Java",
       "scanning": "Scanning…",
       "noJava": "No Java installations detected.",
       "setDefault": "Set as default",
       "isDefault": "Default",
-      "defaultPath": "Default Java path",
-      "defaultPathHint": "Used when an instance has none (the engine still manages Java itself).",
+      "defaultPath": "Custom Java path",
+      "defaultPathHint": "Leave empty for automatic detection. Used when an instance has no path of its own.",
       "detectedDesc": "Java versions found on your system and in the launcher.",
-      "managed": "Managed automatically",
+      "managed": "Leave empty for automatic detection",
       "browse": "Browse"
     },
     "minecraft": {
       "memoryTitle": "Memory",
+      "memoryUsage": "{total} GB total system RAM",
+      "memoryWarn": "Allocation is high relative to your system RAM — leave headroom for the OS.",
+      "memoryHint": "Recommended: 4 GB for Vanilla, 6–8 GB with mods.",
       "windowTitle": "Game window",
       "resolution": "Resolution",
-      "resolutionDesc": "Default window size when not in fullscreen."
+      "resolutionDesc": "Window size in windowed or borderless mode.",
+      "resetResolution": "Reset"
     },
     "advanced": {
       "launchTitle": "Default launch options",
       "hooksTitle": "Launch hooks",
-      "filesTitle": "Files",
+      "filesTitle": "Game folder",
       "show": "Show",
+      "openFolder": "Open folder",
       "folders": {
         "data": "Launcher data",
         "instances": "Instances",
@@ -379,16 +458,19 @@
     },
     "about": {
       "updates": "Updates",
-      "updatesDesc": "Automatic updates are not available yet. New versions have to be installed manually for now.",
+      "upToDate": "You're up to date",
+      "updateAvailable": "Update {version} is available",
+      "updatesDesc": "Swift checks for launcher updates on demand.",
+      "checking": "Checking…",
+      "check": "Check for updates",
+      "install": "Install and restart",
+      "noEndpoint": "Update server unavailable — install new builds manually for now.",
       "manual": "Manual",
       "online": "Online services",
-      "onlineOn": "CurseForge and instance sharing are available.",
-      "onlineOff": "CurseForge and instance sharing need the Swift Client online service, which is not available yet. Modrinth works normally.",
+      "onlineOn": "CurseForge, instance sharing and online Social are available when you sign in to a Swift Client account.",
+      "onlineOff": "This build has no online service URL. CurseForge and remote sharing stay off; Modrinth and local Social still work.",
       "connected": "Connected",
-      "offline": "Not available",
-      "license": "License",
-      "licenseDesc": "Swift Client is free software under the GPL-3.0, based on {upstream} by {author}.",
-      "source": "Original project"
+      "offline": "Not available"
     }
   },
   "activity": {
@@ -476,6 +558,7 @@
     "installed": "Installed: {name}",
     "noFile": "No downloadable file",
     "add": "Add",
+    "browseHint": "Search and install from Modrinth or CurseForge.",
     "browseMods": "Browse mods",
     "browseModpacks": "Browse modpacks",
     "latest": "Latest",
@@ -559,6 +642,7 @@
     "noCape": "No cape",
     "capeSet": "Cape updated",
     "title": "Skin selector",
+    "subtitle": "Preview, save and apply your Minecraft skins.",
     "capesButton": "Capes",
     "capesDemo": "Sign in with Microsoft to wear a cape.",
     "capesEmpty": "You do not own any capes.",
@@ -588,22 +672,28 @@
     "repairHint": "Reinstalls and verifies the game files.",
     "repaired": "Repair complete",
     "customWindow": "Custom window settings",
+    "displayMode": "Display mode",
+    "displayModeDesc": "How Minecraft opens. Borderless = fullscreen window (not exclusive) — best with Discord / alt-tab.",
+    "displayWindowed": "Windowed",
+    "displayFullscreen": "Fullscreen (exclusive)",
+    "displayBorderless": "Borderless fullscreen",
+    "displayBorderlessHint": "Uses fullscreen:true + exclusiveFullscreen:false — monitor-sized window without exclusive GPU mode.",
     "fullscreen": "Fullscreen",
     "width": "Width",
     "height": "Height",
     "customJava": "Custom Java install",
-    "javaPathNote": "Saved, but the engine manages Java itself (not applied at launch yet).",
+    "javaPathNote": "Saved for future use; managed Java still preferred for Minecraft 26+.",
     "customMemory": "Custom memory allocation",
     "memory": "Allocated memory",
     "customJavaArgs": "Custom Java arguments",
     "customEnv": "Environment variables",
     "addEnv": "Add variable",
-    "envNote": "Saved (the engine does not apply these at launch yet).",
+    "envNote": "Injected into the game process at launch.",
     "customHooks": "Custom launch hooks",
     "preLaunch": "Pre-launch",
     "preLaunchHint": "Command run before the game starts.",
     "wrapper": "Wrapper",
-    "wrapperHint": "Wrapper command (saved, not applied yet).",
+    "wrapperHint": "Command that wraps Java (e.g. gamemoderun). Runs as: wrapper … javaw plus its arguments.",
     "postExit": "Post-exit",
     "postExitHint": "Command run after the game closes.",
     "nameDesc": "Display name of the instance.",
@@ -615,7 +705,7 @@
     "customMemoryDesc": "Override the default memory for this instance.",
     "memoryDesc": "Maximum heap memory allocated to the game.",
     "customJavaArgsDesc": "Extra JVM arguments added at launch.",
-    "customEnvDesc": "Environment variables set for the game process.",
+    "customEnvDesc": "Environment variables set for the game process at launch.",
     "customHooksDesc": "Run custom system commands around game launch.",
     "requiredJava": "Minecraft {version} requires Java {major}. The launcher selects it automatically.",
     "javaDetected": "Detected on your system: {label}",
@@ -673,6 +763,9 @@
   "sync": {
     "title": "Sync across instances",
     "desc": "Keep chosen settings identical in every instance. Changes made in one game are picked up when it closes and applied to the others the next time they start.",
+    "announceTitle": "Sync is ready",
+    "announceDesc": "Share game options, servers and packs across your instances from Settings → Sync.",
+    "announceAction": "Open Sync",
     "sourceTitle": "Choose sync source",
     "sourceDesc": "Pick the instance to copy from. Its state seeds the shared copy; afterwards you can edit it from any instance.",
     "sourceSearch": "Search instance",

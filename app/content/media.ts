@@ -1,7 +1,8 @@
 /**
- * Images behind the Home play area. They rotate with a crossfade.
+ * Image behind the Home play area.
  *
- * To change them, drop files in `public/images/hero/` and list them here.
+ * Drop files in `public/images/hero/` and list them here.
+ * Only the first entry is used as a static backdrop (no rotation).
  * `position` is the CSS object-position that keeps the interesting part of the
  * picture in frame when the hero is wide and short.
  */
@@ -11,12 +12,10 @@ export interface HeroBackground {
 }
 
 export const HERO_BACKGROUNDS: HeroBackground[] = [
-  { src: '/images/hero/village.png', position: '50% 35%' },
   { src: '/images/hero/bees.png', position: '50% 45%' },
-  { src: '/images/hero/caves.jpg', position: '50% 40%' },
 ]
 
-/** Time each background stays on screen. */
+/** Unused while a single backdrop is shown; kept for a future multi-bg mode. */
 export const HERO_ROTATE_MS = 14_000
 
 /** Shown when HERO_BACKGROUNDS is empty. */

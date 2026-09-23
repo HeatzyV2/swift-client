@@ -236,9 +236,19 @@ pub fn set_mod_enabled(instance_id: String, filename: String, enabled: bool) -> 
 #[tauri::command]
 pub async fn delete_mod(instance_id: String, filename: String) -> AppResult<()> {
     crate::blocking(move || {
-        let dir = paths::instance_game_dir(&instance_id).join("mods");
+        let index = modrinth::read_content_index(&instance_id);
+        let kind = index
+            .items
+            .iter()
+            .find(|i| i.filename == filename)
+            .map(|i| i.kind.as_str())
+            .unwrap_or("mod");
+        let (folder, _) = kind_layout(kind);
+        let dir = paths::instance_game_dir(&instance_id).join(folder);
         for p in [dir.join(&filename), dir.join(format!("{filename}.disabled"))] {
-            if p.exists() {
+            if p.is_dir() {
+                std::fs::remove_dir_all(&p).map_err(|e| e.to_string())?;
+            } else if p.exists() {
                 std::fs::remove_file(&p).map_err(|e| e.to_string())?;
             }
         }

@@ -41,7 +41,8 @@
 }
 
 :root,
-.dark {
+.dark,
+html.theme-dark {
 	--sw-canvas: #0a0b0d;
 	--sw-stage: #0d0e11;
 	--sw-surface: #111317;
@@ -56,6 +57,7 @@
 	--sw-success: #3ecf8e;
 	--sw-warning: #f5b544;
 	--sw-danger: #f2555a;
+	--sw-radius-panel: 14px;
 
 	--ui-bg: var(--sw-canvas);
 	--ui-bg-muted: var(--sw-surface);
@@ -73,17 +75,84 @@
 	--ui-text-highlighted: #f3f4f6;
 	--ui-text-inverted: var(--color-neutral-950);
 	--ui-primary: var(--sw-accent);
-	--ui-radius: 0.375rem;
+	--ui-radius: 0.5rem;
 }
 
+/* OLED — pure black canvas, same blue accent */
+html.theme-oled,
 html.oled {
 	--sw-canvas: #000000;
 	--sw-stage: #000000;
-	--sw-surface: #07080a;
-	--sw-surface-2: #0c0d10;
-	--sw-surface-3: #131519;
-	--sw-line: #181a1f;
-	--sw-line-soft: #101215;
+	--sw-surface: #0a0a0a;
+	--sw-surface-2: #111111;
+	--sw-surface-3: #1a1a1a;
+	--sw-line: #1c1c1c;
+	--sw-line-soft: #141414;
+	--sw-line-strong: #2a2a2a;
+}
+
+/* Ash — cool graphite, softer contrast */
+html.theme-ash {
+	--sw-canvas: #121314;
+	--sw-stage: #161718;
+	--sw-surface: #1a1b1d;
+	--sw-surface-2: #202224;
+	--sw-surface-3: #282a2d;
+	--sw-line: #2e3034;
+	--sw-line-soft: #242628;
+	--sw-line-strong: #3a3d42;
+	--sw-accent: #8b93a1;
+	--sw-accent-hover: #a8b0bc;
+	--sw-accent-soft: rgb(139 147 161 / 0.14);
+	--ui-primary: var(--sw-accent);
+}
+
+/* Midnight — deep navy with electric blue */
+html.theme-midnight {
+	--sw-canvas: #06080f;
+	--sw-stage: #080b14;
+	--sw-surface: #0c101c;
+	--sw-surface-2: #111827;
+	--sw-surface-3: #182038;
+	--sw-line: #1c2740;
+	--sw-line-soft: #121a2c;
+	--sw-line-strong: #2a3a5c;
+	--sw-accent: #4d8dff;
+	--sw-accent-hover: #6ea3ff;
+	--sw-accent-soft: rgb(77 141 255 / 0.16);
+	--ui-primary: var(--sw-accent);
+}
+
+/* Ember — warm charcoal with amber accent */
+html.theme-ember {
+	--sw-canvas: #0e0b09;
+	--sw-stage: #120e0b;
+	--sw-surface: #181210;
+	--sw-surface-2: #1f1714;
+	--sw-surface-3: #2a1f1a;
+	--sw-line: #322620;
+	--sw-line-soft: #221915;
+	--sw-line-strong: #45352c;
+	--sw-accent: #e8953a;
+	--sw-accent-hover: #f0a954;
+	--sw-accent-soft: rgb(232 149 58 / 0.14);
+	--ui-primary: var(--sw-accent);
+}
+
+/* Aurora — cool dark with teal accent */
+html.theme-aurora {
+	--sw-canvas: #060c0c;
+	--sw-stage: #081010;
+	--sw-surface: #0c1515;
+	--sw-surface-2: #11201f;
+	--sw-surface-3: #182b2a;
+	--sw-line: #1e3534;
+	--sw-line-soft: #142221;
+	--sw-line-strong: #2c4a48;
+	--sw-accent: #2dd4bf;
+	--sw-accent-hover: #5eead4;
+	--sw-accent-soft: rgb(45 212 191 / 0.14);
+	--ui-primary: var(--sw-accent);
 }
 
 html,
@@ -108,7 +177,7 @@ body {
 }
 
 ::selection {
-	background: rgb(46 124 255 / 0.35);
+	background: color-mix(in srgb, var(--sw-accent) 35%, transparent);
 }
 
 input::placeholder,
@@ -136,7 +205,37 @@ textarea::placeholder {
 .sw-panel {
 	background: var(--sw-surface);
 	border: 1px solid var(--sw-line);
+	border-radius: var(--sw-radius-panel, 14px);
+}
+
+/* Settings card — padded section container */
+.sw-settings-card {
+	background: var(--sw-surface);
+	border: 1px solid var(--sw-line);
+	border-radius: var(--sw-radius-panel, 14px);
+	padding: 1.25rem 1.35rem;
+}
+
+/* Selectable chip (theme / language) */
+.sw-choice {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
 	border-radius: 10px;
+	border: 1.5px solid var(--sw-line);
+	background: var(--sw-surface-2);
+	padding: 0.7rem 0.9rem;
+	text-align: left;
+	transition: border-color 140ms var(--ease-swift), background-color 140ms var(--ease-swift);
+}
+.sw-choice:hover {
+	background: var(--sw-surface-3);
+	border-color: var(--sw-line-strong);
+}
+.sw-choice.is-active {
+	border-color: #ffffff;
+	background: var(--sw-surface-3);
+	box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
 }
 
 .sw-panel-interactive {

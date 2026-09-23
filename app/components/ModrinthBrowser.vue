@@ -3,6 +3,14 @@
         <div class="space-y-2 border-b border-default px-4 py-3">
           <div class="flex flex-wrap items-center gap-2">
             <USelect
+              v-if="showKindPicker"
+              :model-value="localKind"
+              :items="kindItems"
+              value-key="value"
+              class="w-44"
+              @update:model-value="onKindPick"
+            />
+            <USelect
               v-if="providerItems.length > 1"
               v-model="provider"
               :items="providerItems"
@@ -397,9 +405,10 @@
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import { invoke } from '@tauri-apps/api/core'
 import { openExternal as openUrl } from '~/utils/openExternal'
-import type { ModrinthHit, ModrinthVersion, ModrinthCategory, ModrinthProjectType, InstalledItem } from '~/types/modrinth'
+import type { ModrinthHit, ModrinthVersion, ModrinthCategory, ModrinthProjectType, InstalledItem, ContentKind } from '~/types/modrinth'
 import type { LoaderType, Instance } from '~/types/launcher'
 import type { ContentWindowConfig } from '~/composables/useContentWindow'
+import { INSTALLABLE_KINDS, searchProjectType, baseCategories, usesLoaderFilter, loaderFacetFor, compactNumber } from '~/utils/modrinth'
 
 const props = defineProps<{ config: ContentWindowConfig }>()
 const emit = defineEmits<{ installed: [Instance | undefined]; close: [] }>()
@@ -425,9 +434,21 @@ const activity = useActivityCenter()
 const toast = useToast()
 const { t } = useI18n()
 
-const kind = computed(() => config.value?.kind ?? 'mod')
 const mode = computed(() => config.value?.mode ?? 'install')
+const localKind = ref<ContentKind>('mod')
+const kind = computed({
+  get: () => localKind.value,
+  set: (v: ContentKind) => { localKind.value = v },
+})
 const showLoaderFilter = computed(() => usesLoaderFilter(kind.value))
+const showKindPicker = computed(() => mode.value === 'install')
+
+const kindItems = computed(() =>
+  INSTALLABLE_KINDS.map(k => ({
+    label: t(`instance.tabs.${k === 'resourcepack' ? 'resourcepacks' : k === 'shader' ? 'shaders' : k === 'datapack' ? 'datapacks' : 'mods'}`),
+    value: k,
+  })),
+)
 
 const title = computed(() => t(`modrinth.title.${kind.value}`))
 const installLabel = computed(() =>
@@ -510,7 +531,7 @@ const installedIds = ref<Set<string>>(new Set())
 const installedItems = ref<Map<string, InstalledItem>>(new Map())
 
 const selectedInstalled = computed(() =>
-  selected.value && kind.value === 'mod' ? installedItems.value.get(selected.value.project_id) ?? null : null,
+  selected.value ? installedItems.value.get(selected.value.project_id) ?? null : null,
 )
 
 const latest = computed<ModrinthVersion | null>(() =>
@@ -885,8 +906,16 @@ async function applyConfig() {
   curseforge.enabled().then(v => (cfEnabled.value = v)).catch(() => (cfEnabled.value = false))
   query.value = cfg.query ?? ''
   if (cfg.query) sort.value = 'relevance'
+  // Follow the parent tab when possible; modpack mode stays on modpacks.
+  if (cfg.mode === 'createModpack') {
+    localKind.value = 'modpack'
+  } else if (INSTALLABLE_KINDS.includes(cfg.kind)) {
+    localKind.value = cfg.kind
+  } else {
+    localKind.value = 'mod'
+  }
   gameVersion.value = cfg.gameVersion ?? ANY
-  loader.value = usesLoaderFilter(cfg.kind) ? (cfg.loader ?? ANY) : ANY
+  loader.value = usesLoaderFilter(localKind.value) ? (cfg.loader ?? ANY) : ANY
   selectedCategories.value = []
   showFilters.value = false
   selected.value = null
@@ -905,10 +934,24 @@ async function applyConfig() {
 
 watch(config, applyConfig, { immediate: true, deep: true })
 
+function onKindPick(value: string | ContentKind) {
+  const next = value as ContentKind
+  if (next === localKind.value) return
+  localKind.value = next
+  loader.value = usesLoaderFilter(next) ? (config.value?.loader ?? ANY) : ANY
+  selectedCategories.value = []
+  selected.value = null
+  versions.value = []
+  hits.value = []
+  loadCategories()
+  runSearch(false)
+}
+
 function loadCategories() {
-  const k = config.value?.kind ?? 'mod'
+  const k = localKind.value
   categories.value = []
-  const p = isCf.value ? curseforge.categories(k) : modrinth.categories(searchProjectType(k))
+  const type = k === 'modpack' ? 'modpack' : searchProjectType(k)
+  const p = isCf.value ? curseforge.categories(k) : modrinth.categories(type)
   p.then(c => (categories.value = c)).catch(() => { categories.value = [] })
 }
 

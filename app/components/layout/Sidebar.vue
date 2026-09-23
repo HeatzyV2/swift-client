@@ -10,6 +10,7 @@
 const primary = [
   { to: '/', icon: 'i-lucide-house', label: 'nav.home', exact: true },
   { to: '/instances', icon: 'i-lucide-layers', label: 'nav.instances', match: ['/instances', '/instance/'] },
+  { to: '/social', icon: 'i-lucide-users', label: 'nav.social' },
   { to: '/worlds', icon: 'i-lucide-globe', label: 'nav.worlds' },
   { to: '/screenshots', icon: 'i-lucide-camera', label: 'nav.screenshots' },
   { to: '/skins', icon: 'i-lucide-shirt', label: 'nav.skins' },

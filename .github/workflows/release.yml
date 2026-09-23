@@ -154,7 +154,7 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SWIFT_BACKEND_URL: ${{ vars.SWIFT_BACKEND_URL }}
+          SWIFT_BACKEND_URL: ${{ vars.SWIFT_BACKEND_URL != '' && vars.SWIFT_BACKEND_URL || 'http://151.240.30.3:10049' }}
           DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
         with:
           tagName: v${{ needs.prepare.outputs.version }}

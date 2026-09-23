@@ -1,14 +1,21 @@
 import { defineStore } from 'pinia'
 
-/** Swift Client has one visual identity; the only choice is how dark the base is. */
-export type ThemeMode = 'dark' | 'oled'
+/** Visual themes for Swift Client — base surfaces + accent character. */
+export type ThemeMode = 'dark' | 'oled' | 'ash' | 'midnight' | 'ember' | 'aurora'
+
+export const THEME_MODES: ThemeMode[] = ['dark', 'oled', 'ash', 'midnight', 'ember', 'aurora']
 
 const STORAGE_KEY = 'swift-theme'
+
+function isThemeMode(value: string | null): value is ThemeMode {
+  return !!value && (THEME_MODES as string[]).includes(value)
+}
 
 function loadMode(): ThemeMode {
   if (!import.meta.client) return 'dark'
   try {
-    return localStorage.getItem(STORAGE_KEY) === 'oled' ? 'oled' : 'dark'
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return isThemeMode(stored) ? stored : 'dark'
   } catch {
     return 'dark'
   }
@@ -24,7 +31,12 @@ export const useThemeStore = defineStore('theme', {
       } catch {
         document.documentElement.classList.add('dark')
       }
-      document.documentElement.classList.toggle('oled', this.mode === 'oled')
+      const root = document.documentElement
+      root.classList.remove('oled', ...THEME_MODES.map(m => `theme-${m}`))
+      root.classList.add(`theme-${this.mode}`)
+      // Keep legacy `.oled` for any remaining selectors during transition
+      if (this.mode === 'oled') root.classList.add('oled')
+      root.dataset.swTheme = this.mode
     },
 
     setMode(mode: ThemeMode) {

@@ -23,7 +23,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
 import type { UnlistenFn } from '@tauri-apps/api/event'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const route = useRoute()
 const isContentWindow = computed(() => route.path.startsWith('/browser'))
@@ -41,6 +41,26 @@ useHead({ title: BRAND.name })
 
 const unlisteners: UnlistenFn[] = []
 
+function discordScreenFromPath(path: string): string {
+  if (path === '/' || path === '') return 'home'
+  if (path.startsWith('/instance/')) return 'instance'
+  if (path.startsWith('/instances')) return 'instances'
+  if (path.startsWith('/social')) return 'social'
+  if (path.startsWith('/worlds')) return 'worlds'
+  if (path.startsWith('/screenshots')) return 'screenshots'
+  if (path.startsWith('/skins')) return 'skins'
+  if (path.startsWith('/settings')) return 'settings'
+  return 'home'
+}
+
+function syncDiscordPresence() {
+  if (isContentWindow.value) return
+  invoke('discord_sync', {
+    locale: locale.value,
+    screen: discordScreenFromPath(route.path),
+  }).catch(() => {})
+}
+
 async function openInstanceAndPlay(instanceId: string) {
   await instances.ensureLoaded()
   if (!instances.instances.some(i => i.id === instanceId)) return
@@ -48,13 +68,35 @@ async function openInstanceAndPlay(instanceId: string) {
   launchFlow.play(instanceId)
 }
 
+watch([locale, () => route.path], () => syncDiscordPresence())
+
 onMounted(async () => {
   if (isContentWindow.value) return
 
+  syncDiscordPresence()
   activity.attach()
   activity.withTask(t('activity.optimizing'), () => invoke('migrate_shared_dirs')).catch(() => {})
   instances.ensureLoaded()
   accounts.ensureLoaded()
+
+  // One-shot toast when Sync was just introduced on an existing install.
+  invoke<boolean>('take_sync_announcement').then((show) => {
+    if (!show) return
+    toast.add({
+      title: t('sync.announceTitle'),
+      description: t('sync.announceDesc'),
+      icon: 'i-lucide-refresh-cw',
+      color: 'primary',
+      actions: [{
+        label: t('sync.announceAction'),
+        onClick: () => {
+          router.push('/settings?section=sync')
+          invoke('mark_sync_announcement_seen').catch(() => {})
+        },
+      }],
+    })
+    invoke('mark_sync_announcement_seen').catch(() => {})
+  }).catch(() => {})
 
   // Desktop shortcuts: swift://launch/<id>
   unlisteners.push(await listen<string>('launch://open', async (e) => {

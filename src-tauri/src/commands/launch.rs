@@ -2,10 +2,11 @@ use lyceris::auth::AuthMethod;
 use lyceris::minecraft::config::{ConfigBuilder, Memory};
 use lyceris::minecraft::emitter::{Emitter, Event};
 use lyceris::minecraft::install::install;
-use lyceris::minecraft::launch::launch;
 use lyceris::minecraft::loader::{
     fabric::Fabric, forge::Forge, neoforge::NeoForge, quilt::Quilt, Loader as LyLoader,
 };
+
+use crate::commands::wrapped_launch::{launch_with_extras, LaunchExtras};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Emitter as _, Manager, State};
 
@@ -173,6 +174,75 @@ fn link_shared_dirs(id: &str) {
     }
 }
 
+/// Write Minecraft options so the launcher display mode actually sticks.
+/// Without this, a leftover `exclusiveFullscreen:true` forces exclusive FS.
+fn apply_display_mode_to_options(
+    id: &str,
+    mode: crate::models::DisplayMode,
+    width: Option<u32>,
+    height: Option<u32>,
+) {
+    let path = paths::instance_game_dir(id).join("options.txt");
+    let mut body = if path.is_file() {
+        std::fs::read_to_string(&path).unwrap_or_default()
+    } else {
+        String::new()
+    };
+
+    let (fs, exclusive) = match mode {
+        crate::models::DisplayMode::Fullscreen => (true, true),
+        crate::models::DisplayMode::Borderless => (true, false),
+        crate::models::DisplayMode::Windowed => (false, false),
+    };
+
+    body = upsert_option_line(&body, "fullscreen", if fs { "true" } else { "false" });
+    body = upsert_option_line(
+        &body,
+        "exclusiveFullscreen",
+        if exclusive { "true" } else { "false" },
+    );
+
+    // Keep a sane windowed size after F11 (modern MC + DisplayModeFix).
+    if !matches!(mode, crate::models::DisplayMode::Fullscreen) {
+        if let Some(w) = width.filter(|w| *w >= 640) {
+            body = upsert_option_line(&body, "overrideWidth", &w.to_string());
+        }
+        if let Some(h) = height.filter(|h| *h >= 480) {
+            body = upsert_option_line(&body, "overrideHeight", &h.to_string());
+        }
+    }
+
+    if let Err(e) = std::fs::write(&path, body) {
+        log::warn!("could not write display mode into options.txt for {id}: {e}");
+    } else {
+        log::info!(
+            "options.txt display mode for {id}: fullscreen={fs} exclusive={exclusive} ({mode:?})"
+        );
+    }
+}
+
+fn upsert_option_line(body: &str, key: &str, value: &str) -> String {
+    let prefix = format!("{key}:");
+    let replacement = format!("{key}:{value}");
+    let mut found = false;
+    let mut out = String::with_capacity(body.len() + 32);
+    for line in body.lines() {
+        if line.starts_with(&prefix) {
+            out.push_str(&replacement);
+            out.push('\n');
+            found = true;
+        } else {
+            out.push_str(line);
+            out.push('\n');
+        }
+    }
+    if !found {
+        out.push_str(&replacement);
+        out.push('\n');
+    }
+    out
+}
+
 #[tauri::command]
 pub async fn migrate_shared_dirs() {
     let _ = crate::blocking(|| {
@@ -188,6 +258,9 @@ fn migrate_shared_dirs_blocking() {
         let id = entry.file_name().to_string_lossy().into_owned();
         if paths::instance_config_file(&id).is_file() {
             link_shared_dirs(&id);
+            if let Err(e) = crate::commands::client_mod::ensure_installed(&id) {
+                log::warn!("client mod seed for {id}: {e}");
+            }
         }
     }
 }
@@ -309,28 +382,52 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
     } else {
         settings.default_java_args.clone()
     };
-    let (fullscreen, width, height) = if instance.override_window {
-        (instance.fullscreen, instance.width, instance.height)
+    let (display_mode, width, height) = if instance.override_window {
+        (instance.resolved_display_mode(), instance.width, instance.height)
     } else {
-        (settings.default_fullscreen, settings.default_width, settings.default_height)
+        (settings.resolved_display_mode(), settings.default_width, settings.default_height)
     };
-    let (pre_launch, post_exit) = if instance.override_hooks {
-        (instance.pre_launch.clone(), instance.post_exit.clone())
+    let (pre_launch, post_exit, wrapper) = if instance.override_hooks {
+        (
+            instance.pre_launch.clone(),
+            instance.post_exit.clone(),
+            instance.wrapper.clone(),
+        )
     } else {
-        (settings.default_pre_launch.clone(), settings.default_post_exit.clone())
+        (
+            settings.default_pre_launch.clone(),
+            settings.default_post_exit.clone(),
+            settings.default_wrapper.clone(),
+        )
+    };
+    let env_vars: Vec<(String, String)> = {
+        let vars = if instance.override_env {
+            &instance.env_vars
+        } else {
+            &settings.default_env_vars
+        };
+        vars.iter()
+            .filter(|e| !e.key.trim().is_empty())
+            .map(|e| (e.key.clone(), e.value.clone()))
+            .collect()
     };
 
     let mut game_args: Vec<String> = Vec::new();
-    if fullscreen {
-        game_args.push("--fullscreen".into());
-    }
-    if let Some(w) = width {
-        game_args.push("--width".into());
-        game_args.push(w.to_string());
-    }
-    if let Some(h) = height {
-        game_args.push("--height".into());
-        game_args.push(h.to_string());
+    match display_mode {
+        crate::models::DisplayMode::Fullscreen => {
+            game_args.push("--fullscreen".into());
+        }
+        crate::models::DisplayMode::Windowed | crate::models::DisplayMode::Borderless => {
+            // Borderless uses the same windowed resolution (no exclusive --fullscreen).
+            if let Some(w) = width {
+                game_args.push("--width".into());
+                game_args.push(w.to_string());
+            }
+            if let Some(h) = height {
+                game_args.push("--height".into());
+                game_args.push(h.to_string());
+            }
+        }
     }
     match quick_play {
         Some(QuickPlay::Singleplayer { world }) => {
@@ -353,9 +450,14 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
     }
 
     link_shared_dirs(id);
+    if let Err(e) = crate::commands::client_mod::ensure_installed(id) {
+        log::warn!("could not install Swift client mod into {id}: {e}");
+    }
     if let Err(e) = crate::commands::sync::pull(id, &instance.mc_version) {
         log::warn!("could not apply synced options to {id}: {e}");
     }
+    // After sync pull — otherwise shared `fullscreen` would clobber launcher choice.
+    apply_display_mode_to_options(id, display_mode, width, height);
     let builder = ConfigBuilder::new(paths::instance_game_dir(id), instance.mc_version.clone(), auth)
         .memory(Memory::Megabyte(memory_mb))
         .runtime_dir(paths::runtimes_dir())
@@ -365,6 +467,10 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
 
     let emitter = build_emitter(app, id).await;
     let app_state = app.state::<AppState>();
+    let extras = LaunchExtras {
+        env_vars: &env_vars,
+        wrapper: wrapper.as_deref(),
+    };
 
     let mut child = match to_lyceris_loader(&instance.loader, &instance.mc_version) {
         None => {
@@ -375,7 +481,7 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
                     .await
                     .map_err(|e| format!("install failed: {e}"))?;
             }
-            launch(&config, Some(&emitter))
+            launch_with_extras(&config, Some(&emitter), extras)
                 .await
                 .map_err(|e| format!("launch failed: {e}"))?
         }
@@ -387,7 +493,7 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
                     .await
                     .map_err(|e| format!("install failed: {e}"))?;
             }
-            launch(&config, Some(&emitter))
+            launch_with_extras(&config, Some(&emitter), extras)
                 .await
                 .map_err(|e| format!("launch failed: {e}"))?
         }
@@ -405,8 +511,20 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
     }
 
     if discord_rpc {
+        let started_at = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_secs() as i64)
+            .unwrap_or(0);
         if let Ok(mut map) = app_state.discord_playing.lock() {
-            map.insert(id.to_string(), (instance.name.clone(), instance.mc_version.clone()));
+            map.insert(
+                id.to_string(),
+                crate::discord::DiscordSession {
+                    name: instance.name.clone(),
+                    mc_version: instance.mc_version.clone(),
+                    loader: crate::discord::loader_label(&instance.loader).to_string(),
+                    started_at,
+                },
+            );
         }
         crate::discord::update_presence(&app_state);
     }
@@ -763,6 +881,49 @@ mod deep_link_tests {
         assert_eq!(instance_id_from_url("swift://launch/"), None);
         assert_eq!(instance_id_from_url("swift://launch/../../etc/passwd"), None);
         assert_eq!(instance_id_from_url("swift://launch/a b"), None);
+    }
+}
+
+#[cfg(test)]
+mod display_mode_tests {
+    use super::{apply_display_mode_to_options, upsert_option_line};
+    use crate::models::DisplayMode;
+    use crate::paths;
+    use std::fs;
+
+    #[test]
+    fn upsert_replaces_and_appends() {
+        let body = "fov:1.0\nfullscreen:true\nlang:en_us\n";
+        let next = upsert_option_line(body, "fullscreen", "false");
+        assert!(next.contains("fullscreen:false\n"));
+        assert!(!next.contains("fullscreen:true"));
+        let with_new = upsert_option_line(next.as_str(), "exclusiveFullscreen", "false");
+        assert!(with_new.contains("exclusiveFullscreen:false\n"));
+    }
+
+    #[test]
+    fn borderless_writes_non_exclusive_and_size() {
+        let _guard = paths::lock_data_dir();
+        let root = std::env::temp_dir().join(format!("swift-disp-{}", uuid::Uuid::new_v4()));
+        std::env::set_var("SWIFT_DATA_DIR", &root);
+        let id = "inst";
+        let game = paths::instance_game_dir(id);
+        fs::create_dir_all(&game).unwrap();
+        fs::write(
+            game.join("options.txt"),
+            "fullscreen:true\nexclusiveFullscreen:true\n",
+        )
+        .unwrap();
+
+        apply_display_mode_to_options(id, DisplayMode::Borderless, Some(1920), Some(1080));
+        let body = fs::read_to_string(game.join("options.txt")).unwrap();
+        assert!(body.contains("fullscreen:true"));
+        assert!(body.contains("exclusiveFullscreen:false"));
+        assert!(body.contains("overrideWidth:1920"));
+        assert!(body.contains("overrideHeight:1080"));
+
+        fs::remove_dir_all(&root).unwrap();
+        std::env::remove_var("SWIFT_DATA_DIR");
     }
 }
 

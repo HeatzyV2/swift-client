@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "首页",
     "worlds": "世界",
@@ -6,7 +6,8 @@
     "skins": "皮肤",
     "settings": "设置",
     "lastPlayed": "最近游玩",
-    "newInstance": "新建实例"
+    "newInstance": "新建实例",
+    "social": "社交"
   },
   "create": {
     "title": "创建实例",
@@ -41,7 +42,8 @@
       "fromFileDesc": "从磁盘选择 Modrinth .mrpack 或 Swift Client 备份 .zip。",
       "chooseFile": "选择文件",
       "fromLauncher": "从其他启动器",
-      "fromLauncherDesc": "检测到的来自 Prism、CurseForge 和 Modrinth 应用的实例。",
+      "fromLauncherDesc": "Lunar、Dawn、Spectra、Modrinth App、Prism 和 MultiMC。",
+      "allLaunchers": "全部",
       "none": "在其他启动器中未找到实例。",
       "importBtn": "导入",
       "fromCode": "使用分享代码",
@@ -294,13 +296,31 @@
     "appearance": {
       "theme": "主题",
       "themeDark": "深色",
-      "themeOled": "OLED（纯黑）",
-      "themeDesc": "选择界面的暗度。"
+      "themeOled": "OLED",
+      "themeDesc": "选择界面的暗度。",
+      "preview": "实时预览",
+      "themes": {
+        "dark": "深色",
+        "oled": "OLED",
+        "ash": "Ash",
+        "midnight": "Midnight",
+        "ember": "Ember",
+        "aurora": "Aurora"
+      }
     },
     "language": {
       "title": "语言",
       "label": "界面语言",
-      "auto": "首次运行时自动检测，之后记住。"
+      "auto": "首次运行时自动检测，之后记住。",
+      "names": {
+        "en": "英语",
+        "fr": "法语",
+        "de": "德语",
+        "es": "西班牙语",
+        "pl": "波兰语",
+        "ru": "俄语",
+        "zh": "中文"
+      }
     },
     "accounts": {
       "title": "账户",
@@ -319,27 +339,84 @@
       "memoryDesc": "没有自己设置的实例的默认内存。"
     },
     "sections": {
-      "privacy": "隐私",
+      "privacy": "选项",
       "accounts": "账户",
-      "sync": "同步"
+      "sync": "同步",
+      "general": "通用",
+      "appearance": "主题",
+      "minecraft": "Minecraft",
+      "advanced": "文件夹",
+      "about": "更新"
     },
     "privacy": {
       "track_playtime": "记录游玩时长",
       "track_playtimeDesc": "测量并保存每个实例的总游玩时长。",
       "discord_rpc": "Discord Rich Presence",
-      "discord_rpcDesc": "在 Discord 上显示你正在玩什么。"
+      "discord_rpcDesc": "在 Discord 上显示你正在玩什么。",
+      "title": "我的数据",
+      "noTelemetry": "Swift Client 不发送遥测、分析或崩溃数据。"
     },
     "java": {
-      "title": "Java 安装",
+      "title": "Java",
       "detected": "检测到的安装",
-      "autoDetect": "自动检测",
+      "autoDetect": "检测 Java",
       "scanning": "扫描中…",
       "noJava": "未检测到 Java 安装。",
       "setDefault": "设为默认",
       "isDefault": "默认",
-      "defaultPath": "默认 Java 路径",
-      "defaultPathHint": "当实例没有时使用（引擎仍会自行管理 Java）。",
-      "detectedDesc": "在你的系统和启动器中找到的 Java 版本。"
+      "defaultPath": "自定义 Java 路径",
+      "defaultPathHint": "留空以自动检测。",
+      "detectedDesc": "在系统和启动器中找到的 Java 版本。",
+      "managed": "留空以自动检测",
+      "browse": "浏览"
+    },
+    "subtitle": "启动器配置",
+    "nav": {
+      "display": "显示",
+      "game": "游戏",
+      "launcher": "启动器"
+    },
+    "sectionDesc": {
+      "appearance": "启动器主题与语言。",
+      "accounts": "用于游玩的 Microsoft 与离线账户。",
+      "minecraft": "新实例的默认内存、窗口与 Java。",
+      "sync": "在实例间共享内容。",
+      "privacy": "游玩时长与 Discord 状态。",
+      "advanced": "启动器文件夹与启动钩子。",
+      "about": "版本、更新与法律信息。"
+    },
+    "minecraft": {
+      "memoryTitle": "内存",
+      "memoryUsage": "系统共 {total} GB 内存",
+      "memoryWarn": "分配量相对系统内存偏高。",
+      "memoryHint": "建议：原版 4 GB，模组 6–8 GB。",
+      "windowTitle": "游戏窗口",
+      "resolution": "分辨率",
+      "resolutionDesc": "非全屏时的默认窗口大小。",
+      "resetResolution": "重置"
+    },
+    "advanced": {
+      "launchTitle": "默认启动选项",
+      "hooksTitle": "启动钩子",
+      "filesTitle": "游戏文件夹",
+      "show": "显示",
+      "openFolder": "打开文件夹",
+      "folders": {
+        "data": "启动器数据",
+        "instances": "实例",
+        "logs": "启动器日志"
+      }
+    },
+    "about": {
+      "updates": "更新",
+      "upToDate": "已是最新版本",
+      "updatesDesc": "自动更新尚不可用，需手动安装新版本。",
+      "manual": "手动",
+      "online": "在线服务",
+      "onlineOn": "CurseForge 与实例共享可用。",
+      "onlineOff": "CurseForge 与实例共享需要在线服务。",
+      "connected": "已连接",
+      "offline": "不可用"
     }
   },
   "activity": {
@@ -537,6 +614,11 @@
     "repairHint": "重新安装并校验游戏文件。",
     "repaired": "修复完成",
     "customWindow": "自定义窗口设置",
+    "displayMode": "显示模式",
+    "displayModeDesc": "启动 Minecraft — 无边框模式使用窗口模式所选的分辨率。",
+    "displayWindowed": "窗口",
+    "displayFullscreen": "全屏",
+    "displayBorderless": "无边框全屏",
     "fullscreen": "全屏",
     "width": "宽度",
     "height": "高度",

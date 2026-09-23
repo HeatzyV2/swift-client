@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "Inicio",
     "worlds": "Mundos",
@@ -6,7 +6,8 @@
     "skins": "Skins",
     "settings": "Ajustes",
     "lastPlayed": "Jugado por última vez",
-    "newInstance": "Nueva instancia"
+    "newInstance": "Nueva instancia",
+    "social": "Social"
   },
   "create": {
     "title": "Crear instancia",
@@ -41,7 +42,8 @@
       "fromFileDesc": "Elige un .mrpack de Modrinth o una copia de seguridad .zip de Swift Client de tu disco.",
       "chooseFile": "Elegir archivo",
       "fromLauncher": "Desde otro launcher",
-      "fromLauncherDesc": "Instancias detectadas de Prism, CurseForge y la app de Modrinth.",
+      "fromLauncherDesc": "Lunar, Dawn, Spectra, Modrinth App, Prism y MultiMC.",
+      "allLaunchers": "Todos",
       "none": "No se encontraron instancias en otros launchers.",
       "importBtn": "Importar",
       "fromCode": "Con un código",
@@ -294,13 +296,31 @@
     "appearance": {
       "theme": "Tema",
       "themeDark": "Oscuro",
-      "themeOled": "OLED (negro puro)",
-      "themeDesc": "Elige la oscuridad de la interfaz."
+      "themeOled": "OLED",
+      "themeDesc": "Elige la oscuridad de la interfaz.",
+      "preview": "Vista previa",
+      "themes": {
+        "dark": "Oscuro",
+        "oled": "OLED",
+        "ash": "Ash",
+        "midnight": "Midnight",
+        "ember": "Ember",
+        "aurora": "Aurora"
+      }
     },
     "language": {
       "title": "Idioma",
       "label": "Idioma de la interfaz",
-      "auto": "Detectado automáticamente en el primer inicio, recordado después."
+      "auto": "Detectado automáticamente en el primer inicio.",
+      "names": {
+        "en": "Inglés",
+        "fr": "Francés",
+        "de": "Alemán",
+        "es": "Español",
+        "pl": "Polaco",
+        "ru": "Ruso",
+        "zh": "Chino"
+      }
     },
     "accounts": {
       "title": "Cuentas",
@@ -319,27 +339,84 @@
       "memoryDesc": "Memoria predeterminada para instancias sin su propia configuración."
     },
     "sections": {
-      "privacy": "Privacidad",
+      "privacy": "Opciones",
       "accounts": "Cuentas",
-      "sync": "Sincronizacion"
+      "sync": "Sincronización",
+      "general": "General",
+      "appearance": "Tema",
+      "minecraft": "Minecraft",
+      "advanced": "Carpetas",
+      "about": "Actualizaciones"
     },
     "privacy": {
       "track_playtime": "Registrar tiempo de juego",
       "track_playtimeDesc": "Medir y guardar el tiempo total de juego de cada instancia.",
       "discord_rpc": "Discord Rich Presence",
-      "discord_rpcDesc": "Mostrar a qué juegas en Discord."
+      "discord_rpcDesc": "Mostrar a qué juegas en Discord.",
+      "title": "Mis datos",
+      "noTelemetry": "Swift Client no envía telemetría, analíticas ni datos de fallos."
     },
     "java": {
-      "title": "Instalaciones de Java",
+      "title": "Java",
       "detected": "Instalaciones detectadas",
-      "autoDetect": "Detectar automáticamente",
+      "autoDetect": "Detectar Java",
       "scanning": "Escaneando…",
       "noJava": "No se detectaron instalaciones de Java.",
       "setDefault": "Establecer como predeterminada",
       "isDefault": "Predeterminada",
-      "defaultPath": "Ruta de Java predeterminada",
-      "defaultPathHint": "Se usa cuando una instancia no tiene ninguna (el motor sigue gestionando Java por sí mismo).",
-      "detectedDesc": "Versiones de Java encontradas en tu sistema y en el launcher."
+      "defaultPath": "Ruta de Java personalizada",
+      "defaultPathHint": "Dejar vacío para detección automática.",
+      "detectedDesc": "Versiones de Java encontradas en tu sistema y en el launcher.",
+      "managed": "Dejar vacío para detección automática",
+      "browse": "Explorar"
+    },
+    "subtitle": "Configuración del launcher",
+    "nav": {
+      "display": "Pantalla",
+      "game": "Juego",
+      "launcher": "Launcher"
+    },
+    "sectionDesc": {
+      "appearance": "Tema e idioma del launcher.",
+      "accounts": "Perfiles de Microsoft y offline para jugar.",
+      "minecraft": "Memoria, ventana y Java por defecto para nuevas instancias.",
+      "sync": "Comparte contenido entre tus instancias.",
+      "privacy": "Tiempo de juego y presencia en Discord.",
+      "advanced": "Carpetas del launcher y hooks de lanzamiento.",
+      "about": "Versión, actualizaciones e información legal."
+    },
+    "minecraft": {
+      "memoryTitle": "Memoria",
+      "memoryUsage": "{total} GB de RAM del sistema",
+      "memoryWarn": "La asignación es alta respecto a tu RAM.",
+      "memoryHint": "Recomendado: 4 GB para Vanilla, 6–8 GB con mods.",
+      "windowTitle": "Ventana del juego",
+      "resolution": "Resolución",
+      "resolutionDesc": "Tamaño de ventana por defecto sin pantalla completa.",
+      "resetResolution": "Restablecer"
+    },
+    "advanced": {
+      "launchTitle": "Opciones de lanzamiento por defecto",
+      "hooksTitle": "Hooks de lanzamiento",
+      "filesTitle": "Carpeta del juego",
+      "show": "Mostrar",
+      "openFolder": "Abrir carpeta",
+      "folders": {
+        "data": "Datos del launcher",
+        "instances": "Instancias",
+        "logs": "Logs del launcher"
+      }
+    },
+    "about": {
+      "updates": "Actualizaciones",
+      "upToDate": "Estás al día",
+      "updatesDesc": "Las actualizaciones automáticas aún no están disponibles.",
+      "manual": "Manual",
+      "online": "Servicios en línea",
+      "onlineOn": "CurseForge y el intercambio de instancias están disponibles.",
+      "onlineOff": "CurseForge y el intercambio necesitan el servicio en línea.",
+      "connected": "Conectado",
+      "offline": "No disponible"
     }
   },
   "activity": {
@@ -538,6 +615,11 @@
     "repairHint": "Reinstala y verifica los archivos del juego.",
     "repaired": "Reparación completada",
     "customWindow": "Ajustes de ventana personalizados",
+    "displayMode": "Modo de visualización",
+    "displayModeDesc": "Inicio de Minecraft — el modo sin bordes usa la resolución elegida en ventana.",
+    "displayWindowed": "En ventana",
+    "displayFullscreen": "Pantalla completa",
+    "displayBorderless": "Pantalla completa sin bordes",
     "fullscreen": "Pantalla completa",
     "width": "Ancho",
     "height": "Alto",

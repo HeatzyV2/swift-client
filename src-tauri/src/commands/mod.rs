@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod client_mod;
 pub mod content;
 pub mod content_window;
 pub mod curseforge;
@@ -15,4 +16,6 @@ pub mod settings;
 pub mod share;
 pub mod skins;
 pub mod snapshots;
+pub mod social;
 pub mod sync;
+pub mod wrapped_launch;

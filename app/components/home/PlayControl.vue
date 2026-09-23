@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-[min(540px,100%)] flex-col items-center gap-3">
+  <div class="flex w-[min(520px,100%)] flex-col items-center gap-3">
     <div class="sw-play" :data-state="state">
       <!-- Real download progress: fills the whole control -->
       <div
@@ -194,30 +194,34 @@ onBeforeUnmount(() => {
 .sw-play {
   --play-bg: #ffffff;
   --play-fg: #0b0d12;
-  --play-hover: #eef3ff;
-  --play-divider: rgb(11 13 18 / 0.12);
+  --play-hover: #f2f4f8;
+  --play-divider: rgb(11 13 18 / 0.1);
   position: relative;
   display: flex;
   width: 100%;
-  height: 80px;
+  height: 76px;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--play-bg);
   color: var(--play-fg);
-  box-shadow: 0 18px 44px -16px rgb(0 0 0 / 0.7);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.5) inset,
+    0 20px 48px -18px rgb(0 0 0 / 0.75);
   transition: background-color 220ms var(--ease-swift), color 220ms var(--ease-swift), box-shadow 220ms var(--ease-swift), transform 150ms var(--ease-swift);
 }
 .sw-play[data-state='ready']:hover,
 .sw-play[data-state='none']:hover,
 .sw-play[data-state='error']:hover {
   transform: translateY(-2px);
-  box-shadow: 0 24px 50px -16px rgb(0 0 0 / 0.75);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.5) inset,
+    0 26px 56px -16px rgb(0 0 0 / 0.8);
 }
 .sw-play[data-state='launching'] {
-  --play-bg: rgb(255 255 255 / 0.82);
+  --play-bg: rgb(255 255 255 / 0.88);
 }
 .sw-play[data-state='installing'] {
-  --play-bg: rgb(12 15 22 / 0.88);
+  --play-bg: rgb(12 15 22 / 0.9);
   --play-fg: #ffffff;
   --play-hover: transparent;
   --play-divider: rgb(255 255 255 / 0.1);
@@ -237,7 +241,7 @@ onBeforeUnmount(() => {
   min-width: 0;
   flex: 1;
   align-items: center;
-  padding: 0 22px 0 18px;
+  padding: 0 20px 0 14px;
   transition: background-color 150ms var(--ease-swift);
 }
 .sw-play-main:not(:disabled):hover,
@@ -250,24 +254,24 @@ onBeforeUnmount(() => {
 }
 .sw-play-icon {
   display: flex;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  background: color-mix(in srgb, currentColor 9%, transparent);
+  border-radius: 11px;
+  background: color-mix(in srgb, currentColor 8%, transparent);
 }
 .sw-play-divider {
   position: relative;
   width: 1px;
-  margin: 18px 0;
+  margin: 16px 0;
   background: var(--play-divider);
 }
 .sw-play-side {
   position: relative;
   display: flex;
-  width: 72px;
+  width: 64px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;

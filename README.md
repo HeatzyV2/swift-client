@@ -28,13 +28,16 @@
 
 Swift Client sends **no telemetry, analytics or crash data**. It only contacts the services needed to play: Microsoft/Xbox (sign-in), Mojang (game files), Modrinth (content), your mod loader's servers, and — only when you ask — mclo.gs for log sharing.
 
-### Not available yet
+### Not available yet / online service
 
-These need the Swift Client online service, which does not exist yet. They are hidden in the app until it does:
+These need the Swift Client online service at **`https://api.swiftclient.fr`** (see [`backend/`](backend/)):
 
-- CurseForge browsing and installs (the API key has to live on a server)
-- Sharing instances by code
-- Automatic updates
+- CurseForge browsing and installs (API key lives on the server)
+- Sharing instances by code (requires a Swift Client account in Settings)
+- Remote Social friends chat (local Social works offline)
+- Automatic updates (not implemented yet)
+
+Build the launcher with `SWIFT_BACKEND_URL=https://api.swiftclient.fr` in `src-tauri/.env` (already set in `.env.example`).
 
 ## Development
 
@@ -57,25 +60,15 @@ Copy `src-tauri/.env.example` to `src-tauri/.env`:
 | Variable | Purpose |
 |---|---|
 | `DISCORD_CLIENT_ID` | Discord application id for Rich Presence. Empty = no Discord status. |
-| `SWIFT_BACKEND_URL` | `https://` base URL of the Swift Client online service. Empty = CurseForge and sharing stay off and no request is made to any Swift server. |
+| `SWIFT_BACKEND_URL` | `https://` base URL of the Swift Client online service (production: `https://api.swiftclient.fr`). Empty = CurseForge and remote sharing stay off. |
 
 ### Project layout
 
 ```text
 app/                  Nuxt 4 (Vue 3) frontend
-  components/brand/     logo mark and wordmark
-  components/layout/    sidebar, navigation, account menu
-  components/home/      Home launch panel and widgets
-  components/settings/  settings rows and groups
-  components/ui/        shared primitives (page header, empty state)
-  composables/          state and Tauri calls (launch flow, activity, content…)
-  stores/               Pinia stores (instances, accounts, theme)
-  assets/css/main.css   design tokens
 src-tauri/            Rust backend (Tauri 2)
-  src/commands/         Tauri commands by domain
-  src/backend.rs        optional online-service configuration
-  icons/source/         SVG sources for the app icon
-i18n/locales/         translations (English and French are complete)
+backend/              Online service (Node.js) — api.swiftclient.fr
+i18n/locales/         translations
 ```
 
 ### Replacing the logo

@@ -14,16 +14,44 @@
 </template>
 
 <script setup lang="ts">
-import type { Account } from '~/types/launcher'
+import { invoke } from '@tauri-apps/api/core'
+import type { Account, PlayerSkin } from '~/types/launcher'
 
-/** `face` is a ready face image (e.g. cut from the active skin); otherwise Microsoft accounts use their profile head. */
+const faceByUuid = new Map<string, Promise<string | null>>()
+
+function loadProfileFace(uuid: string): Promise<string | null> {
+  const cached = faceByUuid.get(uuid)
+  if (cached) return cached
+  const task = (async () => {
+    try {
+      const ps = await invoke<PlayerSkin>('get_player_skin', { uuid })
+      return await skinFace(ps.skin)
+    } catch {
+      return null
+    }
+  })()
+  faceByUuid.set(uuid, task)
+  return task
+}
+
+/** Prefer an explicit `face`; otherwise load the Microsoft profile skin (never Steve/Alex defaults). */
 const props = defineProps<{ account?: Account | null, face?: string | null }>()
 const failed = ref(false)
+const profileFace = ref<string | null>(null)
 
-const src = computed(() => {
-  if (props.face) return props.face
-  return props.account?.kind === 'microsoft' ? `https://crafatar.com/avatars/${props.account.uuid}?size=64&overlay` : null
-})
+watch(
+  () => [props.face, props.account?.kind, props.account?.uuid] as const,
+  async ([face, kind, uuid]) => {
+    failed.value = false
+    profileFace.value = null
+    if (face || kind !== 'microsoft' || !uuid) return
+    const result = await loadProfileFace(uuid)
+    if (props.account?.uuid === uuid) profileFace.value = result
+  },
+  { immediate: true },
+)
+
+const src = computed(() => props.face || profileFace.value)
 
 watch(src, () => { failed.value = false })
 </script>

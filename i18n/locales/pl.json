@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "Start",
     "worlds": "Światy",
@@ -6,7 +6,8 @@
     "skins": "Skórki",
     "settings": "Ustawienia",
     "lastPlayed": "Ostatnio grane",
-    "newInstance": "Nowa instancja"
+    "newInstance": "Nowa instancja",
+    "social": "Social"
   },
   "create": {
     "title": "Utwórz instancję",
@@ -41,7 +42,8 @@
       "fromFileDesc": "Wybierz plik .mrpack (Modrinth) lub backup Swift Client .zip z dysku.",
       "chooseFile": "Wybierz plik",
       "fromLauncher": "Z innego launchera",
-      "fromLauncherDesc": "Wykryte instancje z Prism, CurseForge i aplikacji Modrinth.",
+      "fromLauncherDesc": "Lunar, Dawn, Spectra, Modrinth App, Prism i MultiMC.",
+      "allLaunchers": "Wszystkie",
       "none": "Nie znaleziono instancji w innych launcherach.",
       "importBtn": "Importuj",
       "fromCode": "Z kodu",
@@ -294,13 +296,31 @@
     "appearance": {
       "theme": "Motyw",
       "themeDark": "Ciemny",
-      "themeOled": "OLED (czysta czerń)",
-      "themeDesc": "Wybierz jasność interfejsu."
+      "themeOled": "OLED",
+      "themeDesc": "Wybierz jasność interfejsu.",
+      "preview": "Podgląd na żywo",
+      "themes": {
+        "dark": "Ciemny",
+        "oled": "OLED",
+        "ash": "Ash",
+        "midnight": "Midnight",
+        "ember": "Ember",
+        "aurora": "Aurora"
+      }
     },
     "language": {
       "title": "Język",
       "label": "Język interfejsu",
-      "auto": "Wykrywany automatycznie przy pierwszym uruchomieniu, potem zapamiętywany."
+      "auto": "Wykrywany automatycznie przy pierwszym uruchomieniu.",
+      "names": {
+        "en": "Angielski",
+        "fr": "Francuski",
+        "de": "Niemiecki",
+        "es": "Hiszpański",
+        "pl": "Polski",
+        "ru": "Rosyjski",
+        "zh": "Chiński"
+      }
     },
     "accounts": {
       "title": "Konta",
@@ -319,27 +339,84 @@
       "memoryDesc": "Domyślna pamięć dla instancji bez własnego ustawienia."
     },
     "sections": {
-      "privacy": "Prywatność",
+      "privacy": "Opcje",
       "accounts": "Konta",
-      "sync": "Synchronizacja"
+      "sync": "Synchronizacja",
+      "general": "Ogólne",
+      "appearance": "Motyw",
+      "minecraft": "Minecraft",
+      "advanced": "Foldery",
+      "about": "Aktualizacje"
     },
     "privacy": {
       "track_playtime": "Zliczanie czasu gry",
       "track_playtimeDesc": "Mierz i zapisuj łączny czas gry dla każdej instancji.",
       "discord_rpc": "Discord Rich Presence",
-      "discord_rpcDesc": "Pokazuj w Discordzie, w co aktualnie grasz."
+      "discord_rpcDesc": "Pokazuj w Discordzie, w co aktualnie grasz.",
+      "title": "Moje dane",
+      "noTelemetry": "Swift Client nie wysyła telemetrii, analityki ani raportów awarii."
     },
     "java": {
-      "title": "Instalacje Javy",
+      "title": "Java",
       "detected": "Wykryte instalacje",
-      "autoDetect": "Wykryj automatycznie",
+      "autoDetect": "Wykryj Java",
       "scanning": "Skanowanie…",
       "noJava": "Nie wykryto żadnej instalacji Javy.",
       "setDefault": "Ustaw jako domyślną",
       "isDefault": "Domyślna",
-      "defaultPath": "Domyślna ścieżka Javy",
-      "defaultPathHint": "Używana, gdy instancja nie ma własnej (silnik gry i tak sam zarządza Javą).",
-      "detectedDesc": "Wersje Javy znalezione w systemie i w launcherze."
+      "defaultPath": "Własna ścieżka Javy",
+      "defaultPathHint": "Pozostaw puste dla automatycznego wykrywania.",
+      "detectedDesc": "Wersje Javy znalezione w systemie i w launcherze.",
+      "managed": "Pozostaw puste dla automatycznego wykrywania",
+      "browse": "Przeglądaj"
+    },
+    "subtitle": "Konfiguracja launchera",
+    "nav": {
+      "display": "Wyświetlanie",
+      "game": "Gra",
+      "launcher": "Launcher"
+    },
+    "sectionDesc": {
+      "appearance": "Motyw i język launchera.",
+      "accounts": "Profile Microsoft i offline do gry.",
+      "minecraft": "Domyślna pamięć, okno i Java dla nowych instancji.",
+      "sync": "Udostępniaj zawartość między instancjami.",
+      "privacy": "Czas gry i obecność Discord.",
+      "advanced": "Foldery launchera i hooki uruchamiania.",
+      "about": "Wersja, aktualizacje i informacje prawne."
+    },
+    "minecraft": {
+      "memoryTitle": "Pamięć",
+      "memoryUsage": "{total} GB RAM systemu",
+      "memoryWarn": "Alokacja jest wysoka względem twojej pamięci RAM.",
+      "memoryHint": "Zalecane: 4 GB dla Vanilla, 6–8 GB z modami.",
+      "windowTitle": "Okno gry",
+      "resolution": "Rozdzielczość",
+      "resolutionDesc": "Domyślny rozmiar okna poza pełnym ekranem.",
+      "resetResolution": "Resetuj"
+    },
+    "advanced": {
+      "launchTitle": "Domyślne opcje uruchamiania",
+      "hooksTitle": "Hooki uruchamiania",
+      "filesTitle": "Folder gry",
+      "show": "Pokaż",
+      "openFolder": "Otwórz folder",
+      "folders": {
+        "data": "Dane launchera",
+        "instances": "Instancje",
+        "logs": "Logi launchera"
+      }
+    },
+    "about": {
+      "updates": "Aktualizacje",
+      "upToDate": "Jesteś na bieżąco",
+      "updatesDesc": "Automatyczne aktualizacje nie są jeszcze dostępne.",
+      "manual": "Ręcznie",
+      "online": "Usługi online",
+      "onlineOn": "CurseForge i udostępnianie instancji są dostępne.",
+      "onlineOff": "CurseForge i udostępnianie wymagają usługi online.",
+      "connected": "Połączono",
+      "offline": "Niedostępne"
     }
   },
   "activity": {
@@ -538,6 +615,11 @@
     "repairHint": "Ponownie instaluje i weryfikuje pliki gry.",
     "repaired": "Naprawa zakończona",
     "customWindow": "Niestandardowe ustawienia okna",
+    "displayMode": "Tryb wyświetlania",
+    "displayModeDesc": "Uruchamianie Minecrafta — tryb bezramek używa rozdzielczości wybranej dla okna.",
+    "displayWindowed": "W oknie",
+    "displayFullscreen": "Pełny ekran",
+    "displayBorderless": "Pełny ekran bez ramek",
     "fullscreen": "Pełny ekran",
     "width": "Szerokość",
     "height": "Wysokość",

@@ -138,14 +138,40 @@
               <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-refresh-cw" :loading="scanning" square :aria-label="$t('content.refresh')" @click="scanExternal" />
             </div>
 
+            <div class="mb-3 flex flex-wrap gap-1.5">
+              <button
+                type="button"
+                class="rounded-md px-2 py-1 text-[11px] font-medium transition-colors"
+                :class="launcherFilter === null
+                  ? 'bg-[var(--sw-surface-3)] text-highlighted shadow-[inset_0_0_0_1px_var(--sw-line-strong)]'
+                  : 'text-muted hover:text-toned'"
+                @click="launcherFilter = null"
+              >
+                {{ $t('create.import.allLaunchers') }}
+              </button>
+              <button
+                v-for="l in supportedLaunchers"
+                :key="l.id"
+                type="button"
+                class="rounded-md px-2 py-1 text-[11px] font-medium transition-colors"
+                :class="launcherFilter === l.id
+                  ? 'bg-[var(--sw-surface-3)] text-highlighted shadow-[inset_0_0_0_1px_var(--sw-line-strong)]'
+                  : 'text-muted hover:text-toned'"
+                @click="launcherFilter = launcherFilter === l.id ? null : l.id"
+              >
+                {{ l.label }}
+                <span v-if="countFor(l.id)" class="ml-1 text-dimmed">{{ countFor(l.id) }}</span>
+              </button>
+            </div>
+
             <div v-if="scanning" class="space-y-1.5">
               <div v-for="n in 3" :key="n" class="sw-skeleton h-12" />
             </div>
-            <div v-else-if="!external.length" class="rounded-lg border border-dashed border-default py-6 text-center text-sm text-muted">
+            <div v-else-if="!filteredExternal.length" class="rounded-lg border border-dashed border-default py-6 text-center text-sm text-muted">
               {{ $t('create.import.none') }}
             </div>
             <div v-else class="max-h-64 space-y-1.5 overflow-y-auto">
-              <div v-for="ext in external" :key="ext.path" class="sw-panel flex items-center gap-3 p-2.5">
+              <div v-for="ext in filteredExternal" :key="ext.path" class="sw-panel flex items-center gap-3 p-2.5">
                 <UBadge color="neutral" variant="subtle" size="sm" :label="launcherLabel(ext.launcher)" />
                 <div class="min-w-0 flex-1">
                   <div class="truncate text-sm font-medium text-highlighted">{{ ext.name }}</div>
@@ -235,9 +261,38 @@ const external = ref<ExternalInstance[]>([])
 const scanning = ref(false)
 const importingFile = ref(false)
 const importingPath = ref<string | null>(null)
+const launcherFilter = ref<string | null>(null)
 
-const launcherLabel = (l: ExternalInstance['launcher']) =>
-  ({ prism: 'Prism', curseforge: 'CurseForge', modrinth: 'Modrinth' }[l] ?? l)
+const supportedLaunchers = [
+  { id: 'lunar', label: 'Lunar' },
+  { id: 'dawn', label: 'Dawn' },
+  { id: 'spectra', label: 'Spectra' },
+  { id: 'modrinth', label: 'Modrinth App' },
+  { id: 'prism', label: 'Prism' },
+  { id: 'multimc', label: 'MultiMC' },
+] as const
+
+const LAUNCHER_LABELS: Record<string, string> = {
+  lunar: 'Lunar',
+  dawn: 'Dawn',
+  spectra: 'Spectra',
+  modrinth: 'Modrinth App',
+  prism: 'Prism',
+  multimc: 'MultiMC',
+  polymc: 'PolyMC',
+  curseforge: 'CurseForge',
+}
+
+const launcherLabel = (l: string) => LAUNCHER_LABELS[l] ?? l
+
+const filteredExternal = computed(() => {
+  if (!launcherFilter.value) return external.value
+  return external.value.filter(e => e.launcher === launcherFilter.value)
+})
+
+function countFor(id: string) {
+  return external.value.filter(e => e.launcher === id).length
+}
 
 async function scanExternal() {
   scanning.value = true
@@ -487,6 +542,7 @@ watch(isOpen, (isNowOpen) => {
   external.value = []
   importingFile.value = false
   importingPath.value = null
+  launcherFilter.value = null
 })
 
 async function submit() {

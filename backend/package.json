@@ -1,0 +1,42 @@
+{
+  "name": "swift-client-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "index.ts",
+  "scripts": {
+    "postinstall": "npm rebuild better-sqlite3 argon2 && tsc -p tsconfig.json",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "start:ts-node": "ts-node --esm index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.14.4",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.15.30",
+    "argon2": "^0.43.0",
+    "better-sqlite3": "^11.10.0",
+    "dotenv": "^16.5.0",
+    "hono": "^4.8.3",
+    "jose": "^6.0.11",
+    "nanoid": "^5.1.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.3"
+  },
+  "ts-node": {
+    "esm": true,
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext"
+    }
+  }
+}

@@ -90,16 +90,21 @@
         <fieldset :disabled="!form.override_window" class="space-y-4" :class="{ 'opacity-50': !form.override_window }">
           <div class="flex items-center justify-between gap-4">
             <div>
-              <p class="text-sm font-medium">{{ $t('instSettings.fullscreen') }}</p>
-              <p class="text-xs text-muted">{{ $t('instSettings.fullscreenDesc') }}</p>
+              <p class="text-sm font-medium">{{ $t('instSettings.displayMode') }}</p>
+              <p class="text-xs text-muted">{{ $t('instSettings.displayModeDesc') }}</p>
             </div>
-            <USwitch v-model="form.fullscreen" />
+            <USelect
+              v-model="instanceDisplayMode"
+              :items="displayModeItems"
+              value-key="value"
+              class="w-56"
+            />
           </div>
           <UFormField :label="$t('instSettings.width')" :description="$t('instSettings.widthDesc')">
-            <UInput v-model.number="form.width" type="number" placeholder="854" class="w-40" />
+            <UInput v-model.number="form.width" type="number" placeholder="854" class="w-40" :disabled="instanceDisplayMode === 'fullscreen'" />
           </UFormField>
           <UFormField :label="$t('instSettings.height')" :description="$t('instSettings.heightDesc')">
-            <UInput v-model.number="form.height" type="number" placeholder="480" class="w-40" />
+            <UInput v-model.number="form.height" type="number" placeholder="480" class="w-40" :disabled="instanceDisplayMode === 'fullscreen'" />
           </UFormField>
         </fieldset>
       </template>
@@ -239,11 +244,12 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/core'
 import { open } from '@tauri-apps/plugin-dialog'
-import type { Instance } from '~/types/launcher'
+import type { DisplayMode, Instance } from '~/types/launcher'
 import { SYNC_OPTIONS, type SyncOption } from '~/types/sync'
 
 const props = defineProps<{ instanceId: string }>()
 const emit = defineEmits<{ (e: 'icon-changed'): void }>()
+const { t } = useI18n()
 const instances = useInstancesStore()
 const instance = computed(() => instances.instances.find(i => i.id === props.instanceId))
 
@@ -347,6 +353,25 @@ const busy = ref(false)
 const repairing = ref(false)
 
 const form = ref<Instance | null>(null)
+
+const displayModeItems = computed(() => [
+  { label: t('instSettings.displayWindowed'), value: 'windowed' as DisplayMode },
+  { label: t('instSettings.displayFullscreen'), value: 'fullscreen' as DisplayMode },
+  { label: t('instSettings.displayBorderless'), value: 'borderless' as DisplayMode },
+])
+
+const instanceDisplayMode = computed({
+  get: (): DisplayMode => {
+    const f = form.value
+    if (!f) return 'windowed'
+    return f.display_mode ?? (f.fullscreen ? 'fullscreen' : 'windowed')
+  },
+  set: (mode: DisplayMode) => {
+    if (!form.value) return
+    form.value.display_mode = mode
+    form.value.fullscreen = mode === 'fullscreen'
+  },
+})
 
 watch(
   () => props.instanceId,
@@ -454,6 +479,4 @@ async function repair() {
     repairing.value = false
   }
 }
-
-const { t } = useI18n()
 </script>

@@ -1,11 +1,16 @@
 import type { ContentKind, ModrinthProjectType } from '~/types/modrinth'
 
+/** Kinds that can be browsed/installed into an existing instance. */
+export const INSTALLABLE_KINDS: ContentKind[] = ['mod', 'resourcepack', 'shader', 'datapack']
+
 export function searchProjectType(kind: ContentKind): ModrinthProjectType {
-  return kind === 'datapack' ? 'mod' : kind
+  // Datapacks are a first-class Modrinth project type (not "mod" + category).
+  if (kind === 'datapack') return 'datapack'
+  return kind as ModrinthProjectType
 }
 
-export function baseCategories(kind: ContentKind): string[] {
-  return kind === 'datapack' ? ['datapack'] : []
+export function baseCategories(_kind: ContentKind): string[] {
+  return []
 }
 
 export function usesLoaderFilter(kind: ContentKind): boolean {
@@ -13,6 +18,7 @@ export function usesLoaderFilter(kind: ContentKind): boolean {
 }
 
 export function loaderFacetFor(kind: ContentKind, loader?: string): string[] {
+  // Datapack versions are tagged with the "datapack" loader on Modrinth.
   if (kind === 'datapack') return ['datapack']
   if (usesLoaderFilter(kind) && loader && loader !== 'vanilla') return [loader]
   return []

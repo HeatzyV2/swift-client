@@ -17,6 +17,29 @@
       </button>
     </div>
 
+    <!-- Inline Modrinth / CurseForge browser -->
+    <template v-if="showBrowser">
+      <div class="flex items-center gap-2">
+        <UButton
+          icon="i-lucide-arrow-left"
+          color="neutral"
+          variant="soft"
+          size="sm"
+          :label="$t('create.back')"
+          @click="showBrowser = false"
+        />
+        <p class="text-sm text-muted">{{ $t('modrinth.browseHint') }}</p>
+      </div>
+      <div class="h-[calc(100dvh-15rem)] min-h-[520px] overflow-hidden rounded-xl border border-default bg-[var(--sw-surface)]">
+        <ModrinthBrowser
+          :config="browserConfig"
+          @installed="onInlineInstalled"
+          @close="showBrowser = false"
+        />
+      </div>
+    </template>
+
+    <template v-else>
     <div class="flex flex-wrap items-center gap-2">
       <UInput
         v-model="search"
@@ -232,6 +255,7 @@
         <UPagination v-model:page="page" :total="filtered.length" :items-per-page="perPage" />
       </div>
     </template>
+    </template>
 
     <UModal v-model:open="versionsOpen" :title="$t('mods.pickVersion')" :ui="{ content: 'max-w-lg' }">
       <template #footer>
@@ -309,6 +333,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import type { UnlistenFn } from '@tauri-apps/api/event'
 import { openExternal as openUrl } from '~/utils/openExternal'
+import type { ContentWindowConfig } from '~/composables/useContentWindow'
 import type { ModEntry, Instance } from '~/types/launcher'
 import type { ModUpdate, ModrinthVersion, ContentKind } from '~/types/modrinth'
 
@@ -702,18 +727,28 @@ async function keepDeps() {
   await deleteMods(mod, [])
 }
 
+const showBrowser = ref(false)
+
+const browserConfig = computed<ContentWindowConfig>(() => ({
+  kind: browserKind.value as ContentKind,
+  mode: 'install',
+  instanceId: props.instanceId,
+  gameVersion: instance.value?.mc_version,
+  loader: instance.value?.loader.type,
+}))
+
 function openBrowser() {
-  const instance = instances.instances.find((i: Instance) => i.id === props.instanceId)
-  browser.open({
-    kind: browserKind.value as ContentKind,
-    mode: 'install',
-    instanceId: props.instanceId,
-    gameVersion: instance?.mc_version,
-    loader: instance?.loader.type,
-  })
+  showBrowser.value = true
 }
 
-watch(() => props.instanceId, load, { immediate: true })
+async function onInlineInstalled() {
+  await load()
+}
+
+watch(() => props.instanceId, () => {
+  showBrowser.value = false
+  load()
+}, { immediate: true })
 
 let unlistenContent: UnlistenFn | null = null
 

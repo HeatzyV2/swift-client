@@ -24,9 +24,12 @@ pub struct ExternalInstance {
 pub async fn detect_external_instances() -> Vec<ExternalInstance> {
     crate::blocking(|| {
         let mut out = Vec::new();
-        out.extend(scan_prism());
+        out.extend(scan_prism_family());
         out.extend(scan_curseforge());
         out.extend(scan_modrinth());
+        out.extend(scan_spectra());
+        out.extend(scan_lunar());
+        out.extend(scan_dawn());
         Ok(out)
     })
     .await
@@ -456,25 +459,44 @@ fn copy_dir_all(src: &Path, dst: &Path) -> AppResult<()> {
     Ok(())
 }
 
-fn scan_prism() -> Vec<ExternalInstance> {
+fn scan_prism_family() -> Vec<ExternalInstance> {
     let mut out = Vec::new();
-
-    let mut roots: Vec<PathBuf> = Vec::new();
+    let mut roots: Vec<(PathBuf, &'static str)> = Vec::new();
 
     if let Some(data) = dirs::data_dir() {
-        for app in ["PrismLauncher", "PolyMC", "MultiMC"] {
-            roots.push(data.join(app).join("instances"));
-        }
+        roots.push((data.join("PrismLauncher").join("instances"), "prism"));
+        roots.push((data.join("PolyMC").join("instances"), "polymc"));
+        roots.push((data.join("MultiMC").join("instances"), "multimc"));
     }
 
     #[cfg(target_os = "macos")]
     if let Some(home) = dirs::home_dir() {
-        for app in ["PrismLauncher", "PolyMC", "MultiMC"] {
-            roots.push(home.join(".local").join("share").join(app).join("instances"));
-        }
+        let share = home.join(".local").join("share");
+        roots.push((share.join("PrismLauncher").join("instances"), "prism"));
+        roots.push((share.join("PolyMC").join("instances"), "polymc"));
+        roots.push((share.join("MultiMC").join("instances"), "multimc"));
     }
 
-    for root in roots {
+    #[cfg(target_os = "linux")]
+    if let Some(home) = dirs::home_dir() {
+        let share = home.join(".local").join("share");
+        roots.push((share.join("PrismLauncher").join("instances"), "prism"));
+        roots.push((share.join("PolyMC").join("instances"), "polymc"));
+        roots.push((share.join("MultiMC").join("instances"), "multimc"));
+        // Flatpak Prism
+        roots.push((
+            home
+                .join(".var")
+                .join("app")
+                .join("org.prismlauncher.PrismLauncher")
+                .join("data")
+                .join("PrismLauncher")
+                .join("instances"),
+            "prism",
+        ));
+    }
+
+    for (root, launcher) in roots {
         let Ok(entries) = std::fs::read_dir(&root) else { continue };
         for e in entries.flatten() {
             let dir = e.path();
@@ -492,13 +514,14 @@ fn scan_prism() -> Vec<ExternalInstance> {
             let name = read_cfg_value(&dir.join("instance.cfg"), "name")
                 .unwrap_or_else(|| dir_name(&dir));
             let (mc, loader, lver) = parse_mmc_pack(&pack);
-            if out.iter().any(|x: &ExternalInstance| x.path == dir.to_string_lossy()) {
+            let path = dir.to_string_lossy().into_owned();
+            if out.iter().any(|x: &ExternalInstance| x.path == path) {
                 continue;
             }
             out.push(ExternalInstance {
-                launcher: "prism".into(),
+                launcher: launcher.into(),
                 name,
-                path: dir.to_string_lossy().into_owned(),
+                path,
                 game_dir: game.to_string_lossy().into_owned(),
                 mc_version: mc,
                 loader,
@@ -659,6 +682,366 @@ fn parse_modrinth_profile(
             .or_else(|| lv.get("id").and_then(|i| i.as_str()).map(String::from))
     });
     (name, mc, loader, lver)
+}
+
+/// Spectra Launcher (Swift's upstream) — same layout as Swift Client.
+fn scan_spectra() -> Vec<ExternalInstance> {
+    let mut out = Vec::new();
+    let mut roots = Vec::new();
+    if let Some(data) = dirs::data_dir() {
+        roots.push(data.join("SpectraLauncher").join("instances"));
+        roots.push(data.join("Spectra").join("instances"));
+    }
+    if let Ok(custom) = std::env::var("SPECTRA_DATA_DIR") {
+        if !custom.trim().is_empty() {
+            roots.push(PathBuf::from(custom).join("instances"));
+        }
+    }
+    for root in roots {
+        scan_swift_like_instances(&root, "spectra", &mut out);
+    }
+    out
+}
+
+fn scan_swift_like_instances(root: &Path, launcher: &str, out: &mut Vec<ExternalInstance>) {
+    let Ok(entries) = std::fs::read_dir(root) else { return };
+    for e in entries.flatten() {
+        let dir = e.path();
+        let meta = dir.join("instance.json");
+        if !dir.is_dir() || !meta.exists() {
+            continue;
+        }
+        let game = if dir.join("minecraft").is_dir() {
+            dir.join("minecraft")
+        } else if dir.join(".minecraft").is_dir() {
+            dir.join(".minecraft")
+        } else {
+            continue;
+        };
+        let (name, mc, loader, lver) = parse_swift_like_instance(&meta, &dir_name(&dir));
+        let path = dir.to_string_lossy().into_owned();
+        if out.iter().any(|x| x.path == path) {
+            continue;
+        }
+        out.push(ExternalInstance {
+            launcher: launcher.into(),
+            name,
+            path,
+            game_dir: game.to_string_lossy().into_owned(),
+            mc_version: mc,
+            loader,
+            loader_version: lver,
+        });
+    }
+}
+
+fn parse_swift_like_instance(
+    path: &Path,
+    fallback: &str,
+) -> (String, Option<String>, Option<String>, Option<String>) {
+    let Ok(raw) = std::fs::read_to_string(path) else {
+        return (fallback.into(), None, None, None);
+    };
+    let Ok(v) = serde_json::from_str::<serde_json::Value>(&raw) else {
+        return (fallback.into(), None, None, None);
+    };
+    let name = v
+        .get("name")
+        .and_then(|x| x.as_str())
+        .map(String::from)
+        .unwrap_or_else(|| fallback.into());
+    let mc = v.get("mc_version").and_then(|x| x.as_str()).map(String::from);
+    let (loader, lver) = v
+        .get("loader")
+        .map(|l| {
+            let kind = l
+                .get("type")
+                .and_then(|t| t.as_str())
+                .unwrap_or("vanilla")
+                .to_lowercase();
+            let ver = l
+                .get("version")
+                .and_then(|x| x.as_str())
+                .map(String::from)
+                .filter(|s| !s.is_empty());
+            match kind.as_str() {
+                "fabric" | "quilt" | "forge" | "neoforge" => (Some(kind), ver),
+                _ => (None, None),
+            }
+        })
+        .unwrap_or((None, None));
+    (name, mc, loader, lver)
+}
+
+/// Lunar Client — profiles under `~/.lunarclient/profiles`.
+fn scan_lunar() -> Vec<ExternalInstance> {
+    let mut out = Vec::new();
+    let Some(home) = dirs::home_dir() else { return out };
+    let root = home.join(".lunarclient");
+    if !root.is_dir() {
+        return out;
+    }
+
+    // Modpack / custom profiles (preferred — each is a full game dir).
+    let profiles = root.join("profiles");
+    if let Ok(entries) = std::fs::read_dir(&profiles) {
+        for e in entries.flatten() {
+            let dir = e.path();
+            if !dir.is_dir() || !looks_like_game_dir(&dir) {
+                continue;
+            }
+            let (mc, loader, lver) = infer_lunar_meta(&dir);
+            let name = read_json_str(&dir.join("profile.json"), &["name", "displayName"])
+                .or_else(|| read_json_str(&dir.join("metadata.json"), &["name", "displayName"]))
+                .unwrap_or_else(|| dir_name(&dir));
+            push_unique(
+                &mut out,
+                ExternalInstance {
+                    launcher: "lunar".into(),
+                    name,
+                    path: dir.to_string_lossy().into_owned(),
+                    game_dir: dir.to_string_lossy().into_owned(),
+                    mc_version: mc,
+                    loader,
+                    loader_version: lver,
+                },
+            );
+        }
+    }
+
+    // Offline multiver caches sometimes hold a usable game tree per version.
+    let multiver = root.join("offline").join("multiver");
+    if let Ok(entries) = std::fs::read_dir(&multiver) {
+        for e in entries.flatten() {
+            let dir = e.path();
+            if !dir.is_dir() || !looks_like_game_dir(&dir) {
+                continue;
+            }
+            let folder = dir_name(&dir);
+            let mc = guess_mc_version(&folder);
+            push_unique(
+                &mut out,
+                ExternalInstance {
+                    launcher: "lunar".into(),
+                    name: format!("Lunar {folder}"),
+                    path: dir.to_string_lossy().into_owned(),
+                    game_dir: dir.to_string_lossy().into_owned(),
+                    mc_version: mc,
+                    loader: None,
+                    loader_version: None,
+                },
+            );
+        }
+    }
+
+    out
+}
+
+fn infer_lunar_meta(dir: &Path) -> (Option<String>, Option<String>, Option<String>) {
+    for file in ["profile.json", "metadata.json", "version.json", "instance.json"] {
+        let path = dir.join(file);
+        let Ok(raw) = std::fs::read_to_string(&path) else { continue };
+        let Ok(v) = serde_json::from_str::<serde_json::Value>(&raw) else { continue };
+        let mc = [
+            "version",
+            "gameVersion",
+            "minecraftVersion",
+            "mcVersion",
+            "mc_version",
+        ]
+        .iter()
+        .find_map(|k| v.get(k).and_then(|x| x.as_str()).map(String::from))
+        .or_else(|| {
+            v.get("version")
+                .and_then(|x| x.get("id"))
+                .and_then(|x| x.as_str())
+                .map(String::from)
+        });
+        let loader_raw = ["loader", "modLoader", "module"]
+            .iter()
+            .find_map(|k| v.get(k).and_then(|x| x.as_str()))
+            .map(|s| s.to_lowercase());
+        let (loader, lver) = match loader_raw.as_deref() {
+            Some("fabric") => (Some("fabric".into()), None),
+            Some("forge") => (Some("forge".into()), None),
+            Some("quilt") => (Some("quilt".into()), None),
+            Some("neoforge") => (Some("neoforge".into()), None),
+            _ => (None, None),
+        };
+        if mc.is_some() {
+            return (mc, loader, lver);
+        }
+    }
+    (guess_mc_version(&dir_name(dir)), None, None)
+}
+
+/// Dawn Client (ex-Feather) — probe common data roots.
+fn scan_dawn() -> Vec<ExternalInstance> {
+    let mut out = Vec::new();
+    let mut roots = Vec::new();
+
+    if let Some(home) = dirs::home_dir() {
+        roots.push(home.join(".dawn"));
+        roots.push(home.join(".dawnclient"));
+        roots.push(home.join(".feather"));
+    }
+    if let Some(data) = dirs::data_dir() {
+        for name in [
+            "Dawn",
+            "DawnClient",
+            "Dawn Client",
+            "dawn-client",
+            "DawnLauncher",
+            "feather",
+            "FeatherClient",
+            "Feather",
+        ] {
+            roots.push(data.join(name));
+        }
+    }
+    if let Some(local) = dirs::data_local_dir() {
+        for name in ["Dawn", "DawnClient", "Dawn Client", "feather", "FeatherClient"] {
+            roots.push(local.join(name));
+        }
+    }
+
+    for root in roots {
+        if !root.is_dir() {
+            continue;
+        }
+        // Direct instance folders
+        for sub in ["instances", "profiles", "installations", "game-dirs", "games"] {
+            let dir = root.join(sub);
+            if dir.is_dir() {
+                scan_generic_instance_root(&dir, "dawn", &mut out);
+            }
+        }
+        // Root itself may hold versioned game dirs
+        scan_generic_instance_root(&root, "dawn", &mut out);
+    }
+    out
+}
+
+fn scan_generic_instance_root(root: &Path, launcher: &str, out: &mut Vec<ExternalInstance>) {
+    let Ok(entries) = std::fs::read_dir(root) else { return };
+    for e in entries.flatten() {
+        let dir = e.path();
+        if !dir.is_dir() {
+            continue;
+        }
+        // Skip shared caches
+        let name = dir_name(&dir).to_lowercase();
+        if matches!(
+            name.as_str(),
+            "assets" | "libraries" | "versions" | "cache" | "logs" | "jre" | "java" | "natives" | "bin"
+        ) {
+            continue;
+        }
+
+        let game = if looks_like_game_dir(&dir) {
+            dir.clone()
+        } else if looks_like_game_dir(&dir.join(".minecraft")) {
+            dir.join(".minecraft")
+        } else if looks_like_game_dir(&dir.join("minecraft")) {
+            dir.join("minecraft")
+        } else {
+            continue;
+        };
+
+        // Prefer structured metadata when present (Swift/Spectra-like).
+        let meta = dir.join("instance.json");
+        let (iname, mc, loader, lver) = if meta.exists() {
+            parse_swift_like_instance(&meta, &dir_name(&dir))
+        } else if dir.join("mmc-pack.json").exists() {
+            let (mc, loader, lver) = parse_mmc_pack(&dir.join("mmc-pack.json"));
+            let name = read_cfg_value(&dir.join("instance.cfg"), "name")
+                .unwrap_or_else(|| dir_name(&dir));
+            (name, mc, loader, lver)
+        } else if dir.join("profile.json").exists() {
+            parse_modrinth_profile(&dir.join("profile.json"), &dir_name(&dir))
+        } else {
+            let folder = dir_name(&dir);
+            (folder.clone(), guess_mc_version(&folder), None, None)
+        };
+
+        push_unique(
+            out,
+            ExternalInstance {
+                launcher: launcher.into(),
+                name: iname,
+                path: dir.to_string_lossy().into_owned(),
+                game_dir: game.to_string_lossy().into_owned(),
+                mc_version: mc,
+                loader,
+                loader_version: lver,
+            },
+        );
+    }
+}
+
+fn looks_like_game_dir(p: &Path) -> bool {
+    p.join("saves").is_dir()
+        || p.join("mods").is_dir()
+        || p.join("options.txt").is_file()
+        || p.join("resourcepacks").is_dir()
+        || p.join("shaderpacks").is_dir()
+        || p.join("config").is_dir()
+}
+
+fn guess_mc_version(s: &str) -> Option<String> {
+    // Match 1.20.1 / 1.8.9 / 1.21 embedded in folder names.
+    let re = regex_lite_version(s)?;
+    Some(re)
+}
+
+fn regex_lite_version(s: &str) -> Option<String> {
+    let bytes = s.as_bytes();
+    let mut i = 0;
+    while i + 3 < bytes.len() {
+        if bytes[i] == b'1' && bytes[i + 1] == b'.' {
+            let mut j = i + 2;
+            let mut dots = 0;
+            let mut ok = true;
+            while j < bytes.len() {
+                let c = bytes[j];
+                if c.is_ascii_digit() {
+                    j += 1;
+                } else if c == b'.' {
+                    dots += 1;
+                    if dots > 2 {
+                        ok = false;
+                        break;
+                    }
+                    j += 1;
+                } else {
+                    break;
+                }
+            }
+            if ok && j > i + 3 {
+                let cand = &s[i..j];
+                // Require at least 1.x
+                if cand.matches('.').count() >= 1 {
+                    return Some(cand.to_string());
+                }
+            }
+        }
+        i += 1;
+    }
+    None
+}
+
+fn read_json_str(path: &Path, keys: &[&str]) -> Option<String> {
+    let raw = std::fs::read_to_string(path).ok()?;
+    let v: serde_json::Value = serde_json::from_str(&raw).ok()?;
+    keys.iter()
+        .find_map(|k| v.get(k).and_then(|x| x.as_str()).map(String::from))
+}
+
+fn push_unique(out: &mut Vec<ExternalInstance>, item: ExternalInstance) {
+    if out.iter().any(|x| x.path == item.path || x.game_dir == item.game_dir) {
+        return;
+    }
+    out.push(item);
 }
 
 fn dir_name(p: &Path) -> String {

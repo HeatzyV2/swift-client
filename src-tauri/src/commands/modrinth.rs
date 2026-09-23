@@ -735,6 +735,7 @@ fn kind_and_folder(version: &Version, project: &ProjectInfo) -> (&'static str, &
     match project.project_type.as_str() {
         "resourcepack" => ("resourcepack", "resourcepacks"),
         "shader" => ("shader", "shaderpacks"),
+        "datapack" => ("datapack", "datapacks"),
         _ => {
             let is_datapack =
                 version.loaders.iter().any(|l| l == "datapack") || project.categories.iter().any(|c| c == "datapack");

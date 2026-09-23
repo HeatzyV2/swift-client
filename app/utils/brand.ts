@@ -11,6 +11,4 @@ export const BRAND = {
   name: 'Swift Client',
   shortName: 'Swift',
   tagline: 'Minecraft, launched fast.',
-  upstream: { name: 'Spectra Launcher', author: 'MakotoPD', url: 'https://github.com/MakotoPD/Spectra-Launcher' },
-  license: 'GPL-3.0',
 } as const

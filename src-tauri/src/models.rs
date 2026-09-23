@@ -16,6 +16,25 @@ pub struct EnvVar {
     pub value: String,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum DisplayMode {
+    #[default]
+    Windowed,
+    Fullscreen,
+    Borderless,
+}
+
+impl DisplayMode {
+    pub fn from_legacy_fullscreen(fullscreen: bool) -> Self {
+        if fullscreen {
+            Self::Fullscreen
+        } else {
+            Self::Windowed
+        }
+    }
+}
+
 impl Default for Loader {
     fn default() -> Self {
         Loader::Vanilla
@@ -57,6 +76,9 @@ pub struct Instance {
     pub override_memory: bool,
     #[serde(default)]
     pub override_window: bool,
+    /// Prefer this over the legacy `fullscreen` bool when set.
+    #[serde(default)]
+    pub display_mode: Option<DisplayMode>,
     #[serde(default)]
     pub fullscreen: bool,
     #[serde(default)]
@@ -86,6 +108,13 @@ pub struct Instance {
     pub modpack_project_id: Option<String>,
     #[serde(default)]
     pub modpack_version_id: Option<String>,
+}
+
+impl Instance {
+    pub fn resolved_display_mode(&self) -> DisplayMode {
+        self.display_mode
+            .unwrap_or_else(|| DisplayMode::from_legacy_fullscreen(self.fullscreen))
+    }
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Default)]
@@ -131,6 +160,8 @@ pub struct Settings {
     #[serde(default = "default_theme")]
     pub theme: String,
 
+    #[serde(default)]
+    pub default_display_mode: Option<DisplayMode>,
     #[serde(default)]
     pub default_fullscreen: bool,
     #[serde(default)]
@@ -189,6 +220,7 @@ impl Default for Settings {
             default_memory_mb: default_memory(),
             last_instance_id: None,
             theme: default_theme(),
+            default_display_mode: None,
             default_fullscreen: false,
             default_width: None,
             default_height: None,
@@ -205,6 +237,13 @@ impl Default for Settings {
             sync_announced: false,
             sync_announce_seen: false,
         }
+    }
+}
+
+impl Settings {
+    pub fn resolved_display_mode(&self) -> DisplayMode {
+        self.default_display_mode
+            .unwrap_or_else(|| DisplayMode::from_legacy_fullscreen(self.default_fullscreen))
     }
 }
 

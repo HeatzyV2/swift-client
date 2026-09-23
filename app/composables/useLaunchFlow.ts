@@ -9,8 +9,8 @@ interface PendingLaunch {
 
 /**
  * The one way the UI starts Minecraft: checks for an account, collects
- * pre-launch warnings (RAM, mod conflicts) and asks before going ahead when
- * there are any. `PrelaunchModal` renders the confirmation.
+ * pre-launch warnings (RAM, mod conflicts, Essential, …) and asks before
+ * going ahead when there are any. `PrelaunchModal` renders the confirmation.
  */
 export const useLaunchFlow = () => {
   const instances = useInstancesStore()
@@ -18,7 +18,7 @@ export const useLaunchFlow = () => {
   const sysMem = useSystemMemory()
   const mc = useMinecraftLaunch()
   const toast = useToast()
-  const { t } = useI18n()
+  const { t, te } = useI18n()
 
   const pending = useState<PendingLaunch | null>('launch-flow-pending', () => null)
 
@@ -36,10 +36,19 @@ export const useLaunchFlow = () => {
         out.push(c.kind === 'loader' ? t('prelaunch.conflict', { name: c.name, detail: c.detail }) : t('prelaunch.duplicate', { name: c.name }))
       }
     } catch { /* conflict check is advisory */ }
+    try {
+      const hints = await invoke<{ kind: string }[]>('prelaunch_checks', { instanceId })
+      for (const h of hints) {
+        const key = `prelaunch.${h.kind}`
+        out.push(te(key) ? t(key) : h.kind)
+      }
+    } catch { /* advisory */ }
     return out
   }
 
   function start(instanceId: string, quickPlay?: QuickPlay) {
+    // Best-effort: install/refresh Swift client mod before launch path runs again.
+    invoke('ensure_client_mod', { instanceId }).catch(() => {})
     mc.launch(instanceId, quickPlay).catch(() => { /* surfaced through mc.error */ })
   }
 

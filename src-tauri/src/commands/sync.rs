@@ -125,7 +125,7 @@ fn era_matches(state: &SyncState, option: SyncOption, mc_version: &str) -> bool 
     }
 }
 
-const SYNCED_OPTION_KEYS: [&str; 30] = [
+const SYNCED_OPTION_KEYS: [&str; 29] = [
     "autoJump",
     "bobView",
     "chatOpacity",
@@ -137,7 +137,7 @@ const SYNCED_OPTION_KEYS: [&str; 30] = [
     "enableVsync",
     "entityShadows",
     "fov",
-    "fullscreen",
+    // `fullscreen` / `exclusiveFullscreen` are owned by the launcher display mode.
     "gamma",
     "guiScale",
     "hideLightningFlashes",

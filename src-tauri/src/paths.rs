@@ -29,6 +29,10 @@ pub fn accounts_file() -> PathBuf {
     data_root().join("accounts.json")
 }
 
+pub fn swift_session_file() -> PathBuf {
+    data_root().join("swift_session.json")
+}
+
 
 pub fn instances_dir() -> PathBuf {
     data_root().join("instances")
@@ -116,6 +120,18 @@ pub fn symbols_dir() -> PathBuf {
 
 pub fn logs_dir() -> PathBuf {
     data_root().join("logs")
+}
+
+pub fn social_dir() -> PathBuf {
+    data_root().join("social")
+}
+
+pub fn social_file() -> PathBuf {
+    social_dir().join("social.json")
+}
+
+pub fn social_media_dir() -> PathBuf {
+    social_dir().join("media")
 }
 
 pub fn ensure_base_dirs() -> std::io::Result<()> {

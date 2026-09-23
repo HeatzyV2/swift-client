@@ -7,6 +7,8 @@ export type Loader =
   | { type: 'forge'; version: string }
   | { type: 'neoforge'; version: string }
 
+export type DisplayMode = 'windowed' | 'fullscreen' | 'borderless'
+
 export interface Instance {
   id: string
   name: string
@@ -23,6 +25,8 @@ export interface Instance {
 
   override_memory: boolean
   override_window: boolean
+  /** Preferred over legacy `fullscreen` when set. */
+  display_mode?: DisplayMode | null
   fullscreen: boolean
   width?: number
   height?: number
@@ -67,6 +71,8 @@ export interface Settings {
   default_memory_mb: number
   last_instance_id?: string | null
   theme: string
+  /** Preferred over legacy `default_fullscreen` when set. */
+  default_display_mode?: DisplayMode | null
   default_fullscreen: boolean
   default_width?: number
   default_height?: number
@@ -154,8 +160,18 @@ export interface DirChild {
   size: number
 }
 
+export type ExternalLauncher =
+  | 'lunar'
+  | 'dawn'
+  | 'spectra'
+  | 'modrinth'
+  | 'prism'
+  | 'multimc'
+  | 'polymc'
+  | 'curseforge'
+
 export interface ExternalInstance {
-  launcher: 'prism' | 'curseforge' | 'modrinth'
+  launcher: ExternalLauncher | string
   name: string
   path: string
   game_dir: string

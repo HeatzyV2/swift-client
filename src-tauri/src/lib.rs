@@ -40,7 +40,10 @@ pub struct AppState {
     pub adopted: Mutex<HashSet<String>>,
     pub stopping: Mutex<HashSet<String>>,
     pub discord: Mutex<Option<discord_rich_presence::DiscordIpcClient>>,
-    pub discord_playing: Mutex<HashMap<String, (String, String)>>,
+    pub discord_playing: Mutex<HashMap<String, discord::DiscordSession>>,
+    pub discord_locale: Mutex<String>,
+    pub discord_screen: Mutex<String>,
+    pub discord_idle_since: Mutex<Option<i64>>,
     pub console: Mutex<HashMap<String, commands::launch::ConsoleBuffer>>,
     pub announce_sync: Mutex<bool>,
     pub install_lock: tokio::sync::Mutex<()>,
@@ -159,6 +162,7 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
@@ -171,6 +175,7 @@ pub fn run() {
             commands::settings::save_settings,
             commands::settings::set_last_instance,
             commands::settings::get_system_memory_mb,
+            commands::settings::discord_sync,
             commands::instances::list_instances,
             commands::instances::get_instance,
             commands::instances::create_instance,
@@ -234,6 +239,10 @@ pub fn run() {
             commands::sync::sync_remove_pack,
             commands::sync::sync_open_folder,
             commands::launch::stop_instance,
+            commands::client_mod::ensure_client_mod,
+            commands::client_mod::client_mod_status,
+            commands::client_mod::prelaunch_checks,
+            commands::client_mod::import_client_mod_jar,
             commands::ping::ping_server,
             commands::meta::get_minecraft_versions,
             commands::meta::get_loader_versions,
@@ -286,11 +295,25 @@ pub fn run() {
             commands::snapshots::restore_snapshot,
             commands::snapshots::delete_snapshot,
             commands::share::take_pending_share,
+            commands::social::social_list_friends,
+            commands::social::social_add_friend,
+            commands::social::social_remove_friend,
+            commands::social::social_list_conversations,
+            commands::social::social_get_or_create_conversation,
+            commands::social::social_list_messages,
+            commands::social::social_send_message,
+            commands::social::social_mode,
+            commands::social::social_image_data_url,
             commands::content_window::open_content_window,
             commands::content_window::content_window_config,
             commands::content_window::close_content_window,
             commands::content_window::content_installed,
             backend::backend_status,
+            backend::swift_session,
+            backend::swift_register,
+            backend::swift_login,
+            backend::swift_logout,
+            backend::swift_link_minecraft,
 
             commands::mods::list_mods,
             commands::mods::list_content,
