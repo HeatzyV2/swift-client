@@ -12,7 +12,7 @@
         type="button"
         class="sw-rise-in group relative block aspect-[16/9] overflow-hidden rounded-2xl border border-white/[0.07] bg-[var(--sw-surface)] text-left transition-[transform,border-color] duration-200 ease-[var(--ease-swift)] hover:-translate-y-1 hover:border-white/20"
         :style="{ animationDelay: `${140 + i * 60}ms` }"
-        @click="open = item"
+        @click="select(item)"
       >
         <img
           :src="item.image"
@@ -26,6 +26,9 @@
           <p class="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/55">{{ formatDate(item.date) }}</p>
           <p class="mt-1 font-display text-[16px] font-semibold leading-snug text-white">{{ tr(item.title) }}</p>
           <p class="mt-1 line-clamp-2 text-[12.5px] leading-relaxed text-white/65">{{ tr(item.summary) }}</p>
+          <span v-if="item.direct" class="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-[12.5px] font-semibold text-[#0b0d12] transition-colors group-hover:bg-[#eef3ff]">
+            {{ $t('home.join') }}<UIcon name="i-lucide-arrow-up-right" class="size-3.5" />
+          </span>
         </div>
       </button>
     </div>
@@ -53,12 +56,15 @@
 import { NEWS, type NewsItem } from '~/content/news'
 
 const tr = useLocalized()
-const backend = useBackend()
 const { locale } = useI18n()
 const open = ref<NewsItem | null>(null)
 
-// Items tied to a build capability (Discord) only show when it is available.
-const items = computed(() => NEWS.filter(item => item.requires !== 'discord' || backend.discord.value))
+const items = NEWS
+
+function select(item: NewsItem) {
+  if (item.direct && item.url) openExternal(item.url).catch(() => {})
+  else open.value = item
+}
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString(locale.value, { day: 'numeric', month: 'long', year: 'numeric' })

@@ -756,7 +756,8 @@
     "readMore": "Read more",
     "playedAgo": "Played {when}",
     "background": "Background {n}",
-    "noInstances": "No instances yet"
+    "noInstances": "No instances yet",
+    "join": "Join"
   },
   "removeInstance": {
     "title": "Delete instance",

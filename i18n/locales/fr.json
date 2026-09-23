@@ -756,7 +756,8 @@
     "readMore": "En savoir plus",
     "playedAgo": "Joué {when}",
     "background": "Arrière-plan {n}",
-    "noInstances": "Aucune instance"
+    "noInstances": "Aucune instance",
+    "join": "Rejoindre"
   },
   "removeInstance": {
     "title": "Supprimer l'instance",

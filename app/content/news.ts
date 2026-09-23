@@ -1,3 +1,5 @@
+import { LINKS } from './links'
+
 /**
  * Home news, shipped with the launcher.
  *
@@ -20,8 +22,8 @@ export interface NewsItem {
   body: Localized
   /** Optional link opened from the article. */
   url?: string
-  /** Only show the item when this build capability is available. */
-  requires?: 'discord'
+  /** Open `url` straight away instead of showing the article. */
+  direct?: boolean
 }
 
 export const NEWS: NewsItem[] = [
@@ -53,19 +55,20 @@ export const NEWS: NewsItem[] = [
       fr: 'Ouvrez une instance et choisissez Ajouter pour parcourir Modrinth. Les dépendances sont installées pour vous, les mises à jour sont détectées, et un point de restauration peut être créé avant chaque mise à jour pour revenir en arrière en cas de problème.',
     },
   },
-  {
-    id: 'discord-presence',
-    date: '2026-09-23',
-    image: '/images/news/discord.jpg',
-    requires: 'discord',
-    title: { en: 'Discord Rich Presence', fr: 'Statut Discord' },
-    summary: {
-      en: 'Show friends which instance you are playing, right on your Discord profile.',
-      fr: 'Montrez à vos amis l’instance à laquelle vous jouez, directement sur votre profil Discord.',
-    },
-    body: {
-      en: 'While a game is running, Swift Client can show the instance name and Minecraft version on your Discord profile. Discord has to be open on this computer. Turn it on or off in Settings → Privacy.',
-      fr: 'Pendant une partie, Swift Client peut afficher le nom de l’instance et la version de Minecraft sur votre profil Discord. Discord doit être ouvert sur cet ordinateur. Activez-le ou désactivez-le dans Paramètres → Confidentialité.',
-    },
-  },
+  // Shown once LINKS.discord (content/links.ts) holds the invite.
+  ...(LINKS.discord
+    ? [{
+        id: 'discord',
+        date: '2026-09-23',
+        image: '/images/news/discord.jpg',
+        url: LINKS.discord,
+        direct: true,
+        title: { en: 'Join the Discord', fr: 'Rejoindre le Discord' },
+        summary: {
+          en: 'News and help: join the Swift Client community.',
+          fr: 'Nouveautés et entraide : rejoignez la communauté Swift Client.',
+        },
+        body: { en: '', fr: '' },
+      } satisfies NewsItem]
+    : []),
 ]
