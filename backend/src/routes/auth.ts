@@ -1,4 +1,4 @@
-import { Hono } from 'hono'
+import { Hono, type Context } from 'hono'
 import {
   createUserId,
   findUserById,
@@ -11,6 +11,7 @@ import {
   type AuthVariables,
 } from '../auth.js'
 import { db } from '../db.js'
+import { findOrCreateMinecraftUser, hasJoined, linkMinecraft, normUuid } from '../minecraft.js'
 
 export const authRoutes = new Hono<{ Variables: AuthVariables }>()
 
@@ -83,15 +84,43 @@ authRoutes.get('/me', requireAuth, async (c) => {
   return c.json({ user: publicUser(row) })
 })
 
-authRoutes.post('/me/link-minecraft', requireAuth, async (c) => {
+authRoutes.post('/me/link-minecraft', requireAuth, linkMinecraftHandler)
+
+/**
+ * Game sign-in. The mod called Mojang "join" with a random serverId; Mojang confirms the player owns the
+ * account, and the player gets the Swift account for that UUID (created on first use).
+ */
+authRoutes.post('/minecraft', async (c) => {
+  const body = await c.req.json().catch(() => null) as { username?: string, uuid?: string, serverId?: string } | null
+  const username = body?.username?.trim() ?? ''
+  const uuid = body?.uuid?.trim() ?? ''
+  const serverId = body?.serverId?.trim() ?? ''
+  if (!username || !uuid || !serverId || serverId.length > 64) {
+    return c.json({ message: 'username, uuid and serverId required' }, 400)
+  }
+  const profile = await hasJoined(username, serverId).catch(() => null)
+  if (!profile || normUuid(profile.id) !== normUuid(uuid)) {
+    return c.json({ message: 'Mojang did not confirm this session' }, 401)
+  }
+  const row = findOrCreateMinecraftUser(profile.id, profile.name)
+  const token = await signToken({
+    id: row.id,
+    username: row.username,
+    mc_uuid: row.mc_uuid,
+    mc_username: row.mc_username,
+  })
+  return c.json({ token, expiresAt: Date.now() + 30 * 24 * 3600 * 1000, user: publicUser(row) })
+})
+
+export async function linkMinecraftHandler(c: Context<{ Variables: AuthVariables }>) {
   const session = c.get('user')
-  const body = await c.req.json().catch(() => null) as { uuid?: string, username?: string } | null
+  const body = await c.req.json().catch(() => null) as { uuid?: string, username?: string, serverId?: string } | null
   const uuid = body?.uuid?.trim() ?? ''
   const mcUsername = body?.username?.trim() ?? ''
-  if (!uuid || !mcUsername) {
+  if (!/^[0-9a-fA-F-]{32,36}$/.test(uuid) || !mcUsername) {
     return c.json({ message: 'uuid and username required' }, 400)
   }
-  db.prepare('UPDATE users SET mc_uuid = ?, mc_username = ? WHERE id = ?').run(uuid, mcUsername, session.id)
+  const verified = await linkMinecraft(session.id, uuid, mcUsername, body?.serverId?.trim() || undefined)
   const row = findUserById(session.id)!
   const token = await signToken({
     id: row.id,
@@ -99,5 +128,5 @@ authRoutes.post('/me/link-minecraft', requireAuth, async (c) => {
     mc_uuid: row.mc_uuid,
     mc_username: row.mc_username,
   })
-  return c.json({ token, user: publicUser(row) })
-})
+  return c.json({ token, user: publicUser(row), verified })
+}

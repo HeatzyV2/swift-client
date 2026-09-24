@@ -28,6 +28,7 @@ mkdirSync(dataDir, { recursive: true })
 mkdirSync(resolve(dataDir, 'shares'), { recursive: true })
 mkdirSync(resolve(dataDir, 'media'), { recursive: true })
 mkdirSync(resolve(dataDir, 'uploads'), { recursive: true })
+mkdirSync(resolve(dataDir, 'cosmetics'), { recursive: true })
 
 export const env = {
   port,
@@ -40,7 +41,19 @@ export const env = {
   mediaTtlDays: firstNum('MEDIA_TTL_DAYS') ?? 7,
   shareTtlDays: firstNum('SHARE_TTL_DAYS') ?? 30,
   cleanupIntervalMs: firstNum('CLEANUP_INTERVAL_MS') ?? 3_600_000,
-  version: '0.1.0',
+  version: '0.2.0',
+  /** Mojang session server, overridable for tests. */
+  mojangSessionUrl: str('MOJANG_SESSION_URL', 'https://sessionserver.mojang.com').replace(/\/$/, ''),
+  /**
+   * World hosting relay (Swift Client "Host World"). RELAY_PORT is the control port the game connects
+   * to; each hosted world gets one public port from RELAY_PORT_MIN..RELAY_PORT_MAX. All of them must
+   * be open (Pterodactyl: extra allocations). RELAY_PORT=0 disables the relay.
+   */
+  relayPort: firstNum('RELAY_PORT') ?? 0,
+  relayPortMin: firstNum('RELAY_PORT_MIN') ?? 0,
+  relayPortMax: firstNum('RELAY_PORT_MAX') ?? 0,
+  /** Partner servers shown in the game's server list (JSON file, see README). */
+  partnersFile: resolve(dataDir, 'partners.json'),
 }
 
 export function shareRedeemUrl(code: string): string {

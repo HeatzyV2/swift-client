@@ -1,6 +1,6 @@
 {
   "name": "swift-client-backend",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -13,7 +13,8 @@
     "start": "node dist/index.js",
     "start:ts-node": "ts-node --esm index.ts",
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "admin": "node dist/admin.js"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",

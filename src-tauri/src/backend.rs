@@ -174,16 +174,28 @@ pub async fn swift_link_minecraft() -> AppResult<SwiftSession> {
     let Some(mut session) = load_session() else {
         return Err(AppError::auth("sign in to your Swift Client account first"));
     };
-    let accounts = store::read_json_private::<crate::models::AccountsFile>(&paths::accounts_file())?
-        .unwrap_or_default();
-    let active = accounts
-        .active_uuid
-        .as_ref()
-        .and_then(|id| accounts.accounts.iter().find(|a| &a.uuid == id))
-        .or_else(|| accounts.accounts.first())
-        .ok_or_else(|| AppError::auth("add a Microsoft account first"))?;
+    // Fresh Minecraft token of the active account (refreshed if needed): the join below needs it.
+    let active = crate::commands::auth::refresh_active_account().await?;
     if active.kind != crate::models::AccountKind::Microsoft {
         return Err(AppError::auth("link requires a Microsoft Minecraft account"));
+    }
+
+    // Proof of ownership: join a random "server" with the Minecraft session, the backend asks Mojang.
+    // Without it the backend records the link but does not merge the in-game account.
+    let server_id = uuid::Uuid::new_v4().simple().to_string();
+    let joined = http()
+        .post("https://sessionserver.mojang.com/session/minecraft/join")
+        .json(&serde_json::json!({
+            "accessToken": active.access_token,
+            "selectedProfile": active.uuid.replace('-', ""),
+            "serverId": server_id,
+        }))
+        .send()
+        .await
+        .map(|r| r.status().is_success())
+        .unwrap_or(false);
+    if !joined {
+        log::warn!("Mojang join failed: linking without proof");
     }
 
     let url = endpoint("/api/me/link-minecraft")?;
@@ -193,6 +205,7 @@ pub async fn swift_link_minecraft() -> AppResult<SwiftSession> {
         .json(&serde_json::json!({
             "uuid": active.uuid,
             "username": active.username,
+            "serverId": if joined { Some(server_id) } else { None },
         }))
         .send()
         .await

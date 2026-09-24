@@ -79,6 +79,56 @@ CREATE INDEX IF NOT EXISTS idx_media_expires ON media(expires_at);
 CREATE INDEX IF NOT EXISTS idx_shares_expires ON shares(expires_at);
 `)
 
+// --- Game client (Swift Client mod) ---------------------------------------------------------
+// Columns added after the first release: created here when missing, so existing databases upgrade
+// in place on the next start.
+function addColumn(table: string, column: string, definition: string) {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[]
+  if (!cols.some(c => c.name === column)) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`)
+  }
+}
+
+addColumn('users', 'last_seen', 'TEXT')
+addColumn('users', 'current_server', 'TEXT')
+addColumn('users', 'grade', 'TEXT')
+addColumn('users', 'coins', 'INTEGER NOT NULL DEFAULT 0')
+addColumn('users', 'swift_plus_until', 'TEXT')
+addColumn('users', 'equipped_cape', 'TEXT')
+addColumn('users', 'equipped_pet', 'TEXT')
+addColumn('users', 'cape_animated', 'INTEGER NOT NULL DEFAULT 1')
+addColumn('users', 'mojang_cape_url', 'TEXT')
+// 1 once Mojang confirmed the account owns mc_uuid (game sign-in, or a launcher link with proof).
+addColumn('users', 'mc_verified', 'INTEGER NOT NULL DEFAULT 0')
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS cosmetics (
+  id TEXT PRIMARY KEY,
+  type TEXT NOT NULL,
+  name TEXT NOT NULL,
+  price INTEGER NOT NULL DEFAULT 0,
+  frames INTEGER NOT NULL DEFAULT 1,
+  fps INTEGER NOT NULL DEFAULT 10,
+  frame_w INTEGER NOT NULL DEFAULT 64,
+  frame_h INTEGER NOT NULL DEFAULT 32,
+  texture_path TEXT,
+  model_path TEXT,
+  animation_path TEXT,
+  loop_anim TEXT NOT NULL DEFAULT 'idle',
+  player_skin INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_cosmetics (
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  cosmetic_id TEXT NOT NULL REFERENCES cosmetics(id) ON DELETE CASCADE,
+  created_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, cosmetic_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_mc_uuid ON users(mc_uuid);
+`)
+
 export type UserRow = {
   id: string
   username: string
@@ -86,4 +136,14 @@ export type UserRow = {
   mc_uuid: string | null
   mc_username: string | null
   created_at: string
+  last_seen?: string | null
+  current_server?: string | null
+  grade?: string | null
+  coins?: number
+  swift_plus_until?: string | null
+  equipped_cape?: string | null
+  equipped_pet?: string | null
+  cape_animated?: number
+  mojang_cape_url?: string | null
+  mc_verified?: number
 }

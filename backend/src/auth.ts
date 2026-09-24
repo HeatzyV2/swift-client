@@ -60,6 +60,7 @@ export function publicUser(row: UserRow) {
     username: row.username,
     mc_uuid: row.mc_uuid,
     mc_username: row.mc_username,
+    mc_verified: (row.mc_verified ?? 0) === 1,
     created_at: row.created_at,
   }
 }
@@ -83,7 +84,8 @@ export async function requireAuth(c: Context<{ Variables: AuthVariables }>, next
   const token = header.toLowerCase().startsWith('bearer ') ? header.slice(7).trim() : ''
   if (!token) return c.json({ message: 'sign in required' }, 401)
   const user = await verifyToken(token)
-  if (!user) return c.json({ message: 'invalid or expired session' }, 401)
+  // A merged or deleted account keeps valid-looking tokens: the client must sign in again.
+  if (!user || !findUserById(user.id)) return c.json({ message: 'invalid or expired session' }, 401)
   c.set('user', user)
   await next()
 }

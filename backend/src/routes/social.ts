@@ -7,6 +7,8 @@ import { customAlphabet, nanoid } from 'nanoid'
 import { requireAuth, findUserByUsername, findUserById, type AuthVariables } from '../auth.js'
 import { db } from '../db.js'
 import { env } from '../env.js'
+import { findUserByMinecraftName } from '../minecraft.js'
+import { ONLINE_WINDOW_MS } from './game.js'
 
 const tokenId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 24)
 
@@ -39,13 +41,25 @@ function extFromMime(mime: string): string {
   return 'png'
 }
 
+/** Online = the friend's game sent a heartbeat recently (the mod beats every 30 s). */
+function presence(peerId: string | null): { online: boolean, server: string | null } {
+  if (!peerId) return { online: false, server: null }
+  const peer = findUserById(peerId)
+  const seen = peer?.last_seen ? new Date(peer.last_seen).getTime() : 0
+  const online = Date.now() - seen < ONLINE_WINDOW_MS
+  return { online, server: online ? peer?.current_server ?? null : null }
+}
+
 function friendDto(row: FriendRow) {
+  const { online, server } = presence(row.peer_id)
   return {
     id: row.id,
     username: row.username,
     kind: row.kind === 'offline' ? 'offline' : 'microsoft',
     uuid: row.uuid,
     status: row.status,
+    online,
+    server,
     created_at: row.created_at,
   }
 }
@@ -124,20 +138,22 @@ socialRoutes.post('/friends/request', async (c) => {
   const kind = (body?.kind ?? 'microsoft').toLowerCase() === 'offline' ? 'offline' : 'microsoft'
   if (username.length < 3) return c.json({ message: 'enter a username' }, 400)
 
-  const peer = findUserByUsername(username)
+  // A Swift username, else the Minecraft name of a player who uses Swift Client in game.
+  const peer = findUserByUsername(username) ?? findUserByMinecraftName(username)
   if (!peer) {
     // Allow adding offline/microsoft bookmarks that are not Swift users yet
     if (kind === 'microsoft') {
       // Still allow local-style friend entries without peer account
     }
   }
+  const me = findUserById(user.id)
   if (peer && peer.id === user.id) {
     return c.json({ message: 'cannot add yourself' }, 400)
   }
 
   const existing = db.prepare(
-    'SELECT * FROM friends WHERE user_id = ? AND username = ? COLLATE NOCASE',
-  ).get(user.id, username) as FriendRow | undefined
+    'SELECT * FROM friends WHERE user_id = ? AND (username = ? COLLATE NOCASE OR (peer_id IS NOT NULL AND peer_id = ?))',
+  ).get(user.id, username, peer?.id ?? '') as FriendRow | undefined
   if (existing) return c.json({ message: `"${username}" is already in your friends list` }, 409)
 
   let uuid: string | null = peer?.mc_uuid ?? null
@@ -173,7 +189,7 @@ socialRoutes.post('/friends/request', async (c) => {
       db.prepare(`
         INSERT INTO friends (id, user_id, peer_id, username, kind, uuid, status, created_at)
         VALUES (?, ?, ?, ?, 'microsoft', ?, 'accepted', ?)
-      `).run(nanoid(16), peer.id, user.id, user.mc_username || user.username, user.mc_uuid, created_at)
+      `).run(nanoid(16), peer.id, user.id, me?.mc_username || me?.username || user.username, me?.mc_uuid ?? null, created_at)
     }
     ensureConversation(user.id, peer.id)
   }
