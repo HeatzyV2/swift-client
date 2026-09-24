@@ -167,10 +167,24 @@ jobs:
         working-directory: swiftclient-mod
         run: ./gradlew jar --no-daemon
 
+      # Auto-update artifacts must be signed. Without the TAURI_SIGNING_PRIVATE_KEY secret the
+      # installers are still built and published, only without the update files.
+      - name: Skip updater artifacts when no signing key is configured
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            echo "::warning::TAURI_SIGNING_PRIVATE_KEY is not set: building without auto-update artifacts."
+            node -e "const f='src-tauri/tauri.conf.json';const c=require('./'+f);c.bundle.createUpdaterArtifacts=false;require('fs').writeFileSync(f,JSON.stringify(c,null,2))"
+          fi
+
       - name: Build and release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           SWIFT_BACKEND_URL: ${{ vars.SWIFT_BACKEND_URL != '' && vars.SWIFT_BACKEND_URL || 'http://151.240.30.3:10049' }}
           DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
         with:
