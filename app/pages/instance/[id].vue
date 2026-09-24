@@ -32,10 +32,10 @@
             </span>
             <span class="text-dimmed">·</span>
             <span class="inline-flex items-center gap-1"><UIcon name="i-lucide-clock" class="size-3.5 text-dimmed" />{{ lastPlayed ?? $t('instance.neverPlayed') }}</span>
-            <template v-if="instance.playtime_seconds">
-              <span class="text-dimmed">·</span>
-              <span>{{ formatPlaytime(instance.playtime_seconds) }}</span>
-            </template>
+            <span class="text-dimmed">·</span>
+            <span class="inline-flex items-center gap-1" :title="$t('instance.playtime')">
+              <UIcon name="i-lucide-hourglass" class="size-3.5 text-dimmed" />{{ formatPlaytime(instance.playtime_seconds, locale) }}
+            </span>
             <UBadge v-if="instance.group" color="neutral" variant="subtle" size="sm" :label="instance.group" />
           </div>
         </div>

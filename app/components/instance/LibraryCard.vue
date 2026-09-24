@@ -26,7 +26,15 @@
         <span v-if="running" class="size-1.5 shrink-0 rounded-full bg-[var(--sw-success)]" :title="$t('instance.running')" />
       </div>
       <div class="mt-0.5 truncate font-mono text-[11px] text-muted">{{ instanceSubtitle(instance) }}</div>
-      <div class="mt-0.5 truncate text-[11px] text-dimmed">{{ lastPlayed ?? $t('instance.neverPlayed') }}</div>
+      <div class="mt-0.5 flex min-w-0 items-center gap-1.5 text-[11px] text-dimmed">
+        <span class="truncate">{{ lastPlayed ?? $t('instance.neverPlayed') }}</span>
+        <template v-if="playtime">
+          <span>·</span>
+          <span class="inline-flex shrink-0 items-center gap-1" :title="$t('instance.playtime')">
+            <UIcon name="i-lucide-hourglass" class="size-3" />{{ playtime }}
+          </span>
+        </template>
+      </div>
     </div>
 
     <UIcon v-if="selected" name="i-lucide-star" class="size-3.5 shrink-0 text-primary" :title="$t('library.selected')" />
@@ -41,4 +49,5 @@ defineEmits<{ play: [] }>()
 
 const { locale } = useI18n()
 const lastPlayed = computed(() => formatRelative(props.instance.last_played, locale.value))
+const playtime = computed(() => props.instance.playtime_seconds ? formatPlaytime(props.instance.playtime_seconds, locale.value) : null)
 </script>

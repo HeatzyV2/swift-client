@@ -103,6 +103,8 @@ export const useActivityCenter = () => {
           await listen<ExitInfo>('mc://exited', (e) => {
             void pumpConsole(e.payload.instance_id)
             clear(e.payload.instance_id)
+            // The backend has just added this session to the playtime
+            void useInstancesStore().load()
           }),
           await listen<CrashInfo>('mc://crashed', (e) => {
             const iid = e.payload.instance_id

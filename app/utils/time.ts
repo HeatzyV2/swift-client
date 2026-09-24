@@ -19,9 +19,13 @@ export function formatRelative(iso: string | null | undefined, locale: string): 
   return rtf.format(0, 'minute')
 }
 
-/** "12 h 05 min" / "42 min" */
-export function formatPlaytime(seconds: number): string {
-  const h = Math.floor(seconds / 3600)
-  const m = Math.floor((seconds % 3600) / 60)
-  return h ? `${h} h ${String(m).padStart(2, '0')} min` : `${m} min`
+/** "12 h 5 min" / "42 min", with the units of the interface language. Anything played counts as at least a minute. */
+export function formatPlaytime(seconds: number, locale: string): string {
+  const unit = (value: number, u: 'hour' | 'minute') =>
+    new Intl.NumberFormat(locale, { style: 'unit', unit: u, unitDisplay: 'short' }).format(value)
+  const total = Math.max(seconds > 0 ? 1 : 0, Math.floor(seconds / 60))
+  const h = Math.floor(total / 60)
+  const m = total % 60
+  if (!h) return unit(m, 'minute')
+  return m ? `${unit(h, 'hour')} ${unit(m, 'minute')}` : unit(h, 'hour')
 }

@@ -38,26 +38,56 @@
 	--color-neutral-950: #0e0f12;
 
 	--ease-swift: cubic-bezier(0.2, 0.8, 0.2, 1);
+	/* Slight overshoot, for the one or two moments that deserve it */
+	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/*
+ * Base tokens = OLED, the default theme: pure black canvas, Swift blue accent.
+ * The biome themes further down only set four colours each; the rest of the
+ * scale is derived from them.
+ */
 :root,
-.dark,
-html.theme-dark {
-	--sw-canvas: #0a0b0d;
-	--sw-stage: #0d0e11;
-	--sw-surface: #111317;
-	--sw-surface-2: #15171b;
-	--sw-surface-3: #1c1f24;
-	--sw-line: #1f2228;
-	--sw-line-soft: #17191e;
-	--sw-line-strong: #2b2f36;
+.dark {
+	--sw-canvas: #000000;
+	--sw-stage: #000000;
+	--sw-surface: #0a0a0a;
+	--sw-surface-2: #111111;
+	--sw-surface-3: #1a1a1a;
+	--sw-line: #1c1c1c;
+	--sw-line-soft: #141414;
+	--sw-line-strong: #2a2a2a;
 	--sw-accent: var(--color-swift-500);
 	--sw-accent-hover: #4a8fff;
 	--sw-accent-soft: rgb(46 124 255 / 0.12);
+	/* Secondary accent: non-critical touches only (hover borders, small highlights), never text */
+	--sw-accent-2: var(--sw-line-strong);
+	/* Text and icons placed on a solid accent */
+	--sw-accent-fg: #ffffff;
+	/* How far the CTA gradient darkens the accent (% of accent kept) */
+	--sw-accent-depth: 70%;
 	--sw-success: #3ecf8e;
 	--sw-warning: #f5b544;
 	--sw-danger: #f2555a;
 	--sw-radius-panel: 14px;
+
+	/*
+	 * Accent effects. Derived from --sw-accent so every theme (ember, aurora…)
+	 * gets its own gradient and glow without extra overrides.
+	 */
+	--sw-accent-gradient: linear-gradient(
+		135deg,
+		color-mix(in srgb, var(--sw-accent) 78%, #ffffff) 0%,
+		var(--sw-accent) 42%,
+		color-mix(in srgb, var(--sw-accent) var(--sw-accent-depth), #000000) 100%
+	);
+	--sw-accent-glow: 0 0 0 1px color-mix(in srgb, var(--sw-accent) 60%, transparent),
+		0 16px 44px -10px color-mix(in srgb, var(--sw-accent) 75%, transparent);
+
+	/* Frosted glass, for surfaces laid over imagery or the canvas */
+	--sw-glass-bg: rgb(255 255 255 / 0.055);
+	--sw-glass-border: rgb(255 255 255 / 0.11);
+	--sw-glass-blur: 14px;
 
 	--ui-bg: var(--sw-canvas);
 	--ui-bg-muted: var(--sw-surface);
@@ -78,81 +108,101 @@ html.theme-dark {
 	--ui-radius: 0.5rem;
 }
 
-/* OLED — pure black canvas, same blue accent */
-html.theme-oled,
-html.oled {
-	--sw-canvas: #000000;
-	--sw-stage: #000000;
-	--sw-surface: #0a0a0a;
-	--sw-surface-2: #111111;
-	--sw-surface-3: #1a1a1a;
-	--sw-line: #1c1c1c;
-	--sw-line-soft: #141414;
-	--sw-line-strong: #2a2a2a;
+/* OLED keeps the base tokens above; the class is kept for the legacy `.oled` hook. */
+
+/* Swift — the brand theme: cool charcoal with Swift blue (formerly "Dark") */
+html.theme-swift {
+	--sw-canvas: #0a0b0d;
+	--sw-stage: #0d0e11;
+	--sw-surface: #111317;
+	--sw-surface-2: #15171b;
+	--sw-surface-3: #1c1f24;
+	--sw-line: #1f2228;
+	--sw-line-soft: #17191e;
+	--sw-line-strong: #2b2f36;
 }
 
-/* Ash — cool graphite, softer contrast */
-html.theme-ash {
-	--sw-canvas: #121314;
-	--sw-stage: #161718;
-	--sw-surface: #1a1b1d;
-	--sw-surface-2: #202224;
-	--sw-surface-3: #282a2d;
-	--sw-line: #2e3034;
-	--sw-line-soft: #242628;
-	--sw-line-strong: #3a3d42;
-	--sw-accent: #8b93a1;
-	--sw-accent-hover: #a8b0bc;
-	--sw-accent-soft: rgb(139 147 161 / 0.14);
-	--ui-primary: var(--sw-accent);
+/*
+ * Biome themes. Each sets canvas, surface, accent and secondary accent; this
+ * rule derives stage, raised surfaces, lines and accent states from them.
+ * Their accents are light, so text on a solid accent is dark (contrast ≥ 5.4:1
+ * against every accent, where white would drop to 1.6–3.6:1).
+ */
+html.theme-nether,
+html.theme-end,
+html.theme-warden,
+html.theme-plains,
+html.theme-ocean,
+html.theme-desert,
+html.theme-cherry,
+html.theme-lush,
+html.theme-frozen {
+	--sw-stage: color-mix(in srgb, var(--sw-canvas) 55%, var(--sw-surface));
+	--sw-surface-2: color-mix(in srgb, var(--sw-surface), #ffffff 4%);
+	--sw-surface-3: color-mix(in srgb, var(--sw-surface), #ffffff 8%);
+	--sw-line: color-mix(in srgb, var(--sw-surface), #ffffff 8%);
+	--sw-line-soft: color-mix(in srgb, var(--sw-surface), #ffffff 4%);
+	/* Hover and input borders pick up the secondary accent */
+	--sw-line-strong: color-mix(in srgb, var(--sw-surface), var(--sw-accent-2) 38%);
+	--sw-accent-hover: color-mix(in srgb, var(--sw-accent), #ffffff 16%);
+	--sw-accent-soft: color-mix(in srgb, var(--sw-accent) 14%, transparent);
+	--sw-accent-fg: #0b0d12;
+	--sw-accent-depth: 86%;
 }
 
-/* Midnight — deep navy with electric blue */
-html.theme-midnight {
-	--sw-canvas: #06080f;
-	--sw-stage: #080b14;
-	--sw-surface: #0c101c;
-	--sw-surface-2: #111827;
-	--sw-surface-3: #182038;
-	--sw-line: #1c2740;
-	--sw-line-soft: #121a2c;
-	--sw-line-strong: #2a3a5c;
-	--sw-accent: #4d8dff;
-	--sw-accent-hover: #6ea3ff;
-	--sw-accent-soft: rgb(77 141 255 / 0.16);
-	--ui-primary: var(--sw-accent);
+html.theme-nether {
+	--sw-canvas: #1a0a08;
+	--sw-surface: #2b120e;
+	--sw-accent: #e8590c;
+	--sw-accent-2: #7a1f1f;
 }
-
-/* Ember — warm charcoal with amber accent */
-html.theme-ember {
-	--sw-canvas: #0e0b09;
-	--sw-stage: #120e0b;
-	--sw-surface: #181210;
-	--sw-surface-2: #1f1714;
-	--sw-surface-3: #2a1f1a;
-	--sw-line: #322620;
-	--sw-line-soft: #221915;
-	--sw-line-strong: #45352c;
-	--sw-accent: #e8953a;
-	--sw-accent-hover: #f0a954;
-	--sw-accent-soft: rgb(232 149 58 / 0.14);
-	--ui-primary: var(--sw-accent);
+html.theme-end {
+	--sw-canvas: #0f0a1a;
+	--sw-surface: #1c1329;
+	--sw-accent: #b983ff;
+	--sw-accent-2: #e8d77c;
 }
-
-/* Aurora — cool dark with teal accent */
-html.theme-aurora {
-	--sw-canvas: #060c0c;
-	--sw-stage: #081010;
-	--sw-surface: #0c1515;
-	--sw-surface-2: #11201f;
-	--sw-surface-3: #182b2a;
-	--sw-line: #1e3534;
-	--sw-line-soft: #142221;
-	--sw-line-strong: #2c4a48;
-	--sw-accent: #2dd4bf;
-	--sw-accent-hover: #5eead4;
-	--sw-accent-soft: rgb(45 212 191 / 0.14);
-	--ui-primary: var(--sw-accent);
+html.theme-warden {
+	--sw-canvas: #050b10;
+	--sw-surface: #0d1a20;
+	--sw-accent: #4cc9c0;
+	--sw-accent-2: #1e3a3d;
+}
+html.theme-plains {
+	--sw-canvas: #0f140d;
+	--sw-surface: #1a2216;
+	--sw-accent: #7cb342;
+	--sw-accent-2: #d9b26a;
+}
+html.theme-ocean {
+	--sw-canvas: #061a1f;
+	--sw-surface: #0d2a31;
+	--sw-accent: #3ab6b0;
+	--sw-accent-2: #1f5c63;
+}
+html.theme-desert {
+	--sw-canvas: #1a140a;
+	--sw-surface: #2b2213;
+	--sw-accent: #e0a84c;
+	--sw-accent-2: #5c8a3c;
+}
+html.theme-cherry {
+	--sw-canvas: #160e12;
+	--sw-surface: #241620;
+	--sw-accent: #f4a6c1;
+	--sw-accent-2: #8c5a72;
+}
+html.theme-lush {
+	--sw-canvas: #0a140c;
+	--sw-surface: #152418;
+	--sw-accent: #5cd68a;
+	--sw-accent-2: #c97bd1;
+}
+html.theme-frozen {
+	--sw-canvas: #0a1418;
+	--sw-surface: #132229;
+	--sw-accent: #8fd8f0;
+	--sw-accent-2: #3d6b7a;
 }
 
 html,
@@ -194,6 +244,7 @@ textarea::placeholder {
 
 /* Small uppercase section label */
 .sw-eyebrow {
+	font-family: var(--font-display);
 	font-size: 11px;
 	font-weight: 600;
 	letter-spacing: 0.12em;
@@ -206,6 +257,19 @@ textarea::placeholder {
 	background: var(--sw-surface);
 	border: 1px solid var(--sw-line);
 	border-radius: var(--sw-radius-panel, 14px);
+}
+
+/* Text or icon on a solid accent background */
+.sw-on-accent {
+	color: var(--sw-accent-fg);
+}
+
+/* Frosted panel over the canvas or imagery */
+.sw-glass {
+	background: var(--sw-glass-bg);
+	border: 1px solid var(--sw-glass-border);
+	-webkit-backdrop-filter: blur(var(--sw-glass-blur)) saturate(140%);
+	backdrop-filter: blur(var(--sw-glass-blur)) saturate(140%);
 }
 
 /* Settings card — padded section container */

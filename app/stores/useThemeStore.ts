@@ -1,9 +1,42 @@
 import { defineStore } from 'pinia'
 
-/** Visual themes for Swift Client — base surfaces + accent character. */
-export type ThemeMode = 'dark' | 'oled' | 'ash' | 'midnight' | 'ember' | 'aurora'
+/**
+ * Visual themes for Swift Client. Swift is the brand theme and the default,
+ * OLED its pure-black variant; the others are Minecraft dimensions and biomes.
+ * Colours live in assets/css/main.css (`html.theme-<mode>`); THEME_META only
+ * carries what the picker shows for themes that are not active yet.
+ */
+export type ThemeMode =
+  | 'swift' | 'oled' | 'nether' | 'end' | 'warden' | 'plains'
+  | 'ocean' | 'desert' | 'cherry' | 'lush' | 'frozen'
 
-export const THEME_MODES: ThemeMode[] = ['dark', 'oled', 'ash', 'midnight', 'ember', 'aurora']
+/** Picker order. `swatch` = surface colour, `accent` = primary accent (keep in sync with main.css). */
+export const THEME_META: Record<ThemeMode, { swatch: string, accent: string }> = {
+  swift: { swatch: '#111317', accent: '#2e7cff' },
+  oled: { swatch: '#000000', accent: '#2e7cff' },
+  nether: { swatch: '#2b120e', accent: '#e8590c' },
+  end: { swatch: '#1c1329', accent: '#b983ff' },
+  warden: { swatch: '#0d1a20', accent: '#4cc9c0' },
+  plains: { swatch: '#1a2216', accent: '#7cb342' },
+  ocean: { swatch: '#0d2a31', accent: '#3ab6b0' },
+  desert: { swatch: '#2b2213', accent: '#e0a84c' },
+  cherry: { swatch: '#241620', accent: '#f4a6c1' },
+  lush: { swatch: '#152418', accent: '#5cd68a' },
+  frozen: { swatch: '#132229', accent: '#8fd8f0' },
+}
+
+export const THEME_MODES = Object.keys(THEME_META) as ThemeMode[]
+
+const DEFAULT_MODE: ThemeMode = 'swift'
+
+/** Themes that no longer exist, mapped to their closest replacement. */
+const LEGACY_MODES: Record<string, ThemeMode> = {
+  dark: 'swift',
+  ash: 'swift',
+  midnight: 'swift',
+  ember: 'nether',
+  aurora: 'warden',
+}
 
 const STORAGE_KEY = 'swift-theme'
 
@@ -12,12 +45,13 @@ function isThemeMode(value: string | null): value is ThemeMode {
 }
 
 function loadMode(): ThemeMode {
-  if (!import.meta.client) return 'dark'
+  if (!import.meta.client) return DEFAULT_MODE
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
-    return isThemeMode(stored) ? stored : 'dark'
+    if (isThemeMode(stored)) return stored
+    return (stored && LEGACY_MODES[stored]) || DEFAULT_MODE
   } catch {
-    return 'dark'
+    return DEFAULT_MODE
   }
 }
 

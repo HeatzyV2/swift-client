@@ -13,7 +13,7 @@ export default defineAppConfig({
         {
           color: 'primary',
           variant: 'solid',
-          class: 'text-white bg-primary hover:bg-[var(--sw-accent-hover)] active:bg-primary disabled:bg-primary aria-disabled:bg-primary',
+          class: 'sw-on-accent bg-primary hover:bg-[var(--sw-accent-hover)] active:bg-primary disabled:bg-primary aria-disabled:bg-primary',
         },
       ],
     },

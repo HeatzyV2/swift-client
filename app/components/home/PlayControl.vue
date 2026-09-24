@@ -1,6 +1,6 @@
 <template>
   <div class="flex w-[min(520px,100%)] flex-col items-center gap-3">
-    <div class="sw-play" :data-state="state">
+    <div class="sw-play" :data-state="state" :data-open="switcherOpen">
       <!-- Real download progress: fills the whole control -->
       <div
         v-if="state === 'installing'"
@@ -59,7 +59,7 @@
       </button>
       <UPopover v-else v-model:open="switcherOpen" :content="{ side: 'top', align: 'center', sideOffset: 12 }">
         <button type="button" class="sw-play-side" :aria-label="$t('home.switchInstance')" :disabled="state === 'launching' || state === 'installing'">
-          <UIcon name="i-lucide-chevron-up" class="size-5 transition-transform duration-200" :class="switcherOpen ? '' : 'rotate-180'" />
+          <UIcon name="i-lucide-chevron-up" class="sw-play-chevron size-5" :class="{ 'is-open': switcherOpen }" />
         </button>
         <template #content>
           <HomeInstanceSwitcher @done="switcherOpen = false" />
@@ -192,10 +192,11 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .sw-play {
-  --play-bg: #ffffff;
-  --play-fg: #0b0d12;
-  --play-hover: #f2f4f8;
-  --play-divider: rgb(11 13 18 / 0.1);
+  --play-bg: var(--sw-accent-gradient);
+  --play-fg: var(--sw-accent-fg);
+  --play-hover: rgb(255 255 255 / 0.08);
+  --play-divider: color-mix(in srgb, currentColor 20%, transparent);
+  --play-shadow: 0 20px 48px -18px rgb(0 0 0 / 0.75);
   position: relative;
   display: flex;
   width: 100%;
@@ -205,20 +206,27 @@ onBeforeUnmount(() => {
   background: var(--play-bg);
   color: var(--play-fg);
   box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.5) inset,
-    0 20px 48px -18px rgb(0 0 0 / 0.75);
-  transition: background-color 220ms var(--ease-swift), color 220ms var(--ease-swift), box-shadow 220ms var(--ease-swift), transform 150ms var(--ease-swift);
+    inset 0 1px 0 rgb(255 255 255 / 0.28),
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    var(--play-shadow);
+  transition: color 220ms var(--ease-swift), box-shadow 260ms var(--ease-swift), transform 150ms var(--ease-swift), filter 220ms var(--ease-swift);
 }
+/* Glow on hover and keyboard focus — the accent lights up around the button */
 .sw-play[data-state='ready']:hover,
 .sw-play[data-state='none']:hover,
-.sw-play[data-state='error']:hover {
+.sw-play[data-state='error']:hover,
+.sw-play[data-state='ready']:has(:focus-visible),
+.sw-play[data-state='none']:has(:focus-visible),
+.sw-play[data-state='error']:has(:focus-visible),
+.sw-play[data-open='true'] {
+  --play-shadow: var(--sw-accent-glow);
   transform: translateY(-2px);
-  box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.5) inset,
-    0 26px 56px -16px rgb(0 0 0 / 0.8);
+}
+.sw-play :focus-visible {
+  outline: none;
 }
 .sw-play[data-state='launching'] {
-  --play-bg: rgb(255 255 255 / 0.88);
+  filter: saturate(0.75) brightness(0.92);
 }
 .sw-play[data-state='installing'] {
   --play-bg: rgb(12 15 22 / 0.9);
@@ -260,7 +268,8 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   border-radius: 11px;
-  background: color-mix(in srgb, currentColor 8%, transparent);
+  background: color-mix(in srgb, currentColor 14%, transparent);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
 }
 .sw-play-divider {
   position: relative;
@@ -276,6 +285,18 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   transition: background-color 150ms var(--ease-swift);
+}
+.sw-play[data-open='true'] .sw-play-side {
+  background: rgb(255 255 255 / 0.12);
+}
+
+/* Version switcher chevron: springs round when the menu opens */
+.sw-play-chevron {
+  transform: rotate(180deg);
+  transition: transform 380ms var(--ease-spring);
+}
+.sw-play-chevron.is-open {
+  transform: rotate(0deg) translateY(-1px);
 }
 
 .sw-swap-enter-active,

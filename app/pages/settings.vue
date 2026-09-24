@@ -435,7 +435,7 @@ import { getVersion } from '@tauri-apps/api/app'
 import { open } from '@tauri-apps/plugin-dialog'
 import { check } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
-import type { ThemeMode } from '~/stores/useThemeStore'
+import { THEME_META, THEME_MODES } from '~/stores/useThemeStore'
 import type { DisplayMode, LauncherPaths, Settings } from '~/types/launcher'
 
 const { t, locale, setLocale } = useI18n()
@@ -615,35 +615,25 @@ watch(settings, (value, previous) => {
   }, 400)
 }, { deep: true })
 
-const THEME_META: Record<ThemeMode, { swatch: string, accent: string }> = {
-  dark: { swatch: '#0d0e11', accent: '#2e7cff' },
-  oled: { swatch: '#000000', accent: '#2e7cff' },
-  ash: { swatch: '#1a1b1d', accent: '#8b93a1' },
-  midnight: { swatch: '#0c101c', accent: '#4d8dff' },
-  ember: { swatch: '#181210', accent: '#e8953a' },
-  aurora: { swatch: '#0c1515', accent: '#2dd4bf' },
-}
-
 const themeOptions = computed(() =>
-  (Object.keys(THEME_META) as ThemeMode[]).map(value => ({
+  THEME_MODES.map(value => ({
     value,
     label: t(`settings.appearance.themes.${value}`),
     ...THEME_META[value],
   })),
 )
 
-const previewTokens = computed(() => {
-  const m = theme.mode
-  const map: Record<ThemeMode, { canvas: string, stage: string, surface: string, surface2: string, surface3: string, line: string, lineStrong: string, accent: string }> = {
-    dark: { canvas: '#0a0b0d', stage: '#0d0e11', surface: '#111317', surface2: '#15171b', surface3: '#1c1f24', line: '#1f2228', lineStrong: '#2b2f36', accent: '#2e7cff' },
-    oled: { canvas: '#000000', stage: '#000000', surface: '#0a0a0a', surface2: '#111111', surface3: '#1a1a1a', line: '#1c1c1c', lineStrong: '#2a2a2a', accent: '#2e7cff' },
-    ash: { canvas: '#121314', stage: '#161718', surface: '#1a1b1d', surface2: '#202224', surface3: '#282a2d', line: '#2e3034', lineStrong: '#3a3d42', accent: '#8b93a1' },
-    midnight: { canvas: '#06080f', stage: '#080b14', surface: '#0c101c', surface2: '#111827', surface3: '#182038', line: '#1c2740', lineStrong: '#2a3a5c', accent: '#4d8dff' },
-    ember: { canvas: '#0e0b09', stage: '#120e0b', surface: '#181210', surface2: '#1f1714', surface3: '#2a1f1a', line: '#322620', lineStrong: '#45352c', accent: '#e8953a' },
-    aurora: { canvas: '#060c0c', stage: '#081010', surface: '#0c1515', surface2: '#11201f', surface3: '#182b2a', line: '#1e3534', lineStrong: '#2c4a48', accent: '#2dd4bf' },
-  }
-  return map[m]
-})
+/** The preview always shows the active theme, so it reads the live tokens. */
+const previewTokens = {
+  canvas: 'var(--sw-canvas)',
+  stage: 'var(--sw-stage)',
+  surface: 'var(--sw-surface)',
+  surface2: 'var(--sw-surface-2)',
+  surface3: 'var(--sw-surface-3)',
+  line: 'var(--sw-line)',
+  lineStrong: 'var(--sw-line-strong)',
+  accent: 'var(--sw-accent)',
+}
 
 const LOCALE_META: Record<string, { native: string }> = {
   en: { native: 'English' },

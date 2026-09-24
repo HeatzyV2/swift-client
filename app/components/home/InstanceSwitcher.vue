@@ -24,7 +24,12 @@
               <span class="font-mono">{{ inst.mc_version }}</span> · {{ loaderLabel(inst.loader.type) }}
             </span>
           </span>
-          <span class="shrink-0 text-[11px] text-dimmed">{{ formatRelative(inst.last_played, locale) ?? '—' }}</span>
+          <span class="flex shrink-0 flex-col items-end text-[11px] text-dimmed">
+            <span>{{ formatRelative(inst.last_played, locale) ?? '—' }}</span>
+            <span v-if="inst.playtime_seconds" class="inline-flex items-center gap-1" :title="$t('instance.playtime')">
+              <UIcon name="i-lucide-hourglass" class="size-3" />{{ formatPlaytime(inst.playtime_seconds, locale) }}
+            </span>
+          </span>
           <UIcon v-if="inst.id === instances.selectedId" name="i-lucide-check" class="size-4 shrink-0 text-primary" />
         </button>
       </li>
