@@ -1,6 +1,6 @@
 [package]
 name = "swift-client"
-version = "1.1.0"
+version = "1.1.1"
 description = "Swift Client — a fast, modern Minecraft launcher"
 authors = ["Swift Client contributors", "MakotoPD (Spectra Launcher)"]
 license = "GPL-3.0-only"
