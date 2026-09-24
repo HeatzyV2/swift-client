@@ -6,8 +6,8 @@
   "build": {
     "frontendDist": "../.output/public",
     "devUrl": "http://127.0.0.1:3000",
-    "beforeDevCommand": "pnpm run dev",
-    "beforeBuildCommand": "pnpm run generate"
+    "beforeDevCommand": "pnpm run bundle-mod && pnpm run dev",
+    "beforeBuildCommand": "pnpm run bundle-mod && pnpm run generate"
   },
   "app": {
     "windows": [
@@ -58,6 +58,7 @@
     "shortDescription": "Swift Client — Minecraft launcher",
     "copyright": "Swift Client contributors. Based on Spectra Launcher by MakotoPD. GPL-3.0.",
     "createUpdaterArtifacts": true,
+    "resources": ["resources/swiftclient-mod.jar"],
     "targets": "all",
     "icon": [
       "icons/32x32.png",

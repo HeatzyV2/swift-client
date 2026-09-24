@@ -23,7 +23,9 @@
       "modpackTitle": "Install modpack",
       "modpackDesc": "Browse modpacks and install one of them.",
       "importTitle": "Import install",
-      "importDesc": "Import from Lunar, Dawn, Spectra, Prism, MultiMC, Modrinth App or a zip/mrpack file."
+      "importDesc": "Import from Lunar, Dawn, Spectra, Prism, MultiMC, Modrinth App or a zip/mrpack file.",
+      "swiftTitle": "Swift Client",
+      "swiftDesc": "Recommended: Minecraft 26.2 with Fabric, the Swift Client mod and Fabric API, ready to play."
     },
     "custom": {
       "name": "Name",
@@ -55,7 +57,12 @@
       "fromCodeDesc": "Paste the code (or link) a friend sent you.",
       "useCode": "Use code"
     },
-    "done": "\"{name}\" created"
+    "done": "\"{name}\" created",
+    "swift": {
+      "created": "Swift Client instance created",
+      "createdDesc": "The Swift Client mod and Fabric API are installed.",
+      "failed": "Could not create the Swift Client instance"
+    }
   },
   "social": {
     "title": "Social",
@@ -342,12 +349,17 @@
       "themeDesc": "How dark the interface is.",
       "preview": "Live preview",
       "themes": {
-        "dark": "Dark",
+        "swift": "Swift",
         "oled": "OLED",
-        "ash": "Ash",
-        "midnight": "Midnight",
-        "ember": "Ember",
-        "aurora": "Aurora"
+        "nether": "Nether",
+        "end": "The End",
+        "warden": "Warden",
+        "plains": "Plains",
+        "ocean": "Ocean",
+        "desert": "Desert",
+        "cherry": "Cherry Grove",
+        "lush": "Lush Caves",
+        "frozen": "Frozen"
       }
     },
     "language": {
@@ -850,7 +862,27 @@
     "playedAgo": "Played {when}",
     "background": "Background {n}",
     "noInstances": "No instances yet",
-    "join": "Join"
+    "join": "Join",
+    "featured": "Featured",
+    "server": {
+      "title": "Server status",
+      "online": "Online",
+      "offline": "Unreachable",
+      "checking": "Checking…",
+      "players": "players",
+      "latency": "latency",
+      "fromInstance": "From {name}",
+      "featured": "Featured server"
+    },
+    "lastSession": {
+      "title": "Last session",
+      "never": "Nothing played yet — your last session will show up here.",
+      "total": "{time} played",
+      "open": "Open instance"
+    },
+    "changelog": {
+      "title": "What's new"
+    }
   },
   "removeInstance": {
     "title": "Delete instance",

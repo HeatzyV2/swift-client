@@ -5,6 +5,7 @@
   "packageManager": "pnpm@10.26.1",
   "scripts": {
     "build": "nuxt build",
+    "bundle-mod": "node scripts/bundle-mod.mjs",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",

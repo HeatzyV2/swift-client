@@ -23,7 +23,9 @@
       "modpackTitle": "Installer un modpack",
       "modpackDesc": "Parcours les modpacks et installes-en un.",
       "importTitle": "Importer une installation",
-      "importDesc": "Importe depuis Lunar, Dawn, Spectra, Prism, MultiMC, Modrinth App ou un fichier zip/mrpack."
+      "importDesc": "Importe depuis Lunar, Dawn, Spectra, Prism, MultiMC, Modrinth App ou un fichier zip/mrpack.",
+      "swiftTitle": "Swift Client",
+      "swiftDesc": "Recommandé : Minecraft 26.2 avec Fabric, le mod Swift Client et Fabric API, prêt à jouer."
     },
     "custom": {
       "name": "Nom",
@@ -55,7 +57,12 @@
       "fromCodeDesc": "Collez le code (ou le lien) qu’on vous a envoyé.",
       "useCode": "Utiliser le code"
     },
-    "done": "« {name} » créée"
+    "done": "« {name} » créée",
+    "swift": {
+      "created": "Instance Swift Client créée",
+      "createdDesc": "Le mod Swift Client et Fabric API sont installés.",
+      "failed": "Impossible de créer l'instance Swift Client"
+    }
   },
   "social": {
     "title": "Social",
@@ -342,12 +349,17 @@
       "themeDesc": "Niveau d'obscurité de l'interface.",
       "preview": "Aperçu en direct",
       "themes": {
-        "dark": "Sombre",
+        "swift": "Swift",
         "oled": "OLED",
-        "ash": "Ash",
-        "midnight": "Midnight",
-        "ember": "Ember",
-        "aurora": "Aurora"
+        "nether": "Nether",
+        "end": "L'End",
+        "warden": "Warden",
+        "plains": "Plaines",
+        "ocean": "Océan",
+        "desert": "Désert",
+        "cherry": "Cerisaie",
+        "lush": "Grottes luxuriantes",
+        "frozen": "Gelé"
       }
     },
     "language": {
@@ -850,7 +862,27 @@
     "playedAgo": "Joué {when}",
     "background": "Arrière-plan {n}",
     "noInstances": "Aucune instance",
-    "join": "Rejoindre"
+    "join": "Rejoindre",
+    "featured": "À la une",
+    "server": {
+      "title": "Statut serveur",
+      "online": "En ligne",
+      "offline": "Injoignable",
+      "checking": "Vérification…",
+      "players": "joueurs",
+      "latency": "latence",
+      "fromInstance": "Depuis {name}",
+      "featured": "Serveur mis en avant"
+    },
+    "lastSession": {
+      "title": "Dernière session",
+      "never": "Rien joué pour l'instant — ta dernière session s'affichera ici.",
+      "total": "{time} de jeu",
+      "open": "Ouvrir l'instance"
+    },
+    "changelog": {
+      "title": "Nouveautés"
+    }
   },
   "removeInstance": {
     "title": "Supprimer l'instance",

@@ -22,6 +22,8 @@ export interface Instance {
   last_played?: string | null
   playtime_seconds: number
   share_origin?: { code: string, revision: number, item_ids: string[] } | null
+  /** Swift Client instance: the launcher keeps the Swift mod installed in it. */
+  swift?: boolean
 
   override_memory: boolean
   override_window: boolean

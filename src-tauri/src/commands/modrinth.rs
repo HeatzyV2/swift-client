@@ -781,6 +781,28 @@ async fn resolve_latest_version(
     Ok(list.into_iter().next().map(|v| v.id))
 }
 
+/// Installs the newest version of `project_id` for this game version / loader, with its required
+/// dependencies. Returns what was added (empty if no compatible version exists).
+pub async fn install_latest(
+    instance_id: &str,
+    project_id: &str,
+    game_version: &str,
+    loader: &str,
+) -> AppResult<Vec<InstalledItem>> {
+    let http = client()?;
+    let gv = Some(game_version.to_string());
+    let ld = Some(loader.to_string());
+    let Some(version_id) = resolve_latest_version(&http, project_id, &ld, &gv).await? else {
+        return Ok(Vec::new());
+    };
+    let mut index = read_content_index(instance_id);
+    let mut visited: std::collections::HashSet<String> = index.items.iter().map(|i| i.project_id.clone()).collect();
+    let mut added: Vec<InstalledItem> = Vec::new();
+    install_rec(&http, instance_id, &version_id, false, &gv, &ld, &mut visited, &mut index, &mut added).await?;
+    write_content_index(instance_id, &index)?;
+    Ok(added)
+}
+
 #[tauri::command]
 pub async fn modrinth_install_with_deps(
     instance_id: String,

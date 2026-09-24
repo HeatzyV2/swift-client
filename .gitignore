@@ -28,3 +28,6 @@ logs
 
 # docs
 docs
+
+# Swift Client mod bundled at build time (scripts/bundle-mod.mjs)
+src-tauri/resources/swiftclient-mod.jar

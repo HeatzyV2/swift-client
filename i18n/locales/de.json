@@ -7,6 +7,9 @@
     "settings": "Einstellungen",
     "lastPlayed": "Zuletzt gespielt",
     "newInstance": "Neue Instanz",
+    "instances": "Instanzen",
+    "recent": "Zuletzt",
+    "noRecent": "Noch keine Instanzen",
     "social": "Social"
   },
   "create": {
@@ -20,7 +23,9 @@
       "modpackTitle": "Modpack installieren",
       "modpackDesc": "Modpacks durchsuchen und eines installieren.",
       "importTitle": "Installation importieren",
-      "importDesc": "Aus Prism, CurseForge, Modrinth oder einer zip/mrpack-Datei importieren."
+      "importDesc": "Aus Prism, CurseForge, Modrinth oder einer zip/mrpack-Datei importieren.",
+      "swiftTitle": "Swift Client",
+      "swiftDesc": "Recommended: Minecraft 26.2 with Fabric, the Swift Client mod and Fabric API, ready to play."
     },
     "custom": {
       "name": "Name",
@@ -35,7 +40,9 @@
       "stable": "Stabil",
       "latest": "Neueste",
       "other": "Andere",
-      "pickLoaderVersion": "Loader-Version auswählen"
+      "pickLoaderVersion": "Loader-Version auswählen",
+      "advanced": "Erweiterte Optionen",
+      "advancedVanilla": "Vanilla hat keine zusätzlichen Optionen. Speicher, Java und Fenstergröße lassen sich in den Einstellungen der Instanz ändern."
     },
     "import": {
       "fromFile": "Aus Datei",
@@ -49,7 +56,34 @@
       "fromCode": "Per Code",
       "fromCodeDesc": "Füge den Code (oder Link) ein, den du bekommen hast.",
       "useCode": "Code verwenden"
+    },
+    "done": "„{name}“ erstellt",
+    "swift": {
+      "created": "Swift Client instance created",
+      "createdDesc": "The Swift Client mod and Fabric API are installed.",
+      "failed": "Could not create the Swift Client instance"
     }
+  },
+  "social": {
+    "title": "Freunde",
+    "subtitleLocal": "Freunde und Chat auf diesem Gerät. Die Synchronisierung zwischen Launchern kommt mit dem Online-Dienst.",
+    "subtitleRemote": "Freunde und Chat über dein Swift-Client-Konto.",
+    "modeLocal": "Lokal",
+    "modeRemote": "Online",
+    "localHint": "Im lokalen Modus bleiben Freunde und Nachrichten auf diesem PC. Für geräteübergreifenden Chat braucht es den Swift-Online-Dienst (dasselbe Backend wie die Freigabecodes).",
+    "friends": "Freunde",
+    "add": "Hinzufügen",
+    "addPlaceholder": "Minecraft-Name",
+    "kindMicrosoft": "Microsoft",
+    "kindOffline": "Offline / Cracked",
+    "noFriends": "Noch keine Freunde. Füge jemanden über den Namen hinzu.",
+    "added": "{name} hinzugefügt",
+    "pickFriend": "Wähle einen Freund, um den Chat zu öffnen.",
+    "chatEmpty": "Sag Hallo – oder schick einen Screenshot.",
+    "messagePlaceholder": "Nachricht schreiben…",
+    "attachImage": "Bild anhängen",
+    "send": "Senden",
+    "imagePreview": "Bild"
   },
   "library": {
     "title": "Instanzen",
@@ -66,7 +100,11 @@
     "groupHint": "Gruppen ordnen die Bibliothek auf diesem Rechner. Auf der Festplatte bewegt sich nichts.",
     "deleteGroup": "Gruppe löschen",
     "copied": "Pfad in Zwischenablage kopiert",
-    "dragGroup": "Gruppe ziehen"
+    "dragGroup": "Gruppe ziehen",
+    "emptyHint": "Eine Instanz ist eine eigene Minecraft-Installation mit eigener Version, eigenen Mods und Welten.",
+    "loadError": "Deine Instanzen konnten nicht geladen werden",
+    "select": "Auswählen",
+    "selected": "Auf der Startseite ausgewählt"
   },
   "ctx": {
     "play": "Spielen",
@@ -117,7 +155,8 @@
     "shortcutCreated": "Verknüpfung auf dem Desktop angelegt",
     "exported": "Instanz exportiert",
     "changeIcon": "Symbol ändern",
-    "iconChanged": "Symbol geändert"
+    "iconChanged": "Symbol geändert",
+    "more": "Weitere Aktionen"
   },
   "common": {
     "save": "Speichern",
@@ -242,7 +281,8 @@
     "doneText": "Erstelle oder importiere eine Instanz und leg los.",
     "skip": "Überspringen",
     "next": "Weiter",
-    "start": "Starten"
+    "start": "Starten",
+    "or": "oder"
   },
   "conflicts": {
     "title": "{n} mögliche(r) Konflikt(e)",
@@ -255,6 +295,9 @@
     "ramHigh": "Zugewiesener RAM ({mb} MB) liegt nahe an oder über deinem Systemspeicher.",
     "conflict": "{name}: falscher Loader ({detail})",
     "duplicate": "{name}: mehrfach installiert",
+    "essential": "Essential ist installiert – Swift passt das Titelmenü daran an.",
+    "missing_swift_mod": "Der Swift-Client-Mod ist in dieser Instanz nicht installiert (Oberflächenfunktionen fehlen).",
+    "recent_crash": "Diese Instanz ist kürzlich abgestürzt. Sieh dir die Absturzberichte an, falls der Start erneut fehlschlägt.",
     "launchAnyway": "Trotzdem starten"
   },
   "drop": {
@@ -293,6 +336,12 @@
   },
   "settings": {
     "title": "Einstellungen",
+    "subtitle": "Launcher-Konfiguration",
+    "nav": {
+      "display": "Anzeige",
+      "game": "Spiel",
+      "launcher": "Launcher"
+    },
     "appearance": {
       "theme": "Design",
       "themeDark": "Dunkel",
@@ -300,12 +349,17 @@
       "themeDesc": "Wähle die Dunkelheit der Oberfläche.",
       "preview": "Live-Vorschau",
       "themes": {
-        "dark": "Dunkel",
+        "swift": "Swift",
         "oled": "OLED",
-        "ash": "Ash",
-        "midnight": "Midnight",
-        "ember": "Ember",
-        "aurora": "Aurora"
+        "nether": "Nether",
+        "end": "Das Ende",
+        "warden": "Wärter",
+        "plains": "Ebene",
+        "ocean": "Ozean",
+        "desert": "Wüste",
+        "cherry": "Kirschblütenhain",
+        "lush": "Üppige Höhlen",
+        "frozen": "Gefroren"
       }
     },
     "language": {
@@ -332,6 +386,19 @@
       "setActive": "Als aktiv festlegen",
       "noAccounts": "Noch keine Konten. Melde dich an, um zu spielen."
     },
+    "swift": {
+      "title": "Swift-Client-Konto",
+      "desc": "Erforderlich für CurseForge-Installationen, das Teilen per Code und den Online-Freundeschat.",
+      "username": "Benutzername",
+      "password": "Passwort",
+      "login": "Anmelden",
+      "register": "Konto erstellen",
+      "logout": "Abmelden",
+      "signedIn": "Angemeldet",
+      "linkMinecraft": "Minecraft verknüpfen",
+      "linked": "Minecraft-Profil verknüpft",
+      "welcome": "Angemeldet als {name}"
+    },
     "defaults": {
       "title": "Standard-Instanzoptionen",
       "memory": "Standardspeicher",
@@ -348,12 +415,21 @@
       "advanced": "Ordner",
       "about": "Updates"
     },
+    "sectionDesc": {
+      "appearance": "Design und Sprache des Launchers.",
+      "accounts": "Microsoft- und Offline-Profile zum Spielen.",
+      "minecraft": "Standardspeicher, Fenster und Java für neue Instanzen.",
+      "sync": "Inhalte über deine Instanzen teilen.",
+      "privacy": "Spielzeiterfassung und Discord-Präsenz.",
+      "advanced": "Launcher-Ordner und Standard-Launch-Hooks.",
+      "about": "Version, Updates und rechtliche Hinweise."
+    },
     "privacy": {
+      "title": "Meine Daten",
       "track_playtime": "Spielzeit erfassen",
       "track_playtimeDesc": "Gesamte Spielzeit pro Instanz messen und speichern.",
       "discord_rpc": "Discord Rich Presence",
       "discord_rpcDesc": "Zeige auf Discord, was du spielst.",
-      "title": "Meine Daten",
       "noTelemetry": "Swift Client sendet keine Telemetrie, Analysen oder Absturzdaten."
     },
     "java": {
@@ -369,21 +445,6 @@
       "detectedDesc": "Auf deinem System und im Launcher gefundene Java-Versionen.",
       "managed": "Leer lassen für automatische Erkennung",
       "browse": "Durchsuchen"
-    },
-    "subtitle": "Launcher-Konfiguration",
-    "nav": {
-      "display": "Anzeige",
-      "game": "Spiel",
-      "launcher": "Launcher"
-    },
-    "sectionDesc": {
-      "appearance": "Design und Sprache des Launchers.",
-      "accounts": "Microsoft- und Offline-Profile zum Spielen.",
-      "minecraft": "Standardspeicher, Fenster und Java für neue Instanzen.",
-      "sync": "Inhalte über deine Instanzen teilen.",
-      "privacy": "Spielzeiterfassung und Discord-Präsenz.",
-      "advanced": "Launcher-Ordner und Standard-Launch-Hooks.",
-      "about": "Version, Updates und rechtliche Hinweise."
     },
     "minecraft": {
       "memoryTitle": "Arbeitsspeicher",
@@ -410,7 +471,12 @@
     "about": {
       "updates": "Updates",
       "upToDate": "Du bist auf dem neuesten Stand",
+      "updateAvailable": "Update {version} ist verfügbar",
       "updatesDesc": "Automatische Updates sind noch nicht verfügbar.",
+      "checking": "Wird geprüft…",
+      "check": "Nach Updates suchen",
+      "install": "Installieren und neu starten",
+      "noEndpoint": "Update-Server nicht verfügbar – neue Versionen vorerst manuell installieren.",
       "manual": "Manuell",
       "online": "Online-Dienste",
       "onlineOn": "CurseForge und Instanzfreigabe sind verfügbar.",
@@ -470,7 +536,8 @@
     "worldDeleted": "Welt gelöscht",
     "deleteScreenshotTitle": "Screenshot löschen",
     "deleteScreenshotConfirm": "Diesen Screenshot löschen? Dies kann nicht rückgängig gemacht werden.",
-    "screenshotDeleted": "Screenshot gelöscht"
+    "screenshotDeleted": "Screenshot gelöscht",
+    "emptyMods": "Noch keine Mods. Füge über den Button oben welche von Modrinth hinzu."
   },
   "modrinth": {
     "title": {
@@ -503,6 +570,7 @@
     "installed": "Installiert: {name}",
     "noFile": "Keine herunterladbare Datei",
     "add": "Hinzufügen",
+    "browseHint": "Suche und installiere Inhalte von Modrinth oder CurseForge.",
     "browseMods": "Mods durchsuchen",
     "browseModpacks": "Modpacks durchsuchen",
     "latest": "Neueste",
@@ -586,6 +654,7 @@
     "noCape": "Kein Umhang",
     "capeSet": "Umhang aktualisiert",
     "title": "Skin-Auswahl",
+    "subtitle": "Vorschau, Speichern und Anwenden deiner Minecraft-Skins.",
     "capesButton": "Umhänge",
     "capesDemo": "Melde dich mit Microsoft an, um einen Umhang zu tragen.",
     "capesEmpty": "Du besitzt keine Umhänge.",
@@ -620,6 +689,7 @@
     "displayWindowed": "Fenstermodus",
     "displayFullscreen": "Vollbild",
     "displayBorderless": "Randloses Vollbild",
+    "displayBorderlessHint": "Nutzt fullscreen:true + exclusiveFullscreen:false – Fenster in Monitorgröße ohne exklusiven GPU-Modus.",
     "fullscreen": "Vollbild",
     "width": "Breite",
     "height": "Höhe",
@@ -699,11 +769,15 @@
     "not_found": "Nicht gefunden",
     "panic": "Interner Fehler",
     "permission": "Keine Berechtigung",
-    "unknown": "Fehler"
+    "unknown": "Fehler",
+    "backend_unavailable": "Noch nicht verfügbar"
   },
   "sync": {
     "title": "Instanzen synchronisieren",
     "desc": "Hält ausgewählte Einstellungen in allen Instanzen gleich. Änderungen werden nach dem Beenden übernommen und beim nächsten Start verteilt.",
+    "announceTitle": "Die Synchronisierung ist bereit",
+    "announceDesc": "Teile Spieloptionen, Server und Pakete zwischen deinen Instanzen unter Einstellungen → Synchronisierung.",
+    "announceAction": "Synchronisierung öffnen",
     "sourceTitle": "Quelle wählen",
     "sourceDesc": "Wähle die Instanz, von der kopiert wird. Ihr Zustand füllt die gemeinsame Kopie; danach kannst du sie aus jeder Instanz bearbeiten.",
     "sourceSearch": "Instanz suchen",
@@ -746,5 +820,99 @@
     "instancesTitle": "Welche Instanzen teilnehmen",
     "instancesDesc": "Jede Instanz nimmt standardmäßig teil. Abwählen, um sie auszunehmen.",
     "instanceColumn": "Instanz"
+  },
+  "window": {
+    "minimize": "Minimieren",
+    "maximize": "Maximieren",
+    "restore": "Wiederherstellen",
+    "close": "Schließen"
+  },
+  "browserWindow": {
+    "title": "Inhaltsbrowser"
+  },
+  "account": {
+    "none": "Kein Konto",
+    "signInHint": "Füge ein Konto hinzu, um zu spielen",
+    "manage": "Konten verwalten",
+    "added": "Konto hinzugefügt",
+    "microsoftTitle": "Microsoft-Konto",
+    "microsoftDesc": "Erforderlich für das Online-Spiel und die meisten Server.",
+    "kind": {
+      "microsoft": "Microsoft",
+      "offline": "Offline"
+    },
+    "signIn": "Anmelden"
+  },
+  "home": {
+    "preparing": "Vorbereitung",
+    "starting": "Start",
+    "status": {
+      "installing": "Spieldateien werden heruntergeladen",
+      "noAccount": "Kein Minecraft-Konto – füge eines hinzu, um zu spielen."
+    },
+    "welcome": {
+      "create": "Instanz erstellen",
+      "addAccount": "Konto hinzufügen",
+      "createHint": "Wähle eine Version und einen Loader, dann spiel los"
+    },
+    "switchInstance": "Instanz wechseln",
+    "manageInstances": "Alle Instanzen",
+    "news": "Neuigkeiten",
+    "readMore": "Weiterlesen",
+    "playedAgo": "Gespielt {when}",
+    "background": "Hintergrund {n}",
+    "noInstances": "Noch keine Instanzen",
+    "join": "Beitreten",
+    "featured": "Im Fokus",
+    "server": {
+      "title": "Serverstatus",
+      "online": "Online",
+      "offline": "Nicht erreichbar",
+      "checking": "Wird geprüft…",
+      "players": "Spieler",
+      "latency": "Latenz",
+      "fromInstance": "Aus {name}",
+      "featured": "Empfohlener Server"
+    },
+    "lastSession": {
+      "title": "Letzte Sitzung",
+      "never": "Noch nichts gespielt – deine letzte Sitzung erscheint hier.",
+      "total": "{time} gespielt",
+      "open": "Instanz öffnen"
+    },
+    "changelog": {
+      "title": "Neu"
+    }
+  },
+  "removeInstance": {
+    "title": "Instanz löschen",
+    "body": "„{name}“ und alles darin – Welten, Mods, Screenshots – wird endgültig von diesem Computer gelöscht.",
+    "confirm": "Löschen",
+    "done": "„{name}“ gelöscht"
+  },
+  "appError": {
+    "title": "Etwas ist schiefgelaufen",
+    "text": "Swift Client ist auf einen unerwarteten Fehler gestoßen. Deine Instanzen und Dateien sind sicher.",
+    "reload": "Neu laden"
+  },
+  "status": {
+    "idle": "Kein Spiel läuft",
+    "runningMany": "{n} Spiele laufen"
+  },
+  "play": {
+    "launching": "Wird gestartet…",
+    "stop": "Stoppen",
+    "stopping": "Wird gestoppt…",
+    "forceStop": "Beenden erzwingen",
+    "forceStopHint": "Das Spiel wurde nicht geschlossen. Klicke, um den Prozess zu beenden.",
+    "retry": "Erneut versuchen",
+    "installing": "Minecraft {version} wird installiert",
+    "installingFiles": "Minecraft {version} wird installiert · {current} / {total} Dateien",
+    "step": {
+      "assets": "Assets werden heruntergeladen",
+      "libraries": "Bibliotheken werden heruntergeladen",
+      "java": "Java wird heruntergeladen",
+      "files": "Dateien werden heruntergeladen"
+    }
   }
 }

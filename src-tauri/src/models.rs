@@ -76,6 +76,9 @@ pub struct Instance {
     pub override_memory: bool,
     #[serde(default)]
     pub override_window: bool,
+    /// Swift Client instance: the launcher keeps the Swift mod installed and up to date in it.
+    #[serde(default)]
+    pub swift: bool,
     /// Prefer this over the legacy `fullscreen` bool when set.
     #[serde(default)]
     pub display_mode: Option<DisplayMode>,

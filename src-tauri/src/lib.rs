@@ -111,6 +111,13 @@ pub fn run() {
 
             {
                 use tauri::Manager;
+                if let Ok(dir) = app.path().resource_dir() {
+                    commands::client_mod::set_resource_dir(dir);
+                }
+            }
+
+            {
+                use tauri::Manager;
                 let announce = commands::sync::resolve_announcement();
                 if let Ok(mut flag) = app.state::<AppState>().announce_sync.lock() {
                     *flag = announce;
@@ -243,6 +250,7 @@ pub fn run() {
             commands::client_mod::client_mod_status,
             commands::client_mod::prelaunch_checks,
             commands::client_mod::import_client_mod_jar,
+            commands::client_mod::create_swift_instance,
             commands::ping::ping_server,
             commands::meta::get_minecraft_versions,
             commands::meta::get_loader_versions,

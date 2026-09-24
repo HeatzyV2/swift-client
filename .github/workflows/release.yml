@@ -150,6 +150,23 @@ jobs:
       - name: Install frontend dependencies
         run: pnpm install
 
+      - name: Checkout the Swift Client mod
+        uses: actions/checkout@v6
+        with:
+          repository: HeatzyV2/swiftclient-mod
+          path: swiftclient-mod
+
+      - name: Setup Java 25 (Swift Client mod)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Build the Swift Client mod (bundled in the installer)
+        shell: bash
+        working-directory: swiftclient-mod
+        run: ./gradlew jar --no-daemon
+
       - name: Build and release
         uses: tauri-apps/tauri-action@v0
         env:

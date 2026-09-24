@@ -1,5 +1,6 @@
-//! Install / refresh the bundled Swift Client Fabric mod into an instance.
-//! Always prefers the newest jar found (build/libs, cache, or SWIFT_CLIENT_MOD_JAR).
+//! Install / refresh the Swift Client Fabric mod in Swift instances.
+//! The jar ships inside the launcher (bundled resource); SWIFT_CLIENT_MOD_JAR or a sibling
+//! `swiftclient-mod/build/libs` (development) can provide a newer one.
 
 use std::cmp::Ordering;
 use std::path::{Path, PathBuf};
@@ -10,6 +11,18 @@ use crate::error::{AppError, AppResult};
 use crate::paths;
 
 const MOD_FILE_NAME: &str = "swiftclient-mod.jar";
+/// What a Swift instance runs. Keep in sync with the mod (gradle.properties / fabric.mod.json).
+pub const SWIFT_MC_VERSION: &str = "26.2";
+pub const SWIFT_FABRIC_LOADER: &str = "0.19.5";
+/// Fabric API on Modrinth, required by the mod.
+const FABRIC_API_PROJECT: &str = "P7dR8mSH";
+
+/// Launcher resource folder (set at startup): the installer puts the bundled mod jar in `resources/`.
+static RESOURCE_DIR: std::sync::OnceLock<PathBuf> = std::sync::OnceLock::new();
+
+pub fn set_resource_dir(dir: PathBuf) {
+    let _ = RESOURCE_DIR.set(dir);
+}
 const LEGACY_NAMES: &[&str] = &["lightclient-mod.jar", "swiftclient.jar"];
 
 #[derive(Debug, Clone, Serialize)]
@@ -152,8 +165,9 @@ fn discover_best_jar() -> Option<Candidate> {
     }
 
     let candidates = [
-        PathBuf::from(r"D:\swiftclient-mod\build\libs"),
-        PathBuf::from(r"C:\Users\Zorat\Documents\Swift Client\swiftclient-mod\build\libs"),
+        // Shipped with the launcher.
+        RESOURCE_DIR.get().map(|d| d.join("resources")).unwrap_or_default(),
+        // Development: the mod repository next to the launcher repository.
         std::env::current_dir()
             .ok()
             .map(|d| d.join("..").join("swiftclient-mod").join("build").join("libs"))
@@ -249,8 +263,22 @@ fn purge_legacy(mods: &Path) {
     }
 }
 
-/// Copy the newest Swift client mod into an instance's `minecraft/mods` folder.
+/// Swift instances: created as such, or already carrying the mod (instances made by older launchers).
+/// Any other instance is left alone: the mod only runs on Fabric for its own Minecraft version.
+pub fn is_swift_instance(instance_id: &str) -> bool {
+    has_client_mod(instance_id)
+        || crate::store::read_json::<crate::models::Instance>(&paths::instance_config_file(instance_id))
+            .ok()
+            .flatten()
+            .is_some_and(|i| i.swift)
+}
+
+/// Copy the newest Swift client mod into a Swift instance's `minecraft/mods` folder.
 pub fn ensure_installed(instance_id: &str) -> AppResult<ClientModStatus> {
+    if !is_swift_instance(instance_id) {
+        return Ok(status(instance_id));
+    }
+
     let Some(best) = discover_best_jar() else {
         return Ok(ClientModStatus {
             installed: installed_path(instance_id).is_file(),
@@ -337,7 +365,7 @@ pub fn prelaunch_hints(instance_id: &str) -> Vec<PrelaunchHint> {
             kind: "essential".into(),
         });
     }
-    if !has_client_mod(instance_id) && discover_best_jar().is_none() {
+    if is_swift_instance(instance_id) && !has_client_mod(instance_id) && discover_best_jar().is_none() {
         out.push(PrelaunchHint {
             kind: "missing_swift_mod".into(),
         });
@@ -378,6 +406,45 @@ pub async fn client_mod_status(instance_id: String) -> AppResult<ClientModStatus
 #[tauri::command]
 pub async fn prelaunch_checks(instance_id: String) -> AppResult<Vec<PrelaunchHint>> {
     crate::blocking(move || Ok(prelaunch_hints(&instance_id))).await
+}
+
+/// Creates a ready-to-play Swift Client instance: Fabric on the mod's Minecraft version, the Swift
+/// mod and Fabric API. Nothing is left behind if a step fails.
+#[tauri::command]
+pub async fn create_swift_instance(name: Option<String>) -> AppResult<crate::models::Instance> {
+    let name = name.map(|n| n.trim().to_string()).filter(|n| !n.is_empty()).unwrap_or_else(|| "Swift Client".into());
+    let instance = crate::blocking(move || {
+        if discover_best_jar().is_none() {
+            return Err(AppError::invalid("Swift Client mod not found in this launcher installation"));
+        }
+        let mut instance = crate::commands::instances::make_instance(
+            name,
+            SWIFT_MC_VERSION.into(),
+            crate::models::Loader::Fabric(SWIFT_FABRIC_LOADER.into()),
+            None,
+            None,
+        )?;
+        instance.swift = true;
+        crate::store::write_json(&paths::instance_config_file(&instance.id), &instance)?;
+        if let Err(e) = ensure_installed(&instance.id) {
+            let _ = std::fs::remove_dir_all(paths::instance_dir(&instance.id));
+            return Err(e);
+        }
+        Ok(instance)
+    })
+    .await?;
+
+    match crate::commands::modrinth::install_latest(&instance.id, FABRIC_API_PROJECT, SWIFT_MC_VERSION, "fabric").await {
+        Ok(added) if !added.is_empty() => Ok(instance),
+        Ok(_) => {
+            let _ = std::fs::remove_dir_all(paths::instance_dir(&instance.id));
+            Err(AppError::network(format!("no Fabric API release for Minecraft {SWIFT_MC_VERSION} on Modrinth")))
+        }
+        Err(e) => {
+            let _ = std::fs::remove_dir_all(paths::instance_dir(&instance.id));
+            Err(e)
+        }
+    }
 }
 
 #[tauri::command]

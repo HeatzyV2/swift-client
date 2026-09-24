@@ -17,7 +17,8 @@
               <span class="block text-sm font-medium text-highlighted">{{ $t(c.title) }}</span>
               <span class="mt-0.5 block text-xs text-muted">{{ $t(c.desc) }}</span>
             </span>
-            <UIcon name="i-lucide-chevron-right" class="size-4 text-dimmed transition-transform group-hover:translate-x-0.5" />
+            <UIcon v-if="c.key === 'swift' && creatingSwift" name="i-lucide-loader-circle" class="size-4 animate-spin text-primary" />
+            <UIcon v-else name="i-lucide-chevron-right" class="size-4 text-dimmed transition-transform group-hover:translate-x-0.5" />
           </button>
         </div>
 
@@ -230,7 +231,7 @@ const backend = useBackend()
 const router = useRouter()
 const { t } = useI18n()
 
-type Step = 'choice' | 'custom' | 'modpack' | 'import'
+type Step = 'choice' | 'swift' | 'custom' | 'modpack' | 'import'
 const step = ref<Step>('choice')
 
 const title = computed(() => ({
@@ -241,13 +242,32 @@ const title = computed(() => ({
 }[step.value]))
 
 const choices = [
+  { key: 'swift' as Step, icon: 'i-lucide-zap', title: 'create.choice.swiftTitle', desc: 'create.choice.swiftDesc' },
   { key: 'custom' as Step, icon: 'i-lucide-box', title: 'create.choice.customTitle', desc: 'create.choice.customDesc' },
   { key: 'modpack' as Step, icon: 'i-lucide-package', title: 'create.choice.modpackTitle', desc: 'create.choice.modpackDesc' },
   { key: 'import' as Step, icon: 'i-lucide-download', title: 'create.choice.importTitle', desc: 'create.choice.importDesc' },
 ]
 
+const creatingSwift = ref(false)
+
+async function createSwift() {
+  if (creatingSwift.value) return
+  creatingSwift.value = true
+  try {
+    const instance = await instances.createSwift()
+    toast.add({ title: t('create.swift.created'), description: t('create.swift.createdDesc'), color: 'success', icon: 'i-lucide-zap' })
+    await openCreated(instance)
+  } catch (e) {
+    toast.add({ title: t('create.swift.failed'), description: errorText(e), color: 'error' })
+  } finally {
+    creatingSwift.value = false
+  }
+}
+
 function selectChoice(key: Step) {
-  if (key === 'modpack') {
+  if (key === 'swift') {
+    createSwift()
+  } else if (key === 'modpack') {
     browser.open({ kind: 'modpack', mode: 'createModpack' })
     close()
   } else {
