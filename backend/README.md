@@ -85,16 +85,32 @@ Health check: `GET http://127.0.0.1:${SERVER_PORT:-8787}/health`
 | `CLEANUP_INTERVAL_MS` | `3600000` | Purge job interval (1h) |
 | `RELAY_PORT` | empty (off) | World hosting relay: control port the game connects to |
 | `RELAY_PORT_MIN` / `RELAY_PORT_MAX` | empty | Public ports handed to hosted worlds (one per world) |
+| `RELAY_GATEWAY_PORT` | empty (off) | Gateway for `<pseudo>.RELAY_DOMAIN` addresses (25565 recommended) |
+| `RELAY_DOMAIN` | `swiftclient.fr` | Domain of the hosted-world addresses |
 | `MOJANG_SESSION_URL` | `https://sessionserver.mojang.com` | Only changed for tests |
 
-### World hosting relay on Pterodactyl
+### World hosting relay: `<pseudo>.swiftclient.fr`
 
-Each port must be an **allocation** of the server (Network tab), since the panel only forwards those:
+A player hosting a world gets the address **`<minecraft name>.swiftclient.fr`** (for example
+`notch.swiftclient.fr`). The relay's **gateway** reads the address in the Minecraft handshake and forwards
+the player to the right world; unknown names show "Aucun monde hébergé par …" in the server list.
 
-1. Add one allocation for the control port, e.g. `10050` → `RELAY_PORT=10050`.
-2. Add a contiguous range for hosted worlds, e.g. `10051`–`10060` → `RELAY_PORT_MIN=10051`, `RELAY_PORT_MAX=10060`
-   (10 worlds hosted at the same time).
-3. Restart. The log shows `[relay] control on ...`. The mod finds the port through `GET /api/relay`.
+Each port must be an **allocation** of the Pterodactyl server (Network tab):
+
+1. Control port the game connects to, e.g. `10050` → `RELAY_PORT=10050`.
+2. Gateway port → `RELAY_GATEWAY_PORT`. Best is **25565** (the default Minecraft port, so players type only
+   `pseudo.swiftclient.fr`). `RELAY_DOMAIN=swiftclient.fr` (default).
+3. DNS at your registrar, for `swiftclient.fr`:
+   - gateway on **25565**: a wildcard **A** record `*` → `151.240.30.3`;
+   - gateway on another port (e.g. `10061`): the wildcard **A** record `*` → `151.240.30.3` **and** a wildcard
+     **SRV** record `*` → priority `0`, weight `5`, port `10061`, target `relay.swiftclient.fr`
+     (Minecraft looks up `_minecraft._tcp.<pseudo>.swiftclient.fr`, which the wildcard answers).
+   The existing `swiftclient.fr` / `www` records (website) are not affected by the wildcard.
+4. Optional, older clients / no DNS: a range of public ports, one per hosted world, e.g. `10051`–`10060` →
+   `RELAY_PORT_MIN=10051`, `RELAY_PORT_MAX=10060`. When the gateway is on, the game shows the gateway address.
+5. Restart. The log shows `[relay] control on …` and `[relay] gateway on … for *.swiftclient.fr`.
+
+Hosting through the gateway needs a Minecraft account confirmed by Mojang (every Microsoft account in game is).
 
 ### Partner servers
 

@@ -41,7 +41,7 @@ export const env = {
   mediaTtlDays: firstNum('MEDIA_TTL_DAYS') ?? 7,
   shareTtlDays: firstNum('SHARE_TTL_DAYS') ?? 30,
   cleanupIntervalMs: firstNum('CLEANUP_INTERVAL_MS') ?? 3_600_000,
-  version: '0.2.0',
+  version: '0.3.0',
   /** Mojang session server, overridable for tests. */
   mojangSessionUrl: str('MOJANG_SESSION_URL', 'https://sessionserver.mojang.com').replace(/\/$/, ''),
   /**
@@ -52,6 +52,12 @@ export const env = {
   relayPort: firstNum('RELAY_PORT') ?? 0,
   relayPortMin: firstNum('RELAY_PORT_MIN') ?? 0,
   relayPortMax: firstNum('RELAY_PORT_MAX') ?? 0,
+  /**
+   * Gateway: players join "<minecraft name>.<RELAY_DOMAIN>" and are routed by the address in their
+   * handshake. Needs a wildcard DNS record *.RELAY_DOMAIN -> this server (see README). 0 disables it.
+   */
+  relayGatewayPort: firstNum('RELAY_GATEWAY_PORT') ?? 0,
+  relayDomain: str('RELAY_DOMAIN', 'swiftclient.fr').toLowerCase().replace(/^\.|\.$/g, ''),
   /** Partner servers shown in the game's server list (JSON file, see README). */
   partnersFile: resolve(dataDir, 'partners.json'),
 }
