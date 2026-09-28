@@ -167,16 +167,17 @@ jobs:
         working-directory: swiftclient-mod
         run: ./gradlew jar --no-daemon
 
-      # Auto-update artifacts must be signed. Without the TAURI_SIGNING_PRIVATE_KEY secret the
-      # installers are still built and published, only without the update files.
-      - name: Skip updater artifacts when no signing key is configured
+      # Installed launchers only accept updates signed with the key matching `plugins.updater.pubkey`.
+      # A release built without it would ship no latest.json, and every player would stay on the old
+      # version without knowing it, so stop here instead.
+      - name: Require the updater signing key
         shell: bash
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
         run: |
           if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
-            echo "::warning::TAURI_SIGNING_PRIVATE_KEY is not set: building without auto-update artifacts."
-            node -e "const f='src-tauri/tauri.conf.json';const c=require('./'+f);c.bundle.createUpdaterArtifacts=false;require('fs').writeFileSync(f,JSON.stringify(c,null,2))"
+            echo "::error::The TAURI_SIGNING_PRIVATE_KEY secret is not set: this release could not update itself. Add the key (and TAURI_SIGNING_PRIVATE_KEY_PASSWORD) in Settings → Secrets and variables → Actions."
+            exit 1
           fi
 
       - name: Build and release
@@ -185,7 +186,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          SWIFT_BACKEND_URL: ${{ vars.SWIFT_BACKEND_URL != '' && vars.SWIFT_BACKEND_URL || 'http://151.240.30.3:10049' }}
+          SWIFT_BACKEND_URL: ${{ vars.SWIFT_BACKEND_URL != '' && vars.SWIFT_BACKEND_URL || 'https://api.swiftclient.fr' }}
           DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
         with:
           tagName: v${{ needs.prepare.outputs.version }}

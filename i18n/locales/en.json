@@ -10,7 +10,8 @@
     "instances": "Instances",
     "recent": "Recent",
     "noRecent": "No instances yet",
-    "social": "Social"
+    "social": "Social",
+    "servers": "Servers"
   },
   "create": {
     "title": "Create instance",
@@ -212,6 +213,13 @@
   "server": {
     "offline": "Offline",
     "players": "{online}/{max} players"
+  },
+  "servers": {
+    "title": "Servers",
+    "subtitle": "Communities partnered with Swift Client",
+    "copied": "Address copied",
+    "empty": "No partner servers yet",
+    "emptyDesc": "Check back soon."
   },
   "jvmPreset": {
     "label": "Preset",
@@ -482,7 +490,9 @@
       "onlineOn": "CurseForge, instance sharing and online Social are available when you sign in to a Swift Client account.",
       "onlineOff": "This build has no online service URL. CurseForge and remote sharing stay off; Modrinth and local Social still work.",
       "connected": "Connected",
-      "offline": "Not available"
+      "offline": "Not available",
+      "updatePrompt": "Install it now: the launcher restarts in a few seconds.",
+      "updateBlocked": "Close the game before updating the launcher."
     }
   },
   "activity": {
@@ -882,6 +892,12 @@
     },
     "changelog": {
       "title": "What's new"
+    },
+    "quickStart": {
+      "title": "Play",
+      "hint": "A Swift Client instance, ready in one click",
+      "creating": "Setting up your instance…",
+      "failed": "Could not set up the instance"
     }
   },
   "removeInstance": {

@@ -10,7 +10,8 @@
     "instances": "Instanzen",
     "recent": "Zuletzt",
     "noRecent": "Noch keine Instanzen",
-    "social": "Social"
+    "social": "Social",
+    "servers": "Server"
   },
   "create": {
     "title": "Instanz erstellen",
@@ -212,6 +213,13 @@
   "server": {
     "offline": "Offline",
     "players": "{online}/{max} Spieler"
+  },
+  "servers": {
+    "title": "Server",
+    "subtitle": "Mit Swift Client verbundene Communitys",
+    "copied": "Adresse kopiert",
+    "empty": "Noch keine Partnerserver",
+    "emptyDesc": "Schau bald wieder vorbei."
   },
   "jvmPreset": {
     "label": "Voreinstellung",
@@ -482,7 +490,9 @@
       "onlineOn": "CurseForge und Instanzfreigabe sind verfügbar.",
       "onlineOff": "CurseForge und Instanzfreigabe benötigen den Online-Dienst.",
       "connected": "Verbunden",
-      "offline": "Nicht verfügbar"
+      "offline": "Nicht verfügbar",
+      "updatePrompt": "Jetzt installieren: Der Launcher startet in wenigen Sekunden neu.",
+      "updateBlocked": "Schließe das Spiel, bevor du den Launcher aktualisierst."
     }
   },
   "activity": {
@@ -882,6 +892,12 @@
     },
     "changelog": {
       "title": "Neu"
+    },
+    "quickStart": {
+      "title": "Spielen",
+      "hint": "Eine Swift-Client-Instanz, mit einem Klick bereit",
+      "creating": "Instanz wird eingerichtet…",
+      "failed": "Die Instanz konnte nicht eingerichtet werden"
     }
   },
   "removeInstance": {

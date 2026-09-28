@@ -42,9 +42,9 @@
       }
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDdFOTg0MkVDOTVDMjUzRTMKUldUalU4S1Y3RUtZZnVacncvTmhKcktaMCtVTFJ3NjY1d2xiMTdFZVZPUVY0eXo2SnFHVUdSaFIK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDk4MkU3MkUxQUY3M0QyQjMKUldTejBuT3Y0WEl1bURMNTVTSVpqcGhtVWRUTDNIYWFITVJlRlNsZDRCRkFwU2tiVzlaVi8rZm8K",
       "endpoints": [
-        "https://releases.swiftclient.dev/launcher/{{target}}/{{arch}}/{{current_version}}"
+        "https://github.com/HeatzyV2/swift-client/releases/latest/download/latest.json"
       ],
       "windows": {
         "installMode": "passive"

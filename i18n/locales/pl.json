@@ -1,4 +1,4 @@
-﻿{
+{
   "nav": {
     "home": "Start",
     "worlds": "Światy",
@@ -10,7 +10,8 @@
     "instances": "Instancje",
     "recent": "Ostatnie",
     "noRecent": "Brak instancji",
-    "social": "Społeczność"
+    "social": "Społeczność",
+    "servers": "Serwery"
   },
   "create": {
     "title": "Utwórz instancję",
@@ -212,6 +213,13 @@
   "server": {
     "offline": "Offline",
     "players": "{online}/{max} graczy"
+  },
+  "servers": {
+    "title": "Serwery",
+    "subtitle": "Społeczności partnerskie Swift Client",
+    "copied": "Adres skopiowany",
+    "empty": "Brak serwerów partnerskich",
+    "emptyDesc": "Zajrzyj tu wkrótce."
   },
   "jvmPreset": {
     "label": "Profil ustawień",
@@ -482,7 +490,9 @@
       "onlineOn": "CurseForge i udostępnianie instancji są dostępne.",
       "onlineOff": "CurseForge i udostępnianie wymagają usługi online.",
       "connected": "Połączono",
-      "offline": "Niedostępne"
+      "offline": "Niedostępne",
+      "updatePrompt": "Zainstaluj teraz: launcher uruchomi się ponownie za kilka sekund.",
+      "updateBlocked": "Zamknij grę przed aktualizacją launchera."
     }
   },
   "activity": {
@@ -882,6 +892,12 @@
     },
     "changelog": {
       "title": "Co nowego"
+    },
+    "quickStart": {
+      "title": "Graj",
+      "hint": "Instancja Swift Client gotowa jednym kliknięciem",
+      "creating": "Przygotowywanie instancji…",
+      "failed": "Nie udało się przygotować instancji"
     }
   },
   "removeInstance": {

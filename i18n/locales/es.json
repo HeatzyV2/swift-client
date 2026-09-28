@@ -1,4 +1,4 @@
-﻿{
+{
   "nav": {
     "home": "Inicio",
     "worlds": "Mundos",
@@ -10,7 +10,8 @@
     "instances": "Instancias",
     "recent": "Recientes",
     "noRecent": "Aún no hay instancias",
-    "social": "Social"
+    "social": "Social",
+    "servers": "Servidores"
   },
   "create": {
     "title": "Crear instancia",
@@ -212,6 +213,13 @@
   "server": {
     "offline": "Desconectado",
     "players": "{online}/{max} jugadores"
+  },
+  "servers": {
+    "title": "Servidores",
+    "subtitle": "Comunidades asociadas a Swift Client",
+    "copied": "Dirección copiada",
+    "empty": "Aún no hay servidores asociados",
+    "emptyDesc": "Vuelve pronto."
   },
   "jvmPreset": {
     "label": "Preajuste",
@@ -482,7 +490,9 @@
       "onlineOn": "CurseForge y el intercambio de instancias están disponibles.",
       "onlineOff": "CurseForge y el intercambio necesitan el servicio en línea.",
       "connected": "Conectado",
-      "offline": "No disponible"
+      "offline": "No disponible",
+      "updatePrompt": "Instálala ahora: el launcher se reinicia en unos segundos.",
+      "updateBlocked": "Cierra el juego antes de actualizar el launcher."
     }
   },
   "activity": {
@@ -882,6 +892,12 @@
     },
     "changelog": {
       "title": "Novedades"
+    },
+    "quickStart": {
+      "title": "Jugar",
+      "hint": "Una instancia de Swift Client, lista en un clic",
+      "creating": "Preparando tu instancia…",
+      "failed": "No se pudo preparar la instancia"
     }
   },
   "removeInstance": {

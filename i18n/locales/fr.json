@@ -10,7 +10,8 @@
     "instances": "Instances",
     "recent": "Récentes",
     "noRecent": "Aucune instance",
-    "social": "Social"
+    "social": "Social",
+    "servers": "Serveurs"
   },
   "create": {
     "title": "Créer une instance",
@@ -212,6 +213,13 @@
   "server": {
     "offline": "Hors ligne",
     "players": "{online}/{max} joueurs"
+  },
+  "servers": {
+    "title": "Serveurs",
+    "subtitle": "Communautés partenaires de Swift Client",
+    "copied": "Adresse copiée",
+    "empty": "Aucun serveur partenaire pour l'instant",
+    "emptyDesc": "Reviens bientôt."
   },
   "jvmPreset": {
     "label": "Préréglage",
@@ -482,7 +490,9 @@
       "onlineOn": "CurseForge, le partage d'instances et le Social en ligne sont disponibles avec un compte Swift Client.",
       "onlineOff": "Cette build n'a pas d'URL de service en ligne. CurseForge et le partage distant restent désactivés ; Modrinth et le Social local fonctionnent.",
       "connected": "Connecté",
-      "offline": "Indisponible"
+      "offline": "Indisponible",
+      "updatePrompt": "Installe-la maintenant : le launcher redémarre en quelques secondes.",
+      "updateBlocked": "Ferme le jeu avant de mettre à jour le launcher."
     }
   },
   "activity": {
@@ -882,6 +892,12 @@
     },
     "changelog": {
       "title": "Nouveautés"
+    },
+    "quickStart": {
+      "title": "Jouer",
+      "hint": "Une instance Swift Client, prête en un clic",
+      "creating": "Préparation de l’instance…",
+      "failed": "Impossible de préparer l’instance"
     }
   },
   "removeInstance": {

@@ -1,4 +1,4 @@
-﻿{
+{
   "nav": {
     "home": "首页",
     "worlds": "世界",
@@ -10,7 +10,8 @@
     "instances": "实例",
     "recent": "最近",
     "noRecent": "还没有实例",
-    "social": "社交"
+    "social": "社交",
+    "servers": "服务器"
   },
   "create": {
     "title": "创建实例",
@@ -212,6 +213,13 @@
   "server": {
     "offline": "离线",
     "players": "{online}/{max} 名玩家"
+  },
+  "servers": {
+    "title": "服务器",
+    "subtitle": "与 Swift Client 合作的社区",
+    "copied": "地址已复制",
+    "empty": "暂无合作服务器",
+    "emptyDesc": "请稍后再来查看。"
   },
   "jvmPreset": {
     "label": "预设",
@@ -482,7 +490,9 @@
       "onlineOn": "CurseForge 与实例共享可用。",
       "onlineOff": "CurseForge 与实例共享需要在线服务。",
       "connected": "已连接",
-      "offline": "不可用"
+      "offline": "不可用",
+      "updatePrompt": "立即安装：启动器将在几秒后重启。",
+      "updateBlocked": "请先关闭游戏再更新启动器。"
     }
   },
   "activity": {
@@ -882,6 +892,12 @@
     },
     "changelog": {
       "title": "更新内容"
+    },
+    "quickStart": {
+      "title": "开始游戏",
+      "hint": "一键准备好 Swift Client 实例",
+      "creating": "正在准备实例…",
+      "failed": "无法准备实例"
     }
   },
   "removeInstance": {
