@@ -236,6 +236,7 @@ const step = ref<Step>('choice')
 
 const title = computed(() => ({
   choice: t('create.title'),
+  swift: t('create.choice.swiftTitle'),
   custom: t('create.choice.customTitle'),
   modpack: t('create.choice.modpackTitle'),
   import: t('create.choice.importTitle'),

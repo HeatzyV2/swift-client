@@ -93,7 +93,6 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/core'
 import type { Instance, PingResult, ServerInfo } from '~/types/launcher'
-import { CHANGELOG } from '~/content/changelog'
 import { FEATURED_SERVER } from '~/content/servers'
 
 const props = defineProps<{ instance?: Instance }>()
@@ -102,7 +101,8 @@ const instances = useInstancesStore()
 const { t, locale } = useI18n()
 const tr = useLocalized()
 
-const release = CHANGELOG[0]
+const { changelog } = useHomeContent()
+const release = computed(() => changelog.value[0])
 const gradientId = `sw-spark-${useId()}`
 
 /* ---------- last session ---------- */

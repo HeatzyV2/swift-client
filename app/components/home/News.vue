@@ -76,13 +76,13 @@
 </template>
 
 <script setup lang="ts">
-import { NEWS, type NewsItem } from '~/content/news'
+import type { NewsItem } from '~/content/news'
 
 const tr = useLocalized()
 const { locale } = useI18n()
 const open = ref<NewsItem | null>(null)
 
-const items = NEWS
+const { news: items } = useHomeContent()
 
 function isDiscord(item: NewsItem) {
   return item.id === 'discord'

@@ -27,7 +27,6 @@
               <UIcon v-else-if="state === 'installing'" name="i-lucide-download" class="size-5" />
               <UIcon v-else-if="state === 'running'" name="i-lucide-square" class="size-[18px] fill-current" />
               <UIcon v-else-if="state === 'error'" name="i-lucide-rotate-cw" class="size-5" />
-              <UIcon v-else-if="state === 'none'" name="i-lucide-plus" class="size-5" />
               <svg v-else class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.2v15.6L19.8 12z" /></svg>
             </span>
 
@@ -90,7 +89,7 @@ const activity = useActivityCenter()
 const launchFlow = useLaunchFlow()
 const toast = useToast()
 const { t } = useI18n()
-const { open: openCreate } = useCreateInstanceModal()
+const quickStart = useQuickStart()
 
 const mc = useMinecraftLaunch(() => props.instance?.id)
 const switcherOpen = ref(false)
@@ -98,7 +97,7 @@ const switcherOpen = ref(false)
 type State = 'none' | 'ready' | 'launching' | 'installing' | 'running' | 'error'
 
 const state = computed<State>(() => {
-  if (!props.instance) return 'none'
+  if (!props.instance) return quickStart.busy.value ? 'launching' : 'none'
   const stage = mc.stage.value
   if (stage === 'running') return 'running'
   if (stage === 'installing') return 'installing'
@@ -116,7 +115,7 @@ const STEP_KEYS: Record<string, string> = { Asset: 'assets', Library: 'libraries
 
 const title = computed(() => {
   switch (state.value) {
-    case 'none': return t('home.welcome.create')
+    case 'none': return t('home.quickStart.title')
     case 'launching': return t('play.launching')
     case 'installing': return t(`play.step.${STEP_KEYS[mc.progress.value.step ?? ''] ?? 'files'}`)
     case 'running': return forceNext.value ? t('play.forceStop') : stopping.value ? t('play.stopping') : t('play.stop')
@@ -127,7 +126,7 @@ const title = computed(() => {
 
 const subtitle = computed(() => {
   const i = props.instance
-  if (!i) return t('home.welcome.createHint')
+  if (!i) return quickStart.busy.value ? t('home.quickStart.creating') : t('home.quickStart.hint')
   const label = `${i.name} · ${loaderLabel(i.loader.type)} ${i.mc_version}`
   if (state.value === 'installing') {
     const { current, total } = mc.progress.value
@@ -180,7 +179,9 @@ async function stop(force: boolean) {
 
 function onPrimary() {
   const i = props.instance
-  if (!i) return openCreate()
+  if (!i) {
+    return quickStart.start().catch(e => toast.add({ title: t('home.quickStart.failed'), description: errorText(e), color: 'error' }))
+  }
   if (state.value === 'running') return stop(forceNext.value)
   if (state.value === 'ready' || state.value === 'error') launchFlow.play(i.id)
 }

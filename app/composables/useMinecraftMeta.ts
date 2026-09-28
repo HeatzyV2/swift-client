@@ -35,9 +35,9 @@ export const useMinecraftMeta = () => {
     const versions = await getLoaderVersions(loader, mcVersion)
     if (!versions.length) throw new Error(`no ${loader} versions for ${mcVersion}`)
     if (mode === 'stable') {
-      return (versions.find(v => v.stable) ?? versions[0]).version
+      return (versions.find(v => v.stable) ?? versions[0]!).version
     }
-    return versions[0].version
+    return versions[0]!.version
   }
 
   return { getMinecraftVersions, getLoaderVersions, resolveLoaderVersion }

@@ -5,7 +5,8 @@
         <div class="flex flex-wrap items-center gap-2">
           <USelectMenu
             v-if="runningOptions.length > 1"
-            v-model="selected"
+            :model-value="selected ?? undefined"
+            @update:model-value="selected = $event"
             :items="runningOptions"
             value-key="value"
             class="w-56"

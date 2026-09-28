@@ -318,6 +318,7 @@ pub fn run() {
             commands::content_window::content_installed,
             backend::backend_status,
             backend::swift_session,
+            backend::swift_home_content,
             backend::swift_register,
             backend::swift_login,
             backend::swift_logout,

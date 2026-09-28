@@ -3,7 +3,9 @@
 HTTP API for the launcher and the in-game Swift Client mod: auth, CurseForge proxy, instance share codes,
 Social (friends + chat), cosmetics / shop / grades, partner servers, and the world hosting relay.
 
-Production host: **`http://151.240.30.3:10049`** (the address built into the mod and the launcher).
+Production address: **`https://api.swiftclient.fr`** (built into the launcher and the mod). The launcher
+refuses a plain `http://` backend outside localhost: passwords, session tokens and chat go through it.
+See [HTTPS](#https-apiswiftclientfr) for the setup.
 
 ## Pterodactyl / panel Node egg
 
@@ -122,6 +124,36 @@ Hosting through the gateway needs a Minecraft account confirmed by Mojang (every
 
 Without the file, the partner list is Elysia SMP.
 
+### Launcher news and changelog
+
+`DATA_DIR/news.json` (optional, read on every request) replaces the Home news and the "What's new" panel of
+every launcher, without a launcher release. `GET /api/news` serves it; without the file the launchers show the
+news they ship with.
+
+```json
+{
+  "news": [
+    {
+      "id": "halloween-2026",
+      "date": "2026-10-25",
+      "image": "halloween.png",
+      "title": { "en": "Halloween event", "fr": "Événement Halloween", "de": "…", "es": "…", "pl": "…", "ru": "…", "zh": "…" },
+      "summary": { "en": "One line under the title.", "fr": "Une ligne sous le titre." },
+      "body": { "en": "Full text of the article.", "fr": "Texte complet de l'article." },
+      "url": "https://swiftclient.fr/halloween"
+    }
+  ],
+  "changelog": [
+    { "version": "0.2", "date": "2026-10-20", "items": [{ "en": "Automatic updates", "fr": "Mises à jour automatiques" }] }
+  ]
+}
+```
+
+- The first news item is the featured card. `en` is required in every text; give every language the launcher has.
+- `image`: a file name served from `DATA_DIR/news/` (png, jpg, webp, gif), or a full `https://` URL.
+- `url` opens from the article; add `"direct": true` to open it straight from the card.
+- Only the first `changelog` entry is shown. An invalid entry is skipped, the others still show.
+
 ### Admin (cosmetics, coins, grades, Swift+)
 
 From the Pterodactyl console (after `npm install`):
@@ -151,17 +183,36 @@ they launch Swift Client (no sign-up needed in game).
   (`{ uuids }` → `{ uuid: value }`), `GET /api/cosmetics/owned/:uuid`, `POST /api/cosmetics/{buy,equip,equip-pet,cape-animated,mojang-cape}`,
   `GET /api/cosmetics/{texture,pet-model}/:id`
 - Public: `GET /api/cosmetics/catalog`, `GET /api/shop/balance/:uuid`, `GET /api/subscription/status/:uuid`,
-  `GET /api/partners/ingame`, `GET /api/servers`, `GET /api/relay`
+  `GET /api/partners/ingame`, `GET /api/servers`, `GET /api/relay`, `GET /api/news`, `GET /api/news/media/:file`
 - `GET|POST /api/curseforge/*` — proxy (501 without key)
 - `POST /api/share/upload-url` → PUT zip → `POST /api/share/:code/complete`
 - Social under `/api/social/*`
 
-## Reverse proxy
+## HTTPS: `api.swiftclient.fr`
 
-Point Caddy/nginx at the allocation IP:port for `api.swiftclient.fr`.
+The launcher and the mod talk to `https://api.swiftclient.fr` (port 443). The Node server keeps listening on its
+Pterodactyl allocation (e.g. `10049`); Caddy sits in front and handles the certificate.
+
+1. **DNS** at the registrar of `swiftclient.fr`: an **A** record `api` → `151.240.30.3`.
+   It must point straight at the server (on Cloudflare: grey cloud, "DNS only"). The mod also reaches the world
+   hosting relay on this host (`api.swiftclient.fr:7777`), which is raw TCP and cannot go through an HTTP proxy.
+2. **Caddy** on the machine that runs the node (ports 80 and 443 free and open):
+   ```bash
+   sudo apt install caddy
+   sudo cp deploy/Caddyfile /etc/caddy/Caddyfile   # set the allocation IP:port inside
+   sudo systemctl reload caddy
+   ```
+   Caddy gets and renews the Let's Encrypt certificate by itself.
+3. **Panel**: `PUBLIC_URL=https://api.swiftclient.fr`, then restart.
+4. Check: `curl -s https://api.swiftclient.fr/health` → `ok: true`.
+
+No root access on the node? The server can also do TLS itself: put the certificate in `DATA_DIR/tls/api.crt` and
+`DATA_DIR/tls/api.key` (or `TLS_CERT` / `TLS_KEY`). It is then served on the allocation port
+(`https://api.swiftclient.fr:10049`), so the launcher must be built with that address in `SWIFT_BACKEND_URL`
+and the mod started with `-Dswiftclient.api=` pointing to it.
 
 ## Smoke checklist
 
-1. `curl -s http://151.240.30.3:10049/health` → `ok: true, version: 0.2.0`
+1. `curl -s https://api.swiftclient.fr/health` → `ok: true`
 2. Register + login → Bearer token
 3. Chat images purged after 7 days

@@ -3,10 +3,11 @@ import { LINKS } from './links'
 /**
  * Home news, shipped with the launcher. Give every entry all interface languages.
  *
- * There is no news service yet, so entries live here and change with each
- * release. Keep them factual. Put images in `public/images/news/` — each item
- * should have its own. An empty list hides the section entirely.
- * When a Swift backend exists, `components/home/News.vue` is where to swap the source.
+ * These are the fallback: when the backend publishes DATA_DIR/news.json (see
+ * backend/README.md), composables/useHomeContent.ts shows that instead, so news
+ * can change without a release. Keep them factual. Put images in
+ * `public/images/news/` — each item should have its own. An empty list hides
+ * the section entirely.
  */
 
 /** A string per interface language; English is required and used as the fallback. */

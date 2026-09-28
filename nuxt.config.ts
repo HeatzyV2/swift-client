@@ -14,7 +14,7 @@ export default defineNuxtConfig({
       htmlAttrs: { class: 'dark' },
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'alternate icon', href: '/favicon.ico' },
+        { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
       ],
       meta: [{ name: 'color-scheme', content: 'dark' }],
     },
@@ -29,7 +29,6 @@ export default defineNuxtConfig({
   vite: {
     clearScreen: false,
     server: {
-      host: '127.0.0.1',
       strictPort: true,
       watch: {
         ignored: ['**/src-tauri/**'],
@@ -83,7 +82,6 @@ export default defineNuxtConfig({
   i18n: {
     strategy: 'no_prefix',
     defaultLocale: 'en',
-    lazy: true,
     locales: [
       { code: 'en', name: 'English', file: 'en.json' },
       { code: 'pl', name: 'Polski', file: 'pl.json' },

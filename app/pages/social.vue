@@ -126,7 +126,7 @@
           </div>
 
           <div v-if="pendingImage" class="flex items-center gap-2 border-t border-[var(--sw-line)] px-4 py-2">
-            <img :src="pendingPreview" alt="" class="size-12 rounded-md object-cover">
+            <img :src="pendingPreview ?? undefined" alt="" class="size-12 rounded-md object-cover">
             <span class="min-w-0 flex-1 truncate text-xs text-muted">{{ pendingName }}</span>
             <UButton icon="i-lucide-x" size="xs" color="neutral" variant="ghost" square @click="clearPendingImage" />
           </div>

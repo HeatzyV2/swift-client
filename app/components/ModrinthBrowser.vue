@@ -605,8 +605,8 @@ function loadMore() {
   runSearch(true)
 }
 
-const scroller = ref<HTMLElement | null>(null)
-const sentinel = ref<HTMLElement | null>(null)
+const scroller = shallowRef<HTMLElement | null>(null)
+const sentinel = shallowRef<HTMLElement | null>(null)
 let watcher: IntersectionObserver | null = null
 
 const canLoadMore = computed(() =>

@@ -13,6 +13,7 @@ import { verifyToken } from './auth.js'
 import { db } from './db.js'
 import { env } from './env.js'
 import { answerStatus, loginDisconnect, normName, parseHandshake, worldName } from './mcproto.js'
+import { sniffTls } from './tls.js'
 
 type Pending = { socket: net.Socket, timer: NodeJS.Timeout, prefix: Buffer }
 
@@ -270,7 +271,8 @@ export function startRelay() {
     console.warn('[relay] neither RELAY_GATEWAY_PORT nor RELAY_PORT_MIN/MAX set: players could not join, relay disabled')
     return
   }
-  const server = net.createServer((sock) => {
+  // The control port speaks TLS when a certificate is configured (the token travels there), plain for older clients.
+  const control = (sock: net.Socket) => {
     sock.on('error', () => sock.destroy())
     readHeader(sock, (line, rest) => {
       const parts = line.split(' ')
@@ -285,7 +287,8 @@ export function startRelay() {
         fail(sock, 'unknown command')
       }
     })
-  })
+  }
+  const server = net.createServer(sniffTls(control, control))
   server.on('error', (e) => console.error('[relay] control port error', e))
   server.listen(env.relayPort, env.host, () => {
     console.log(`[relay] control on ${env.host}:${env.relayPort}${rangeOn() ? `, public ports ${env.relayPortMin}-${env.relayPortMax}` : ''}`)

@@ -1,4 +1,6 @@
-import { serve } from '@hono/node-server'
+import { createAdaptorServer } from '@hono/node-server'
+import net from 'node:net'
+import { sniffTls, tlsFiles } from './tls.js'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { env } from './env.js'
@@ -15,6 +17,7 @@ import { startRelay } from './relay.js'
 import { curseforgeRoutes } from './routes/curseforge.js'
 import { shareRoutes } from './routes/share.js'
 import { socialRoutes } from './routes/social.js'
+import { contentRoutes } from './routes/content.js'
 import { startCleanupJob } from './cleanup.js'
 
 const app = new Hono<{ Variables: AuthVariables }>()
@@ -46,6 +49,7 @@ app.post('/api/me/link-minecraft', requireAuth, linkMinecraftHandler)
 app.route('/api/curseforge', curseforgeRoutes)
 app.route('/api/share', shareRoutes)
 app.route('/api/social', socialRoutes)
+app.route('/api/news', contentRoutes)
 app.route('/api', gameRoutes)
 
 app.onError((err, c) => {
@@ -56,5 +60,12 @@ app.onError((err, c) => {
 startCleanupJob()
 startRelay()
 
-console.log(`Swift Client API listening on ${env.host}:${env.port} (${env.publicUrl})`)
-serve({ fetch: app.fetch, port: env.port, hostname: env.host })
+// HTTPS and plain HTTP on the same port (plain HTTP is kept for older clients).
+const httpServer = createAdaptorServer({ fetch: app.fetch })
+const listener = net.createServer(sniffTls(
+  (sock) => httpServer.emit('connection', sock),
+  (sock) => httpServer.emit('connection', sock),
+))
+listener.listen(env.port, env.host, () => {
+  console.log(`Swift Client API listening on ${env.host}:${env.port} (${env.publicUrl})${tlsFiles() ? ', HTTPS + HTTP' : ', HTTP only (no TLS certificate)'}`)
+})

@@ -99,7 +99,8 @@
 	--ui-border-accented: var(--sw-line-strong);
 	--ui-border-inverted: var(--color-neutral-50);
 	--ui-text-dimmed: var(--color-neutral-500);
-	--ui-text-muted: var(--color-neutral-400);
+	/* Lightest shade that keeps 4.5:1 (WCAG AA) on the raised surfaces of every theme */
+	--ui-text-muted: #9ba1ad;
 	--ui-text-toned: var(--color-neutral-300);
 	--ui-text: var(--color-neutral-200);
 	--ui-text-highlighted: #f3f4f6;

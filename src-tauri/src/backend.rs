@@ -11,9 +11,19 @@ use crate::error::{AppError, AppResult};
 use crate::{http, paths, store};
 
 pub fn base_url() -> Option<&'static str> {
-    option_env!("SWIFT_BACKEND_URL")
-        .map(|url| url.trim().trim_end_matches('/'))
-        .filter(|url| url.starts_with("https://") || url.starts_with("http://"))
+    option_env!("SWIFT_BACKEND_URL").and_then(accepted_base_url)
+}
+
+/// Passwords, session tokens and chat go through the backend, so it must be
+/// reached over HTTPS. Plain HTTP is only allowed on this machine, for local
+/// development of the backend.
+fn accepted_base_url(url: &str) -> Option<&str> {
+    let url = url.trim().trim_end_matches('/');
+    if url.starts_with("https://") {
+        return Some(url);
+    }
+    let host = url.strip_prefix("http://")?.split(['/', ':']).next()?;
+    matches!(host, "localhost" | "127.0.0.1").then_some(url)
 }
 
 pub fn is_configured() -> bool {
@@ -84,6 +94,23 @@ pub fn backend_status() -> BackendStatus {
         accounts: session_token().is_some(),
         discord: crate::discord::is_configured(),
     }
+}
+
+/// Home news and changelog published on the backend (`GET /api/news`). `None` without a
+/// backend or when it does not answer in time: the launcher then shows the news it ships with.
+#[tauri::command]
+pub async fn swift_home_content() -> Option<serde_json::Value> {
+    let url = endpoint("/api/news").ok()?;
+    let resp = http()
+        .get(&url)
+        .timeout(std::time::Duration::from_secs(6))
+        .send()
+        .await
+        .ok()?;
+    if !resp.status().is_success() {
+        return None;
+    }
+    resp.json().await.ok()
 }
 
 #[tauri::command]
@@ -234,5 +261,16 @@ mod tests {
             assert!(endpoint("/api/share").is_err());
             assert!(!backend_status().configured);
         }
+    }
+
+    #[test]
+    fn backend_must_use_https_except_on_this_machine() {
+        assert_eq!(accepted_base_url("https://api.swiftclient.fr/"), Some("https://api.swiftclient.fr"));
+        assert_eq!(accepted_base_url(" http://127.0.0.1:8787 "), Some("http://127.0.0.1:8787"));
+        assert_eq!(accepted_base_url("http://localhost:8787/"), Some("http://localhost:8787"));
+        assert_eq!(accepted_base_url("http://151.240.30.3:10049"), None);
+        assert_eq!(accepted_base_url("http://localhost.evil.example"), None);
+        assert_eq!(accepted_base_url("ftp://api.swiftclient.fr"), None);
+        assert_eq!(accepted_base_url(""), None);
     }
 }

@@ -1,5 +1,5 @@
 import { config as loadEnv } from 'dotenv'
-import { mkdirSync } from 'node:fs'
+import { mkdirSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 // Pterodactyl / local .env in the working directory
@@ -33,7 +33,7 @@ mkdirSync(resolve(dataDir, 'cosmetics'), { recursive: true })
 export const env = {
   port,
   host,
-  publicUrl: str('PUBLIC_URL', 'http://151.240.30.3:10049').replace(/\/$/, ''),
+  publicUrl: str('PUBLIC_URL', 'https://api.swiftclient.fr').replace(/\/$/, ''),
   sharePublicUrl: str('SHARE_PUBLIC_URL', 'swift://share').replace(/\/$/, ''),
   dataDir,
   jwtSecret: str('JWT_SECRET', 'dev-insecure-secret-change-me'),
@@ -41,7 +41,7 @@ export const env = {
   mediaTtlDays: firstNum('MEDIA_TTL_DAYS') ?? 7,
   shareTtlDays: firstNum('SHARE_TTL_DAYS') ?? 30,
   cleanupIntervalMs: firstNum('CLEANUP_INTERVAL_MS') ?? 3_600_000,
-  version: '0.3.0',
+  version: '0.4.0',
   /** Mojang session server, overridable for tests. */
   mojangSessionUrl: str('MOJANG_SESSION_URL', 'https://sessionserver.mojang.com').replace(/\/$/, ''),
   /**
@@ -57,6 +57,9 @@ export const env = {
    * handshake. Needs a wildcard DNS record *.RELAY_DOMAIN -> this server (see README). 0 disables it.
    */
   relayGatewayPort: firstNum('RELAY_GATEWAY_PORT') ?? 0,
+  /** HTTPS certificate (PEM). Default: DATA_DIR/tls/api.crt + api.key when they exist. */
+  tlsCert: str('TLS_CERT', existsSync(resolve(dataDir, 'tls', 'api.crt')) ? resolve(dataDir, 'tls', 'api.crt') : ''),
+  tlsKey: str('TLS_KEY', existsSync(resolve(dataDir, 'tls', 'api.key')) ? resolve(dataDir, 'tls', 'api.key') : ''),
   relayDomain: str('RELAY_DOMAIN', 'swiftclient.fr').toLowerCase().replace(/^\.|\.$/g, ''),
   /** Partner servers shown in the game's server list (JSON file, see README). */
   partnersFile: resolve(dataDir, 'partners.json'),
