@@ -1,3 +1,19 @@
+## Changes (v1.1.2)
+
+### 🔄 Automatic updates actually work now
+- The updater was pointed at a domain that was never set up, so "Check for updates" always failed. It now reads the update file GitHub publishes on every signed release.
+- The launcher checks once on start-up and offers the update as a toast — install is blocked while a game is running or a download is in progress.
+
+### 🌐 New Servers tab
+- Lists partner servers with live status, player count and MOTD.
+
+### 🏠 Home
+- Live news and changelog can now be updated from the Swift Client backend without a launcher release.
+- Quick Start creates and launches the recommended instance in one click.
+
+### 🔒 Backend
+- `api.swiftclient.fr` is enforced over HTTPS (except localhost, for development); the backend can now terminate TLS itself when no reverse proxy is available.
+
 ## Changes (v0.1.0)
 
 ### ✨ First Swift Client release
