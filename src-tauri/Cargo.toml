@@ -60,7 +60,7 @@ base64 = "0.22"
 sysinfo = { version = "0.33", default-features = false, features = ["system"] }
 
 # Discord Rich Presence (privacy-gated)
-discord-rich-presence = "0.2"
+discord-rich-presence = "1.1"
 
 # Reading instance content: zip packs, gzipped NBT world saves (level.dat)
 zip = { version = "2", default-features = false, features = ["deflate"] }
