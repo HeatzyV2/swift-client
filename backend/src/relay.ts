@@ -191,7 +191,10 @@ async function register(control: net.Socket, sessionId: string, token: string) {
   control.on('error', () => closeSession(session!))
   control.resume()
   control.on('data', () => { /* the host sends nothing more on the control socket */ })
-  if (name && mcName) send(control, `HOST ${mcName.toLowerCase().replace(/_/g, '-')}.${env.relayDomain}`)
+  // Off 25565 the port is written in the address: an SRV record would not work, because Minecraft then puts
+  // the SRV target (not "<name>.<domain>") in its handshake and the gateway could not tell the worlds apart.
+  const gatewaySuffix = env.relayGatewayPort === 25565 ? '' : `:${env.relayGatewayPort}`
+  if (name && mcName) send(control, `HOST ${mcName.toLowerCase().replace(/_/g, '-')}.${env.relayDomain}${gatewaySuffix}`)
   send(control, `PORT ${session.port}`)
   console.log(`[relay] ${user.username} hosts session ${sessionId}${name ? ` as ${name}.${env.relayDomain}` : ''}${session.port ? ` on port ${session.port}` : ''}`)
 }

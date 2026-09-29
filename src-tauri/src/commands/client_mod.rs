@@ -1,6 +1,7 @@
 //! Install / refresh the Swift Client Fabric mod in Swift instances.
-//! The jar ships inside the launcher (bundled resource); SWIFT_CLIENT_MOD_JAR or a sibling
-//! `swiftclient-mod/build/libs` (development) can provide a newer one.
+//! The jar ships inside the launcher (bundled resource); a newer one published on the mod's GitHub
+//! Releases is downloaded before each launch (see `refresh_from_releases`), and SWIFT_CLIENT_MOD_JAR or
+//! a sibling `swiftclient-mod/build/libs` (development) can provide one too.
 
 use std::cmp::Ordering;
 use std::path::{Path, PathBuf};
@@ -24,6 +25,8 @@ pub fn set_resource_dir(dir: PathBuf) {
     let _ = RESOURCE_DIR.set(dir);
 }
 const LEGACY_NAMES: &[&str] = &["lightclient-mod.jar", "swiftclient.jar"];
+/// Latest release of the mod: its jar is installed as soon as it is newer than the bundled one.
+const MOD_RELEASES_API: &str = "https://api.github.com/repos/HeatzyV2/swiftclient-mod/releases/latest";
 
 #[derive(Debug, Clone, Serialize)]
 pub struct ClientModStatus {
@@ -190,6 +193,97 @@ fn discover_best_jar() -> Option<Candidate> {
     }
 
     best
+}
+
+/// Does this jar target the Minecraft version Swift instances run? (A release for the next Minecraft
+/// version must not land in current instances.)
+fn targets_swift_minecraft(path: &Path) -> bool {
+    let Ok(file) = std::fs::File::open(path) else { return false };
+    let Ok(mut zip) = zip::ZipArchive::new(file) else { return false };
+    let Ok(mut entry) = zip.by_name("fabric.mod.json") else { return false };
+    let mut body = String::new();
+    if std::io::Read::read_to_string(&mut entry, &mut body).is_err() {
+        return false;
+    }
+    let Ok(v) = serde_json::from_str::<serde_json::Value>(&body) else { return false };
+    v.get("id").and_then(|x| x.as_str()) == Some("swiftclient")
+        && v
+            .pointer("/depends/minecraft")
+            .and_then(|x| x.as_str())
+            .is_some_and(|range| range.contains(SWIFT_MC_VERSION))
+}
+
+/// Downloads the mod from its latest GitHub release when it is newer than every jar the launcher already
+/// has. The jar lands in the launcher data folder, where `discover_best_jar` picks it up. Never fails the
+/// launch: offline, rate-limited or broken releases only log a warning.
+pub async fn refresh_from_releases() {
+    if std::env::var("SWIFT_CLIENT_MOD_JAR").is_ok() {
+        return;
+    }
+    match download_newer_release().await {
+        Ok(Some(path)) => log::info!("downloaded Swift client mod update {}", path.display()),
+        Ok(None) => {}
+        Err(e) => log::warn!("Swift client mod update check: {e}"),
+    }
+}
+
+async fn download_newer_release() -> Result<Option<PathBuf>, String> {
+    let http = reqwest::Client::builder()
+        .user_agent(concat!("SwiftClient/", env!("CARGO_PKG_VERSION")))
+        .timeout(std::time::Duration::from_secs(20))
+        .build()
+        .map_err(|e| e.to_string())?;
+    let release: serde_json::Value = http
+        .get(MOD_RELEASES_API)
+        .header("Accept", "application/vnd.github+json")
+        .send()
+        .await
+        .map_err(|e| e.to_string())?
+        .error_for_status()
+        .map_err(|e| e.to_string())?
+        .json()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let Some(asset) = release["assets"].as_array().and_then(|assets| {
+        assets.iter().find(|a| {
+            a["name"].as_str().is_some_and(|n| {
+                n.starts_with("swiftclient-mod-") && n.ends_with(".jar") && !n.contains("sources") && !n.contains("-dev")
+            })
+        })
+    }) else {
+        return Ok(None);
+    };
+    let name = asset["name"].as_str().unwrap_or_default().to_string();
+    let url = asset["browser_download_url"].as_str().ok_or("release asset without URL")?.to_string();
+    let Some(remote) = version_from_filename(Path::new(&name)) else { return Ok(None) };
+
+    let current = crate::blocking(|| Ok(discover_best_jar().map(|c| c.version))).await.map_err(|e| e.to_string())?;
+    if current.is_some_and(|v| v >= remote) {
+        return Ok(None);
+    }
+
+    let bytes = http
+        .get(&url)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?
+        .error_for_status()
+        .map_err(|e| e.to_string())?
+        .bytes()
+        .await
+        .map_err(|e| e.to_string())?;
+    let dir = paths::data_root().join("client");
+    std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    let part = dir.join(format!("{name}.part"));
+    std::fs::write(&part, &bytes).map_err(|e| e.to_string())?;
+    if !targets_swift_minecraft(&part) {
+        let _ = std::fs::remove_file(&part);
+        return Err(format!("{name} is not a Swift Client mod for Minecraft {SWIFT_MC_VERSION}, ignored"));
+    }
+    let dest = dir.join(&name);
+    std::fs::rename(&part, &dest).map_err(|e| e.to_string())?;
+    Ok(Some(dest))
 }
 
 fn seed_cache_from(source: &Path) -> AppResult<PathBuf> {
@@ -395,6 +489,7 @@ fn recent_crash(instance_id: &str) -> bool {
 
 #[tauri::command]
 pub async fn ensure_client_mod(instance_id: String) -> AppResult<ClientModStatus> {
+    refresh_from_releases().await;
     crate::blocking(move || ensure_installed(&instance_id)).await
 }
 

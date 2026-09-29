@@ -102,11 +102,11 @@ Each port must be an **allocation** of the Pterodactyl server (Network tab):
 1. Control port the game connects to, e.g. `10050` → `RELAY_PORT=10050`.
 2. Gateway port → `RELAY_GATEWAY_PORT`. Best is **25565** (the default Minecraft port, so players type only
    `pseudo.swiftclient.fr`). `RELAY_DOMAIN=swiftclient.fr` (default).
-3. DNS at your registrar, for `swiftclient.fr`:
-   - gateway on **25565**: a wildcard **A** record `*` → `151.240.30.3`;
-   - gateway on another port (e.g. `10061`): the wildcard **A** record `*` → `151.240.30.3` **and** a wildcard
-     **SRV** record `*` → priority `0`, weight `5`, port `10061`, target `relay.swiftclient.fr`
-     (Minecraft looks up `_minecraft._tcp.<pseudo>.swiftclient.fr`, which the wildcard answers).
+3. DNS at your registrar, for `swiftclient.fr`: a wildcard **A** record `*` → the IP of the backend server.
+   - gateway on **25565**: players type `pseudo.swiftclient.fr`.
+   - gateway on another port (e.g. `10061`, when 25565 is taken by a proxy): the game hands out
+     `pseudo.swiftclient.fr:10061`. Do **not** use an SRV record: after an SRV lookup Minecraft puts the SRV
+     target in its handshake instead of `pseudo.swiftclient.fr`, so the gateway could not find the world.
    The existing `swiftclient.fr` / `www` records (website) are not affected by the wildcard.
 4. Optional, older clients / no DNS: a range of public ports, one per hosted world, e.g. `10051`–`10060` →
    `RELAY_PORT_MIN=10051`, `RELAY_PORT_MAX=10060`. When the gateway is on, the game shows the gateway address.
