@@ -18,7 +18,7 @@
           <div class="mt-3 flex items-center gap-3">
             <img v-if="entry.ping?.favicon" :src="entry.ping.favicon" alt="" class="size-10 shrink-0 rounded-lg [image-rendering:pixelated]">
             <div v-else class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[var(--sw-surface-3)]">
-              <UIcon name="i-lucide-server" class="size-5 text-dimmed" />
+              <UIcon name="i-pixelarticons-server" class="size-5 text-dimmed" />
             </div>
             <div class="min-w-0">
               <p class="truncate font-display text-[15px] font-semibold text-highlighted">{{ entry.name }}</p>
@@ -35,15 +35,15 @@
               {{ entry.ping ? t('server.players', { online: entry.ping.online, max: entry.ping.max }) : '—' }}
             </p>
             <div class="flex gap-1.5">
-              <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-clipboard" square @click="copyAddress(entry)" />
-              <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-arrow-up-right" square @click="openExternal(`https://${entry.address}`)" />
+              <UButton size="xs" color="neutral" variant="ghost" icon="i-pixelarticons-clipboard" square @click="copyAddress(entry)" />
+              <UButton size="xs" color="neutral" variant="ghost" icon="i-pixelarticons-corner-right-up" square @click="openExternal(`https://${entry.address}`)" />
             </div>
           </div>
         </section>
       </div>
     </div>
 
-    <UiEmptyState v-else icon="i-lucide-server-off" :title="t('servers.empty')" :description="t('servers.emptyDesc')" />
+    <UiEmptyState v-else icon="i-pixelarticons-server" :title="t('servers.empty')" :description="t('servers.emptyDesc')" />
   </div>
 </template>
 

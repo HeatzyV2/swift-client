@@ -18,12 +18,19 @@ async function getViewer() {
     v.fov = 38
     v.playerObject.cape.visible = false
     v.playerObject.elytra.visible = false
-    v.playerObject.rotation.y = -0.42
+    // Swift's pose: a relaxed three-quarter stance, head turned to the viewer, one arm up in a casual "hey"
+    v.playerObject.rotation.y = -0.5
     const skin = v.playerObject.skin
-    skin.rightArm.rotation.x = -0.28
-    skin.leftArm.rotation.x = 0.22
-    skin.rightLeg.rotation.x = 0.16
-    skin.leftLeg.rotation.x = -0.16
+    skin.head.rotation.y = 0.5
+    skin.head.rotation.x = -0.06
+    skin.rightArm.rotation.z = -1.35
+    skin.rightArm.rotation.x = 0.1
+    skin.leftArm.rotation.z = 0.1
+    skin.leftArm.rotation.x = 0.18
+    skin.rightLeg.rotation.z = -0.07
+    skin.rightLeg.rotation.x = 0.1
+    skin.leftLeg.rotation.z = 0.07
+    skin.leftLeg.rotation.x = -0.1
     v.globalLight.intensity = 3
     v.cameraLight.intensity = 0.6
     return v

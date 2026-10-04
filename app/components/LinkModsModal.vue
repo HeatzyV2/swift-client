@@ -8,11 +8,11 @@
           <div class="mb-1 flex items-center justify-between text-xs text-muted">
             <span>{{ $t('link.file', { i: index + 1, n: req.files.length }) }}</span>
             <span v-if="processing" class="flex items-center gap-1 text-primary-400">
-              <UIcon name="i-lucide-loader-circle" class="size-3.5 animate-spin" /> {{ $t('common.loading') }}
+              <UIcon name="i-pixelarticons-loader" class="size-3.5 animate-spin" /> {{ $t('common.loading') }}
             </span>
           </div>
           <div class="flex items-center gap-2 sw-panel px-3 py-2">
-            <UIcon name="i-lucide-file" class="size-4 shrink-0 text-neutral-500" />
+            <UIcon name="i-pixelarticons-file" class="size-4 shrink-0 text-neutral-500" />
             <span class="min-w-0 flex-1 truncate font-mono text-xs">{{ currentFile }}</span>
           </div>
         </div>

@@ -9,7 +9,7 @@
       @error="failed = true"
     >
     <span v-else-if="account" class="font-display text-xs font-bold text-toned">{{ account.username.charAt(0).toUpperCase() }}</span>
-    <UIcon v-else name="i-lucide-user-round" class="size-4 text-dimmed" />
+    <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
   </span>
 </template>
 

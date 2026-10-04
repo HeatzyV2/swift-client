@@ -19,7 +19,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         id: 'launcher-update',
         title: t('settings.about.updateAvailable', { version: updater.version.value }),
         description: t('settings.about.updatePrompt'),
-        icon: 'i-lucide-download',
+        icon: 'i-pixelarticons-download',
         color: 'primary',
         duration: 0,
         actions: [{
@@ -27,7 +27,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           color: 'primary',
           onClick: () => {
             if (updater.blocked.value) {
-              useToast().add({ title: t('settings.about.updateBlocked'), color: 'warning', icon: 'i-lucide-gamepad-2' })
+              useToast().add({ title: t('settings.about.updateBlocked'), color: 'warning', icon: 'i-pixelarticons-gamepad' })
               return
             }
             updater.install().catch(e => useToast().add({ title: errorText(e), color: 'error' }))

@@ -13,7 +13,7 @@
         @click.stop="$emit('play')"
       >
         <UIcon
-          :name="busy ? 'i-lucide-loader-circle' : 'i-lucide-play'"
+          :name="busy ? 'i-pixelarticons-loader' : 'i-pixelarticons-play'"
           class="size-5 text-white"
           :class="{ 'animate-spin': busy }"
         />
@@ -31,13 +31,13 @@
         <template v-if="playtime">
           <span>·</span>
           <span class="inline-flex shrink-0 items-center gap-1" :title="$t('instance.playtime')">
-            <UIcon name="i-lucide-hourglass" class="size-3" />{{ playtime }}
+            <UIcon name="i-pixelarticons-hourglass" class="size-3" />{{ playtime }}
           </span>
         </template>
       </div>
     </div>
 
-    <UIcon v-if="selected" name="i-lucide-star" class="size-3.5 shrink-0 text-primary" :title="$t('library.selected')" />
+    <UIcon v-if="selected" name="i-pixelarticons-star" class="size-3.5 shrink-0 text-primary" :title="$t('library.selected')" />
   </div>
 </template>
 

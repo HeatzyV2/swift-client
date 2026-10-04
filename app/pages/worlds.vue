@@ -3,13 +3,13 @@
     <div class="mx-auto max-w-5xl space-y-6">
       <div class="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 class="font-display text-[26px] font-semibold leading-tight text-highlighted">{{ $t('worldsPage.title') }}</h1>
+          <h1 class="sw-page-title">{{ $t('worldsPage.title') }}</h1>
           <p class="mt-1 text-sm text-muted">
             {{ $t('worldsPage.count', { worlds: totalWorlds, instances: groups.length }) }}
           </p>
         </div>
         <UButton
-          icon="i-lucide-refresh-cw"
+          icon="i-pixelarticons-reload"
           color="neutral"
           variant="ghost"
           size="xs"
@@ -38,7 +38,7 @@
       </div>
 
       <div v-else-if="!groups.length" class="flex flex-col items-center justify-center gap-3 py-24 text-center">
-        <UIcon name="i-lucide-globe" class="size-12 text-neutral-600" />
+        <BrandMascot class="h-[90px] w-auto" />
         <p class="text-sm text-muted">{{ $t('worldsPage.empty') }}</p>
       </div>
 
@@ -69,7 +69,7 @@
                 :alt="w.name"
               >
               <div v-else class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white/5">
-                <UIcon name="i-lucide-globe" class="size-5 text-neutral-500" />
+                <UIcon name="i-pixelarticons-globe" class="size-5 text-neutral-500" />
               </div>
               <div class="min-w-0 flex-1">
                 <div class="truncate font-medium">{{ w.name }}</div>
@@ -81,7 +81,7 @@
               </div>
               <UButton
                 v-if="supportsQuickPlay(group.instance.mc_version)"
-                icon="i-lucide-play"
+                icon="i-pixelarticons-play"
                 size="xs"
                 color="primary"
                 variant="ghost"
@@ -91,7 +91,7 @@
                 @click="playWorld(group.instance.id, w.folder)"
               />
               <UButton
-                icon="i-lucide-archive"
+                icon="i-pixelarticons-archive"
                 size="xs"
                 color="neutral"
                 variant="ghost"
@@ -101,7 +101,7 @@
                 @click="backupWorld(group.instance.id, w)"
               />
               <UButton
-                icon="i-lucide-trash-2"
+                icon="i-pixelarticons-trash"
                 size="xs"
                 color="error"
                 variant="ghost"

@@ -18,7 +18,7 @@
           </span>
           <div class="ml-auto flex items-center gap-1.5">
             <UButton
-              icon="i-lucide-arrow-down-to-line"
+              icon="i-pixelarticons-arrow-bar-down"
               color="neutral"
               variant="ghost"
               size="xs"
@@ -28,7 +28,7 @@
               @click="toggleAutoscroll"
             />
             <UButton
-              icon="i-lucide-copy"
+              icon="i-pixelarticons-copy"
               color="neutral"
               variant="ghost"
               size="xs"
@@ -37,7 +37,7 @@
               @click="copyAll"
             />
             <UButton
-              icon="i-lucide-eraser"
+              icon="i-pixelarticons-eraser"
               color="neutral"
               variant="ghost"
               size="xs"
@@ -50,7 +50,7 @@
 
         <div
           ref="scroller"
-          class="h-[64vh] overflow-auto rounded-xl border border-default bg-black/40 px-3 py-2 font-mono text-[11px] leading-relaxed"
+          class="h-[64vh] overflow-auto rounded-xl border-2 border-[var(--sw-line-strong)] bg-black/40 px-3 py-2 font-mono text-[11px] leading-relaxed"
           @scroll="onScroll"
         >
           <div v-if="!lines.length" class="py-16 text-center text-sm text-muted">{{ $t('logs.waiting') }}</div>

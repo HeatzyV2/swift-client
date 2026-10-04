@@ -8,16 +8,16 @@
       />
     </UiPageHeader>
 
-    <p v-if="social.mode === 'local'" class="mb-4 rounded-xl border border-[var(--sw-line)] bg-[var(--sw-surface)] px-4 py-3 text-xs text-muted">
+    <p v-if="social.mode === 'local'" class="mb-4 sw-panel px-4 py-3 text-xs text-muted">
       {{ $t('social.localHint') }}
     </p>
 
     <div class="grid min-h-0 flex-1 gap-4 lg:grid-cols-[280px_1fr]">
       <!-- Friends -->
-      <section class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-[var(--sw-line)] bg-[var(--sw-surface)]">
+      <section class="flex min-h-0 flex-col overflow-hidden sw-panel">
         <div class="flex items-center justify-between gap-2 border-b border-[var(--sw-line)] px-4 py-3">
           <h2 class="text-sm font-semibold text-highlighted">{{ $t('social.friends') }}</h2>
-          <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-refresh-cw" square :loading="social.loading" @click="social.refresh()" />
+          <UButton size="xs" color="neutral" variant="ghost" icon="i-pixelarticons-reload" square :loading="social.loading" @click="social.refresh()" />
         </div>
 
         <form class="space-y-2 border-b border-[var(--sw-line)] p-3" @submit.prevent="addFriend">
@@ -38,7 +38,7 @@
           </div>
           <UButton
             type="submit"
-            icon="i-lucide-user-plus"
+            icon="i-pixelarticons-user-plus"
             size="sm"
             class="w-full justify-center"
             :loading="adding"
@@ -67,7 +67,7 @@
               </span>
             </span>
             <UButton
-              icon="i-lucide-trash-2"
+              icon="i-pixelarticons-trash"
               size="xs"
               color="neutral"
               variant="ghost"
@@ -80,7 +80,7 @@
       </section>
 
       <!-- Chat -->
-      <section class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-[var(--sw-line)] bg-[var(--sw-surface)]">
+      <section class="flex min-h-0 flex-col overflow-hidden sw-panel">
         <template v-if="activeConv">
           <div class="flex items-center gap-3 border-b border-[var(--sw-line)] px-4 py-3">
             <FriendAvatar :friend="activeConv.friend" class="size-9" />
@@ -128,13 +128,13 @@
           <div v-if="pendingImage" class="flex items-center gap-2 border-t border-[var(--sw-line)] px-4 py-2">
             <img :src="pendingPreview ?? undefined" alt="" class="size-12 rounded-md object-cover">
             <span class="min-w-0 flex-1 truncate text-xs text-muted">{{ pendingName }}</span>
-            <UButton icon="i-lucide-x" size="xs" color="neutral" variant="ghost" square @click="clearPendingImage" />
+            <UButton icon="i-pixelarticons-close" size="xs" color="neutral" variant="ghost" square @click="clearPendingImage" />
           </div>
 
           <form class="flex items-end gap-2 border-t border-[var(--sw-line)] p-3" @submit.prevent="send">
             <UButton
               type="button"
-              icon="i-lucide-image"
+              icon="i-pixelarticons-image"
               color="neutral"
               variant="soft"
               square
@@ -151,7 +151,7 @@
             />
             <UButton
               type="submit"
-              icon="i-lucide-send"
+              icon="i-pixelarticons-send"
               :loading="sending"
               :disabled="!canSend"
               :aria-label="$t('social.send')"
@@ -160,7 +160,7 @@
         </template>
 
         <div v-else class="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
-          <UIcon name="i-lucide-messages-square" class="size-12 text-neutral-600" />
+          <BrandMascot class="h-[90px] w-auto" />
           <p class="text-sm text-muted">{{ $t('social.pickFriend') }}</p>
         </div>
       </section>

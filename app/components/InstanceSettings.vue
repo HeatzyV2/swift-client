@@ -29,7 +29,7 @@
             <UDropdownMenu :items="iconMenu">
               <button
                 type="button"
-                class="group/icon relative size-24 shrink-0 cursor-pointer overflow-hidden rounded-2xl border border-default"
+                class="group/icon relative size-24 shrink-0 cursor-pointer overflow-hidden rounded-2xl border-2 border-[var(--sw-line-strong)]"
                 :title="$t('instance.changeIcon')"
                 :disabled="pickingIcon"
               >
@@ -38,7 +38,7 @@
                   class="absolute inset-0 flex items-center justify-center bg-black/55 opacity-0 transition group-hover/icon:opacity-100"
                 >
                   <UIcon
-                    :name="pickingIcon ? 'i-lucide-loader-circle' : 'i-lucide-pencil'"
+                    :name="pickingIcon ? 'i-pixelarticons-loader' : 'i-pixelarticons-pencil'"
                     class="size-5 text-white"
                     :class="pickingIcon && 'animate-spin'"
                   />
@@ -54,20 +54,20 @@
           <p class="mb-1.5 text-sm font-medium">{{ $t('changeLoader.menu') }}</p>
           <div class="flex items-center gap-2">
             <span class="rounded-md bg-white/7 px-2.5 py-1 text-sm font-medium">{{ loaderLabel(form.loader.type) }}<span v-if="'version' in form.loader" class="ml-1 font-mono text-xs opacity-70">{{ form.loader.version }}</span></span>
-            <UButton icon="i-lucide-layers" color="neutral" variant="soft" size="sm" :label="$t('changeLoader.change')" @click="changeLoaderModal.open(props.instanceId)" />
+            <UButton icon="i-pixelarticons-blocks" color="neutral" variant="soft" size="sm" :label="$t('changeLoader.change')" @click="changeLoaderModal.open(props.instanceId)" />
           </div>
           <p class="mt-1.5 text-xs text-muted">{{ $t('changeLoader.settingsHint') }}</p>
         </div>
 
         <div>
           <p class="mb-1.5 text-sm font-medium">{{ $t('instSettings.duplicate') }}</p>
-          <UButton icon="i-lucide-copy" color="neutral" variant="soft" :loading="busy" :label="$t('instSettings.duplicate')" @click="duplicate" />
+          <UButton icon="i-pixelarticons-copy" color="neutral" variant="soft" :loading="busy" :label="$t('instSettings.duplicate')" @click="duplicate" />
           <p class="mt-1.5 text-xs text-muted">{{ $t('instSettings.duplicateHint') }}</p>
         </div>
 
         <div>
           <p class="mb-1.5 text-sm font-medium text-error">{{ $t('instSettings.delete') }}</p>
-          <UButton icon="i-lucide-trash-2" color="error" :label="$t('instSettings.delete')" @click="remove" />
+          <UButton icon="i-pixelarticons-trash" color="error" :label="$t('instSettings.delete')" @click="remove" />
           <p class="mt-1.5 text-xs text-muted">{{ $t('instSettings.deleteHint') }}</p>
         </div>
       </template>
@@ -80,7 +80,7 @@
         </div>
         <div>
           <p class="mb-1.5 text-sm font-medium">{{ $t('instSettings.repair') }}</p>
-          <UButton icon="i-lucide-wrench" color="neutral" variant="soft" :loading="repairing" :label="$t('instSettings.repair')" @click="repair" />
+          <UButton icon="i-pixelarticons-tools" color="neutral" variant="soft" :loading="repairing" :label="$t('instSettings.repair')" @click="repair" />
           <p class="mt-1.5 text-xs text-muted">{{ $t('instSettings.repairHint') }}</p>
         </div>
       </template>
@@ -111,7 +111,7 @@
 
       <template v-else-if="section === 'java'">
         <div class="flex items-start gap-3 sw-panel p-3">
-          <UIcon name="i-lucide-coffee" class="mt-0.5 size-5 shrink-0 text-primary-400" />
+          <UIcon name="i-pixelarticons-coffee" class="mt-0.5 size-5 shrink-0 text-primary-400" />
           <div class="min-w-0 text-sm">
             <p class="font-medium">{{ $t('instSettings.requiredJava', { version: form.mc_version, major: requiredJava }) }}</p>
             <p v-if="matchedJava" class="mt-0.5 text-xs text-success">
@@ -126,7 +126,7 @@
           <fieldset :disabled="!form.override_java" :class="{ 'opacity-50': !form.override_java }">
             <div class="flex gap-2">
               <UInput v-model="form.java_path" placeholder="C:\\...\\javaw.exe" class="flex-1" />
-              <UButton icon="i-lucide-folder" color="neutral" variant="soft" @click="browseJava" />
+              <UButton icon="i-pixelarticons-folder" color="neutral" variant="soft" @click="browseJava" />
             </div>
             <p class="mt-1 text-xs text-muted">{{ $t('instSettings.javaPathNote') }}</p>
           </fieldset>
@@ -174,9 +174,9 @@
             <div v-for="(e, i) in form.env_vars" :key="i" class="flex gap-2">
               <UInput v-model="e.key" placeholder="KEY" class="flex-1" />
               <UInput v-model="e.value" placeholder="value" class="flex-1" />
-              <UButton icon="i-lucide-x" color="neutral" variant="ghost" square @click="form.env_vars.splice(i, 1)" />
+              <UButton icon="i-pixelarticons-close" color="neutral" variant="ghost" square @click="form.env_vars.splice(i, 1)" />
             </div>
-            <UButton icon="i-lucide-plus" size="xs" variant="soft" :label="$t('instSettings.addEnv')" @click="form.env_vars.push({ key: '', value: '' })" />
+            <UButton icon="i-pixelarticons-plus" size="xs" variant="soft" :label="$t('instSettings.addEnv')" @click="form.env_vars.push({ key: '', value: '' })" />
             <p class="text-xs text-muted">{{ $t('instSettings.envNote') }}</p>
           </fieldset>
         </div>
@@ -260,12 +260,12 @@ const iconEditorOpen = ref(false)
 const iconMenu = computed(() => [[
   {
     label: t('iconEditor.create'),
-    icon: 'i-lucide-palette',
+    icon: 'i-pixelarticons-colors-swatch',
     onSelect: () => { iconEditorOpen.value = true },
   },
   {
     label: t('iconEditor.upload'),
-    icon: 'i-lucide-upload',
+    icon: 'i-pixelarticons-upload',
     onSelect: changeIcon,
   },
 ]])
@@ -311,12 +311,12 @@ const matchedJava = computed(() => matchJava(java.installations.value, requiredJ
 
 type Section = 'general' | 'install' | 'window' | 'java' | 'hooks' | 'sync'
 const sections: { key: Section; label: string; icon: string }[] = [
-  { key: 'general', label: 'instSettings.tabs.general', icon: 'i-lucide-info' },
-  { key: 'install', label: 'instSettings.tabs.install', icon: 'i-lucide-wrench' },
-  { key: 'window', label: 'instSettings.tabs.window', icon: 'i-lucide-monitor' },
-  { key: 'java', label: 'instSettings.tabs.java', icon: 'i-lucide-coffee' },
-  { key: 'hooks', label: 'instSettings.tabs.hooks', icon: 'i-lucide-code' },
-  { key: 'sync', label: 'instSettings.tabs.sync', icon: 'i-lucide-refresh-cw' },
+  { key: 'general', label: 'instSettings.tabs.general', icon: 'i-pixelarticons-info-box' },
+  { key: 'install', label: 'instSettings.tabs.install', icon: 'i-pixelarticons-tools' },
+  { key: 'window', label: 'instSettings.tabs.window', icon: 'i-pixelarticons-monitor' },
+  { key: 'java', label: 'instSettings.tabs.java', icon: 'i-pixelarticons-coffee' },
+  { key: 'hooks', label: 'instSettings.tabs.hooks', icon: 'i-pixelarticons-code' },
+  { key: 'sync', label: 'instSettings.tabs.sync', icon: 'i-pixelarticons-reload' },
 ]
 
 const sync = useInstanceSync()

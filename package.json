@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.123",
+    "@iconify-json/pixelarticons": "^1.2.9",
     "@iconify-json/simple-icons": "^1.2.93",
     "@tauri-apps/cli": "^2.11.2",
     "typescript": "^6.0.3",

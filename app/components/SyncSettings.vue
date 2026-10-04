@@ -33,7 +33,7 @@
         <p class="mt-1 text-xs text-muted">{{ $t('sync.instancesDesc') }}</p>
       </div>
 
-      <div class="overflow-x-auto rounded-lg border border-default">
+      <div class="overflow-x-auto rounded-lg border-2 border-[var(--sw-line-strong)]">
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-default">
@@ -77,7 +77,7 @@
       <div class="flex items-center justify-between">
         <p class="text-sm font-medium">{{ $t('sync.packsTitle') }}</p>
         <UButton
-          icon="i-lucide-refresh-cw"
+          icon="i-pixelarticons-reload"
           color="neutral"
           variant="ghost"
           size="xs"
@@ -89,7 +89,7 @@
       <div
         v-for="pack in sync.packs.value"
         :key="pack.id"
-        class="flex items-center gap-3 rounded-lg border border-default px-3 py-2"
+        class="flex items-center gap-3 rounded-lg border-2 border-[var(--sw-line-strong)] px-3 py-2"
       >
         <UCheckbox
           :model-value="pack.enabled"
@@ -100,7 +100,7 @@
           {{ $t('sync.packFormat', { n: pack.pack_format }) }}
         </span>
         <UButton
-          icon="i-lucide-trash-2"
+          icon="i-pixelarticons-trash"
           color="error"
           variant="ghost"
           size="xs"
@@ -112,7 +112,7 @@
     </div>
 
     <UButton
-      icon="i-lucide-folder-open"
+      icon="i-pixelarticons-folder"
       color="neutral"
       variant="soft"
       size="xs"
@@ -145,11 +145,11 @@
 import { SYNC_OPTIONS, type JoinResolution, type SyncOption, type SyncSource } from '~/types/sync'
 
 const OPTION_ICONS: Record<SyncOption, string> = {
-  game_options: 'i-lucide-sliders-horizontal',
-  multiplayer_servers: 'i-lucide-server',
-  resource_packs: 'i-lucide-image',
-  command_history: 'i-lucide-terminal',
-  creative_hotbars: 'i-lucide-layout-grid',
+  game_options: 'i-pixelarticons-sliders-horizontal',
+  multiplayer_servers: 'i-pixelarticons-server',
+  resource_packs: 'i-pixelarticons-image',
+  command_history: 'i-pixelarticons-terminal',
+  creative_hotbars: 'i-pixelarticons-grid',
 }
 
 const sync = useInstanceSync()

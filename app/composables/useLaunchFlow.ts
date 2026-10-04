@@ -17,6 +17,7 @@ export const useLaunchFlow = () => {
   const accounts = useAccountStore()
   const sysMem = useSystemMemory()
   const mc = useMinecraftLaunch()
+  const dash = useLaunchDash()
   const toast = useToast()
   const { t, te } = useI18n()
 
@@ -49,13 +50,14 @@ export const useLaunchFlow = () => {
   function start(instanceId: string, quickPlay?: QuickPlay) {
     // Best-effort: install/refresh Swift client mod before launch path runs again.
     invoke('ensure_client_mod', { instanceId }).catch(() => {})
+    dash.trigger()
     mc.launch(instanceId, quickPlay).catch(() => { /* surfaced through mc.error */ })
   }
 
   async function play(instanceId: string, quickPlay?: QuickPlay) {
     await accounts.ensureLoaded()
     if (!accounts.activeAccount) {
-      toast.add({ title: t('prelaunch.noAccount'), color: 'error', icon: 'i-lucide-user-x' })
+      toast.add({ title: t('prelaunch.noAccount'), color: 'error', icon: 'i-pixelarticons-user-x' })
       return
     }
     const warnings = await collectWarnings(instanceId)

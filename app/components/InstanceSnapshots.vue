@@ -102,14 +102,14 @@ onMounted(load)
       {{ error }}
     </p>
 
-    <div class="rounded-xl border border-default p-4">
+    <div class="rounded-xl border-2 border-[var(--sw-line-strong)] p-4">
       <div class="flex flex-wrap items-start gap-3">
         <div class="min-w-[220px] flex-1">
           <h3 class="text-sm font-semibold">{{ $t('snapshots.title') }}</h3>
           <p class="mt-1 text-sm text-muted">{{ $t('snapshots.intro') }}</p>
         </div>
         <UButton
-          icon="i-lucide-camera"
+          icon="i-pixelarticons-camera"
           :label="$t('snapshots.create')"
           :loading="busy === 'create'"
           @click="create"
@@ -137,8 +137,8 @@ onMounted(load)
       </div>
     </div>
 
-    <div v-if="loading" class="flex items-center gap-2 rounded-xl border border-default px-3 py-4 text-sm text-muted">
-      <UIcon name="i-lucide-loader-circle" class="size-4 animate-spin text-primary-400" />
+    <div v-if="loading" class="flex items-center gap-2 rounded-xl border-2 border-[var(--sw-line-strong)] px-3 py-4 text-sm text-muted">
+      <UIcon name="i-pixelarticons-loader" class="size-4 animate-spin text-primary-400" />
       {{ $t('common.loading') }}
     </div>
 
@@ -146,10 +146,10 @@ onMounted(load)
       <li
         v-for="s in snapshots"
         :key="s.file"
-        class="flex flex-wrap items-center gap-3 rounded-xl border border-default px-3 py-2.5"
+        class="flex flex-wrap items-center gap-3 rounded-xl border-2 border-[var(--sw-line-strong)] px-3 py-2.5"
       >
         <UIcon
-          :name="s.auto ? 'i-lucide-history' : 'i-lucide-camera'"
+          :name="s.auto ? 'i-pixelarticons-clock' : 'i-pixelarticons-camera'"
           class="size-4 shrink-0 text-neutral-500"
         />
         <div class="min-w-[180px] flex-1">
@@ -168,7 +168,7 @@ onMounted(load)
           size="sm"
           :color="confirming === s.file ? 'error' : 'neutral'"
           :variant="confirming === s.file ? 'solid' : 'soft'"
-          :icon="confirming === s.file ? 'i-lucide-triangle-alert' : 'i-lucide-rotate-ccw'"
+          :icon="confirming === s.file ? 'i-pixelarticons-warning-diamond' : 'i-pixelarticons-undo'"
           :label="confirming === s.file ? $t('snapshots.confirmRestore') : $t('snapshots.restore')"
           :loading="busy === `restore-${s.file}`"
           @click="askRestore(s)"
@@ -177,7 +177,7 @@ onMounted(load)
           size="sm"
           color="neutral"
           variant="ghost"
-          icon="i-lucide-trash-2"
+          icon="i-pixelarticons-trash"
           :loading="busy === `delete-${s.file}`"
           :title="$t('common.remove')"
           @click="remove(s)"
@@ -186,7 +186,7 @@ onMounted(load)
     </ul>
 
     <div v-else class="rounded-xl border border-dashed border-default px-4 py-8 text-center">
-      <UIcon name="i-lucide-history" class="mx-auto size-7 text-neutral-600" />
+      <UIcon name="i-pixelarticons-clock" class="mx-auto size-7 text-neutral-600" />
       <p class="mt-2 text-sm text-muted">{{ $t('snapshots.empty') }}</p>
     </div>
 

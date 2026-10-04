@@ -3,9 +3,9 @@
     <UContextMenu :items="contextItems">
       <div class="h-full overflow-y-auto px-8 py-7" @contextmenu.capture="onContext">
         <UiPageHeader :title="$t('library.title')" :subtitle="$t('library.count', { n: instances.instances.length })">
-          <UInput v-model="search" icon="i-lucide-search" :placeholder="$t('library.search')" class="w-60" />
+          <UInput v-model="search" icon="i-pixelarticons-search" :placeholder="$t('library.search')" class="w-60" />
           <USelect v-model="loaderFilter" :items="loaderFilterItems" class="w-36" />
-          <UButton icon="i-lucide-plus" :label="$t('nav.newInstance')" @click="openCreate()" />
+          <UButton icon="i-pixelarticons-plus" :label="$t('nav.newInstance')" @click="openCreate()" />
         </UiPageHeader>
 
         <div v-if="instances.loading && !instances.loaded" class="grid gap-3" :style="GRID">
@@ -20,25 +20,25 @@
 
         <UiEmptyState
           v-else-if="instances.error && !instances.instances.length"
-          icon="i-lucide-triangle-alert"
+          icon="i-pixelarticons-warning-diamond"
           :title="$t('library.loadError')"
           :description="instances.error"
         >
-          <UButton color="neutral" variant="soft" icon="i-lucide-rotate-cw" :label="$t('common.retry')" @click="instances.load()" />
+          <UButton color="neutral" variant="soft" icon="i-pixelarticons-reload" :label="$t('common.retry')" @click="instances.load()" />
         </UiEmptyState>
 
         <UiEmptyState
           v-else-if="!instances.instances.length"
-          icon="i-lucide-layers"
+          icon="i-pixelarticons-blocks"
           :title="$t('library.empty')"
           :description="$t('library.emptyHint')"
         >
-          <UButton icon="i-lucide-plus" :label="$t('nav.newInstance')" @click="openCreate()" />
+          <UButton icon="i-pixelarticons-plus" :label="$t('nav.newInstance')" @click="openCreate()" />
         </UiEmptyState>
 
         <UiEmptyState
           v-else-if="filtering && totalVisible === 0"
-          icon="i-lucide-search-x"
+          icon="i-pixelarticons-search"
           :title="$t('library.noResults')"
         />
 
@@ -62,7 +62,7 @@
                 @click="layout.toggleCollapse(group.id)"
               >
                 <UIcon
-                  name="i-lucide-chevron-right"
+                  name="i-pixelarticons-chevron-right"
                   class="size-4 text-dimmed transition-transform duration-150"
                   :class="group.collapsed ? '' : 'rotate-90'"
                 />
@@ -71,14 +71,14 @@
               <span class="font-mono text-[11px] text-dimmed">{{ filtering ? visibleCount(group) : group.items.length }}</span>
               <UIcon
                 v-if="group.name && !filtering"
-                name="i-lucide-grip-vertical"
+                name="i-pixelarticons-drag-and-drop"
                 class="sw-group-handle size-4 cursor-grab text-dimmed opacity-0 transition hover:text-toned group-hover/h:opacity-100 active:cursor-grabbing"
                 :title="$t('library.dragGroup')"
               />
               <div class="h-px flex-1 bg-[var(--sw-line-soft)]" />
               <UButton
                 v-if="group.name"
-                icon="i-lucide-trash-2"
+                icon="i-pixelarticons-trash"
                 size="xs"
                 color="neutral"
                 variant="ghost"
@@ -247,25 +247,25 @@ function onContext(e: MouseEvent) {
 }
 
 const emptyMenu = computed(() => [[
-  { label: t('library.createGroup'), icon: 'i-lucide-folder-plus', onSelect: openCreateGroup },
-  { label: t('nav.newInstance'), icon: 'i-lucide-plus', onSelect: () => openCreate() },
+  { label: t('library.createGroup'), icon: 'i-pixelarticons-folder-plus', onSelect: openCreateGroup },
+  { label: t('nav.newInstance'), icon: 'i-pixelarticons-plus', onSelect: () => openCreate() },
 ]])
 
 function instanceMenu(item: Instance) {
   return [
     [
-      { label: t('ctx.play'), icon: 'i-lucide-play', onSelect: () => launchFlow.play(item.id) },
-      { label: t('ctx.view'), icon: 'i-lucide-eye', onSelect: () => enter(item.id) },
-      { label: t('library.select'), icon: 'i-lucide-star', onSelect: () => instances.select(item.id) },
-      { label: t('ctx.duplicate'), icon: 'i-lucide-copy', onSelect: () => duplicate(item) },
+      { label: t('ctx.play'), icon: 'i-pixelarticons-play', onSelect: () => launchFlow.play(item.id) },
+      { label: t('ctx.view'), icon: 'i-pixelarticons-eye', onSelect: () => enter(item.id) },
+      { label: t('library.select'), icon: 'i-pixelarticons-star', onSelect: () => instances.select(item.id) },
+      { label: t('ctx.duplicate'), icon: 'i-pixelarticons-copy', onSelect: () => duplicate(item) },
     ],
     [
-      { label: t('instance.createShortcut'), icon: 'i-lucide-app-window', onSelect: () => runCommand('create_desktop_shortcut', { id: item.id }, t('instance.shortcutCreated')) },
-      { label: t('ctx.openFolder'), icon: 'i-lucide-folder', onSelect: () => runCommand('open_instance_folder', { id: item.id }) },
-      { label: t('ctx.copyPath'), icon: 'i-lucide-clipboard', onSelect: () => copyPath(item) },
+      { label: t('instance.createShortcut'), icon: 'i-pixelarticons-app-windows', onSelect: () => runCommand('create_desktop_shortcut', { id: item.id }, t('instance.shortcutCreated')) },
+      { label: t('ctx.openFolder'), icon: 'i-pixelarticons-folder', onSelect: () => runCommand('open_instance_folder', { id: item.id }) },
+      { label: t('ctx.copyPath'), icon: 'i-pixelarticons-clipboard', onSelect: () => copyPath(item) },
     ],
     [
-      { label: t('common.remove'), icon: 'i-lucide-trash-2', color: 'error' as const, onSelect: () => confirmRemove.request(item) },
+      { label: t('common.remove'), icon: 'i-pixelarticons-trash', color: 'error' as const, onSelect: () => confirmRemove.request(item) },
     ],
   ]
 }

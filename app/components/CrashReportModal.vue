@@ -4,7 +4,7 @@
       <div class="flex flex-col">
         <div class="flex items-start gap-4 border-b border-default px-5 py-4">
           <div class="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-500/15">
-            <UIcon name="i-lucide-triangle-alert" class="size-5 text-red-400" />
+            <UIcon name="i-pixelarticons-warning-diamond" class="size-5 text-red-400" />
           </div>
           <div class="min-w-0 flex-1">
             <h2 class="text-base font-semibold text-white">{{ $t('crash.title') }}</h2>
@@ -23,19 +23,19 @@
 
         <div class="min-h-0 flex-1 px-5 py-4">
           <div v-if="crash?.crash_report_rel" class="mb-2 flex items-center gap-2">
-            <UIcon name="i-lucide-file-text" class="size-3.5 shrink-0 text-red-400" />
+            <UIcon name="i-pixelarticons-file-text" class="size-3.5 shrink-0 text-red-400" />
             <span class="truncate font-mono text-[11px] text-neutral-500">{{ crash.crash_report_rel }}</span>
           </div>
 
           <div v-if="contentLoading" class="flex items-center justify-center py-10">
-            <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin text-neutral-500" />
+            <UIcon name="i-pixelarticons-loader" class="size-6 animate-spin text-neutral-500" />
           </div>
 
           <div
             v-else-if="!crash?.crash_report_rel"
             class="flex flex-col items-center gap-2 py-10 text-center"
           >
-            <UIcon name="i-lucide-file-x" class="size-8 text-neutral-600" />
+            <UIcon name="i-pixelarticons-file-delete" class="size-8 text-neutral-600" />
             <p class="text-sm text-neutral-500">{{ $t('crash.noReport') }}</p>
           </div>
 
@@ -43,17 +43,17 @@
             v-else-if="loadError"
             class="flex flex-col items-center gap-2 py-10 text-center"
           >
-            <UIcon name="i-lucide-circle-x" class="size-8 text-red-500/60" />
+            <UIcon name="i-pixelarticons-cancel" class="size-8 text-red-500/60" />
             <p class="text-sm text-neutral-500">{{ $t('crash.loadError') }}</p>
           </div>
 
-          <div v-else class="overflow-hidden rounded-xl border border-default bg-black/40">
+          <div v-else class="overflow-hidden rounded-xl border-2 border-[var(--sw-line-strong)] bg-black/40">
             <div class="flex items-center justify-between gap-2 border-b border-default px-3 py-1.5">
               <span class="truncate font-mono text-[11px] text-neutral-500">
                 {{ crash.crash_report_rel?.split('/').at(-1) }}
               </span>
               <UButton
-                icon="i-lucide-copy"
+                icon="i-pixelarticons-copy"
                 color="neutral"
                 variant="ghost"
                 size="xs"
@@ -77,7 +77,7 @@
           <div class="flex items-center gap-2">
             <UButton
               v-if="crash?.crash_report_rel"
-              icon="i-lucide-share-2"
+              icon="i-pixelarticons-share"
               color="primary"
               variant="soft"
               size="sm"
@@ -87,7 +87,7 @@
             />
             <UButton
               v-if="crash?.crash_report_rel"
-              icon="i-lucide-scroll-text"
+              icon="i-pixelarticons-script-text"
               color="neutral"
               variant="ghost"
               size="sm"

@@ -25,8 +25,8 @@
         </ModalHint>
         <div class="ml-auto flex shrink-0 gap-2">
           <UButton variant="ghost" color="neutral" :label="$t('common.close')" @click="close" />
-          <UButton icon="i-lucide-copy" color="neutral" variant="soft" :label="$t('common.copy')" @click="copy" />
-          <UButton icon="i-lucide-download" :label="$t('modlist.save')" @click="saveFile" />
+          <UButton icon="i-pixelarticons-copy" color="neutral" variant="soft" :label="$t('common.copy')" @click="copy" />
+          <UButton icon="i-pixelarticons-download" :label="$t('modlist.save')" @click="saveFile" />
         </div>
       </div>
     </template>

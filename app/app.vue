@@ -11,6 +11,7 @@
     </div>
 
     <template v-if="!isContentWindow">
+      <BrandLaunchDash />
       <LiveLogsModal />
       <CrashReportModal />
       <PrelaunchModal />
@@ -86,7 +87,7 @@ onMounted(async () => {
     toast.add({
       title: t('sync.announceTitle'),
       description: t('sync.announceDesc'),
-      icon: 'i-lucide-refresh-cw',
+      icon: 'i-pixelarticons-reload',
       color: 'primary',
       actions: [{
         label: t('sync.announceAction'),

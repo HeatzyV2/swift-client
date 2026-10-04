@@ -28,7 +28,7 @@
         class="absolute left-2 top-2 flex size-5 items-center justify-center rounded-full bg-[var(--sw-success)] text-black shadow"
         :title="$t('skins.inUse')"
       >
-        <UIcon name="i-lucide-check" class="size-3 stroke-[3]" />
+        <UIcon name="i-pixelarticons-check" class="size-3 stroke-[3]" />
       </span>
 
       <button
@@ -38,7 +38,7 @@
         :title="$t('common.remove')"
         @click.stop="$emit('remove')"
       >
-        <UIcon name="i-lucide-trash-2" class="size-3.5" />
+        <UIcon name="i-pixelarticons-trash" class="size-3.5" />
       </button>
     </div>
 

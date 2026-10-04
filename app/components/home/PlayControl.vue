@@ -1,17 +1,26 @@
 <template>
-  <div class="flex w-[min(520px,100%)] flex-col items-center gap-3">
-    <div class="sw-play" :data-state="state" :data-open="switcherOpen">
+  <div class="relative flex w-[min(540px,100%)] flex-col items-center gap-5 pb-2">
+    <!-- Zip sprints along the top edge of the button while the game installs or launches -->
+    <div v-if="state === 'installing' || state === 'launching'" class="pointer-events-none absolute inset-x-0 -top-[58px] h-[56px]">
+      <div
+        class="absolute bottom-0 w-[84px] transition-[left] duration-300 ease-linear"
+        :style="{ left: `calc(${state === 'launching' ? 100 : (percent ?? 0)}% - ${state === 'launching' ? 84 : 42}px)` }"
+      >
+        <BrandMascot pose="run" class="h-[56px] w-auto" />
+      </div>
+    </div>
+    <div class="sw-play sw-chunk sw-pop-in" :data-state="state" :data-open="switcherOpen">
       <!-- Real download progress: fills the whole control -->
       <div
         v-if="state === 'installing'"
-        class="pointer-events-none absolute inset-y-0 left-0 bg-primary/25 transition-[width] duration-300 ease-out"
+        class="pointer-events-none absolute inset-y-0 left-0 bg-white/20 transition-[width] duration-300 ease-out"
         :style="{ width: `${percent ?? 0}%` }"
       />
       <div
         v-if="state === 'installing'"
-        class="pointer-events-none absolute inset-x-0 bottom-0 h-[3px] bg-white/8"
+        class="pointer-events-none absolute inset-x-0 bottom-0 h-[8px] bg-black/60"
       >
-        <div class="h-full bg-primary transition-[width] duration-300 ease-out" :style="{ width: `${percent ?? 0}%` }" />
+        <div class="h-full bg-[var(--sw-success)] transition-[width] duration-300 ease-out" :style="{ width: `${percent ?? 0}%` }" />
       </div>
 
       <button
@@ -23,22 +32,22 @@
         <Transition name="sw-swap" mode="out-in">
           <span :key="state + (forceNext ? '-force' : '')" class="flex min-w-0 flex-1 items-center gap-4">
             <span class="sw-play-icon">
-              <UIcon v-if="state === 'launching' || (state === 'running' && stopping)" name="i-lucide-loader-circle" class="size-5 animate-spin" />
-              <UIcon v-else-if="state === 'installing'" name="i-lucide-download" class="size-5" />
-              <UIcon v-else-if="state === 'running'" name="i-lucide-square" class="size-[18px] fill-current" />
-              <UIcon v-else-if="state === 'error'" name="i-lucide-rotate-cw" class="size-5" />
-              <svg v-else class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.2v15.6L19.8 12z" /></svg>
+              <UIcon v-if="state === 'launching' || (state === 'running' && stopping)" name="i-pixelarticons-loader" class="size-6 animate-[spin_1s_steps(8,end)_infinite]" />
+              <UIcon v-else-if="state === 'installing'" name="i-pixelarticons-download" class="size-6" />
+              <UIcon v-else-if="state === 'running'" name="i-pixelarticons-close" class="size-6" />
+              <UIcon v-else-if="state === 'error'" name="i-pixelarticons-reload" class="size-6" />
+              <UIcon v-else name="i-pixelarticons-play" class="size-7" />
             </span>
 
             <span class="min-w-0 flex-1 text-left">
               <span class="flex items-baseline justify-between gap-3">
                 <span
                   class="truncate font-display font-bold leading-tight"
-                  :class="state === 'installing' ? 'text-[16px] tracking-[0.01em]' : 'text-[20px] uppercase tracking-[0.12em]'"
+                  :class="state === 'installing' ? 'text-[18px]' : 'text-[30px] uppercase tracking-[0.06em] [text-shadow:2px_3px_0_rgb(0_0_0/0.35)]'"
                 >{{ title }}</span>
                 <span v-if="state === 'installing' && percent !== null" class="font-mono text-[15px] font-semibold tabular-nums">{{ percent }}%</span>
               </span>
-              <span class="mt-0.5 block truncate text-[12.5px] font-medium opacity-70">{{ subtitle }}</span>
+              <span class="mt-0.5 block truncate text-[13px] font-medium opacity-80">{{ subtitle }}</span>
             </span>
           </span>
         </Transition>
@@ -54,11 +63,11 @@
         :aria-label="$t('activity.openLogs')"
         @click="instance && activity.openLiveLogs(instance.id)"
       >
-        <UIcon name="i-lucide-square-terminal" class="size-5" />
+        <UIcon name="i-pixelarticons-terminal" class="size-6" />
       </button>
       <UPopover v-else v-model:open="switcherOpen" :content="{ side: 'top', align: 'center', sideOffset: 12 }">
         <button type="button" class="sw-play-side" :aria-label="$t('home.switchInstance')" :disabled="state === 'launching' || state === 'installing'">
-          <UIcon name="i-lucide-chevron-up" class="sw-play-chevron size-5" :class="{ 'is-open': switcherOpen }" />
+          <UIcon name="i-pixelarticons-chevron-up" class="sw-play-chevron size-6" :class="{ 'is-open': switcherOpen }" />
         </button>
         <template #content>
           <HomeInstanceSwitcher @done="switcherOpen = false" />
@@ -67,7 +76,7 @@
     </div>
 
     <Transition name="sw-rise">
-      <p v-if="notice" class="flex max-w-full items-center gap-2 rounded-lg bg-black/55 px-3 py-1.5 text-[13px]" :class="notice.class">
+      <p v-if="notice" class="sw-block flex max-w-full items-center gap-2 px-3 py-1.5 text-[13px]" :class="notice.class">
         <UIcon :name="notice.icon" class="size-4 shrink-0" />
         <span class="truncate" :title="notice.text">{{ notice.text }}</span>
         <NuxtLink v-if="notice.link" :to="notice.link" class="shrink-0 font-semibold text-white underline-offset-4 hover:underline">
@@ -137,9 +146,9 @@ const subtitle = computed(() => {
 })
 
 const notice = computed(() => {
-  if (state.value === 'error') return { text: mc.error.value!, icon: 'i-lucide-circle-alert', class: 'text-[#ff8a8e]' }
+  if (state.value === 'error') return { text: mc.error.value!, icon: 'i-pixelarticons-alert', class: 'text-[#ff8a8e]' }
   if (props.instance && accounts.loaded && !accounts.activeAccount && state.value === 'ready') {
-    return { text: t('home.status.noAccount'), icon: 'i-lucide-user-x', class: 'text-[#ffc56b]', link: { path: '/settings', query: { section: 'accounts' } } }
+    return { text: t('home.status.noAccount'), icon: 'i-pixelarticons-user-x', class: 'text-[#ffc56b]', link: { path: '/settings', query: { section: 'accounts' } } }
   }
   return null
 })
@@ -193,55 +202,33 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .sw-play {
-  --play-bg: var(--sw-accent-gradient);
-  --play-fg: var(--sw-accent-fg);
-  --play-hover: rgb(255 255 255 / 0.08);
-  --play-divider: color-mix(in srgb, currentColor 20%, transparent);
-  --play-shadow: 0 20px 48px -18px rgb(0 0 0 / 0.75);
-  position: relative;
+  --play-hover: rgb(255 255 255 / 0.12);
+  --play-divider: rgb(0 0 0 / 0.35);
   display: flex;
   width: 100%;
-  height: 76px;
+  height: 84px;
   overflow: hidden;
-  border-radius: 18px;
-  background: var(--play-bg);
-  color: var(--play-fg);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.28),
-    inset 0 0 0 1px rgb(255 255 255 / 0.08),
-    var(--play-shadow);
-  transition: color 220ms var(--ease-swift), box-shadow 260ms var(--ease-swift), transform 150ms var(--ease-swift), filter 220ms var(--ease-swift);
-}
-/* Glow on hover and keyboard focus — the accent lights up around the button */
-.sw-play[data-state='ready']:hover,
-.sw-play[data-state='none']:hover,
-.sw-play[data-state='error']:hover,
-.sw-play[data-state='ready']:has(:focus-visible),
-.sw-play[data-state='none']:has(:focus-visible),
-.sw-play[data-state='error']:has(:focus-visible),
-.sw-play[data-open='true'] {
-  --play-shadow: var(--sw-accent-glow);
-  transform: translateY(-2px);
 }
 .sw-play :focus-visible {
   outline: none;
 }
+.sw-play:has(:focus-visible) {
+  filter: brightness(1.15);
+}
 .sw-play[data-state='launching'] {
-  filter: saturate(0.75) brightness(0.92);
+  --chunk-bg: color-mix(in srgb, var(--sw-accent) 55%, #555);
 }
 .sw-play[data-state='installing'] {
-  --play-bg: rgb(12 15 22 / 0.9);
-  --play-fg: #ffffff;
+  --chunk-bg: var(--sw-surface-3);
+  --chunk-fg: #ffffff;
+  --chunk-side: var(--sw-line-strong);
   --play-hover: transparent;
-  --play-divider: rgb(255 255 255 / 0.1);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 18px 44px -16px rgb(0 0 0 / 0.7);
 }
 .sw-play[data-state='running'] {
-  --play-bg: #e5484d;
-  --play-fg: #ffffff;
-  --play-hover: #d63c41;
-  --play-divider: rgb(255 255 255 / 0.22);
-  box-shadow: 0 18px 44px -18px rgb(229 72 77 / 0.75);
+  --chunk-bg: #e5484d;
+  --chunk-fg: #ffffff;
+  --chunk-side: #6e1d20;
+  --play-hover: rgb(255 255 255 / 0.14);
 }
 
 .sw-play-main {
@@ -263,19 +250,19 @@ onBeforeUnmount(() => {
 }
 .sw-play-icon {
   display: flex;
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  border-radius: 11px;
-  background: color-mix(in srgb, currentColor 14%, transparent);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
+  border-radius: 2px;
+  background: rgb(0 0 0 / 0.22);
+  box-shadow: inset 0 3px 0 rgb(0 0 0 / 0.18);
 }
 .sw-play-divider {
   position: relative;
-  width: 1px;
-  margin: 16px 0;
+  width: 3px;
+  margin: 0;
   background: var(--play-divider);
 }
 .sw-play-side {
@@ -294,7 +281,7 @@ onBeforeUnmount(() => {
 /* Version switcher chevron: springs round when the menu opens */
 .sw-play-chevron {
   transform: rotate(180deg);
-  transition: transform 380ms var(--ease-spring);
+  transition: transform 240ms steps(4);
 }
 .sw-play-chevron.is-open {
   transform: rotate(0deg) translateY(-1px);

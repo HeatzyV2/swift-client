@@ -4,23 +4,23 @@
       <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[340px_1fr]">
         <!-- Preview column -->
         <div class="lg:sticky lg:top-0 lg:self-start">
-          <h1 class="mb-1 font-display text-[26px] font-semibold tracking-tight text-highlighted">{{ $t('skins.title') }}</h1>
+          <h1 class="sw-page-title  mb-1">{{ $t('skins.title') }}</h1>
           <p class="mb-5 text-sm text-muted">{{ $t('skins.subtitle') }}</p>
 
           <div class="sw-settings-card flex flex-col items-center gap-4 !p-5">
-            <div class="relative overflow-hidden rounded-2xl border border-[var(--sw-line)] bg-[radial-gradient(ellipse_at_50%_20%,var(--sw-surface-3)_0%,var(--sw-canvas)_70%)]">
+            <div class="relative overflow-hidden rounded-2xl border-2 border-[var(--sw-line-strong)] bg-[radial-gradient(ellipse_at_50%_20%,var(--sw-surface-3)_0%,var(--sw-canvas)_70%)]">
               <div
                 v-if="nickname"
                 class="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center"
               >
-                <span class="rounded-lg border border-white/10 bg-black/75 px-3.5 py-1 font-mono text-[13px] font-medium tracking-wide text-white shadow-[0_4px_20px_rgb(0_0_0/0.45)] backdrop-blur-sm">
+                <span class="rounded-lg border-2 border-white/15 bg-black/75 px-3.5 py-1 font-mono text-[13px] font-medium tracking-wide text-white shadow-[0_4px_20px_rgb(0_0_0/0.45)] backdrop-blur-sm">
                   {{ nickname }}
                 </span>
               </div>
               <canvas ref="viewerCanvas" class="block" />
             </div>
 
-            <div v-if="selectedSavedSkin" class="flex w-full max-w-56 rounded-xl border border-[var(--sw-line)] bg-[var(--sw-surface-2)] p-1 text-xs">
+            <div v-if="selectedSavedSkin" class="flex w-full max-w-56 sw-block-flat p-1 text-xs">
               <button
                 v-for="m in (['classic', 'slim'] as const)"
                 :key="m"
@@ -38,7 +38,7 @@
             <div class="flex w-full flex-wrap items-center justify-center gap-2">
               <UButton
                 v-if="canApply"
-                icon="i-lucide-check"
+                icon="i-pixelarticons-check"
                 :loading="applying"
                 :disabled="!isMicrosoft"
                 :label="$t('skins.apply')"
@@ -48,12 +48,12 @@
                 v-else-if="selectedSavedActive"
                 color="success"
                 variant="subtle"
-                icon="i-lucide-circle-check"
+                icon="i-pixelarticons-checkbox-on"
                 :label="$t('skins.inUse')"
               />
 
               <UButton
-                icon="i-lucide-shirt"
+                icon="i-pixelarticons-shirt"
                 color="neutral"
                 variant="outline"
                 :label="$t('skins.capesButton')"
@@ -82,13 +82,13 @@
                 @click="pickFile"
               >
                 <span class="flex size-10 items-center justify-center rounded-xl bg-[var(--sw-surface-2)]">
-                  <UIcon name="i-lucide-plus" class="size-5" />
+                  <UIcon name="i-pixelarticons-plus" class="size-5" />
                 </span>
                 <span class="text-[11px] leading-snug">{{ $t('skins.addHint') }}</span>
               </button>
 
               <template v-if="savedLoading">
-                <div v-for="n in 4" :key="`sk-${n}`" class="h-[186px] w-[108px] overflow-hidden rounded-2xl border border-[var(--sw-line)]">
+                <div v-for="n in 4" :key="`sk-${n}`" class="h-[186px] w-[108px] overflow-hidden rounded-2xl border-2 border-[var(--sw-line-strong)]">
                   <div class="h-[148px] sw-skeleton rounded-none" />
                   <div class="h-9 border-t border-[var(--sw-line-soft)] bg-[var(--sw-surface)]" />
                 </div>
@@ -135,7 +135,7 @@
     <div v-if="!isMicrosoft" class="shrink-0 border-t border-default bg-white/[0.02] px-6 py-4 lg:px-8">
       <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
         <div class="flex min-w-0 items-start gap-3">
-          <UIcon name="i-lucide-info" class="mt-0.5 size-5 shrink-0 text-[var(--sw-accent)]" />
+          <UIcon name="i-pixelarticons-info-box" class="mt-0.5 size-5 shrink-0 text-[var(--sw-accent)]" />
           <div class="min-w-0">
             <p class="text-sm font-semibold text-highlighted">{{ $t('skins.demoTitle') }}</p>
             <p class="text-sm text-muted">{{ $t('skins.demoDesc') }}</p>
@@ -167,7 +167,7 @@
             @click="chooseCape(null)"
           >
             <div class="flex h-32 w-full items-center justify-center rounded-lg bg-white/5">
-              <UIcon name="i-lucide-slash" class="size-5 text-neutral-500" />
+              <UIcon name="i-pixelarticons-cancel" class="size-5 text-neutral-500" />
             </div>
             <span class="text-[11px] text-neutral-300">{{ $t('skins.noCape') }}</span>
           </button>

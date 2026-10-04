@@ -2,7 +2,7 @@
   <div v-if="instance" class="h-full overflow-y-auto">
     <div class="px-8 pb-8 pt-6">
       <NuxtLink to="/instances" class="mb-5 inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-highlighted">
-        <UIcon name="i-lucide-arrow-left" class="size-3.5" /> {{ $t('instance.back') }}
+        <UIcon name="i-pixelarticons-arrow-left" class="size-3.5" /> {{ $t('instance.back') }}
       </NuxtLink>
 
       <header class="flex flex-wrap items-center gap-5">
@@ -10,10 +10,10 @@
 
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2.5">
-            <h1 class="truncate font-display text-[26px] font-semibold leading-tight text-highlighted">{{ instance.name }}</h1>
+            <h1 class="sw-page-title truncate">{{ instance.name }}</h1>
             <UTooltip :text="isSelected ? $t('library.selected') : $t('library.select')">
               <UButton
-                icon="i-lucide-star"
+                icon="i-pixelarticons-star"
                 size="xs"
                 :color="isSelected ? 'primary' : 'neutral'"
                 variant="ghost"
@@ -31,10 +31,10 @@
               <span v-if="loaderVersion" class="font-mono text-dimmed">{{ loaderVersion }}</span>
             </span>
             <span class="text-dimmed">·</span>
-            <span class="inline-flex items-center gap-1"><UIcon name="i-lucide-clock" class="size-3.5 text-dimmed" />{{ lastPlayed ?? $t('instance.neverPlayed') }}</span>
+            <span class="inline-flex items-center gap-1"><UIcon name="i-pixelarticons-clock" class="size-3.5 text-dimmed" />{{ lastPlayed ?? $t('instance.neverPlayed') }}</span>
             <span class="text-dimmed">·</span>
             <span class="inline-flex items-center gap-1" :title="$t('instance.playtime')">
-              <UIcon name="i-lucide-hourglass" class="size-3.5 text-dimmed" />{{ formatPlaytime(instance.playtime_seconds, locale) }}
+              <UIcon name="i-pixelarticons-hourglass" class="size-3.5 text-dimmed" />{{ formatPlaytime(instance.playtime_seconds, locale) }}
             </span>
             <UBadge v-if="instance.group" color="neutral" variant="subtle" size="sm" :label="instance.group" />
           </div>
@@ -42,24 +42,24 @@
 
         <div class="flex items-center gap-2">
           <UTooltip :text="$t('instance.openGameFolder')">
-            <UButton icon="i-lucide-folder-open" color="neutral" variant="soft" square :aria-label="$t('instance.openGameFolder')" @click="openGameFolder" />
+            <UButton icon="i-pixelarticons-folder" color="neutral" variant="soft" square :aria-label="$t('instance.openGameFolder')" @click="openGameFolder" />
           </UTooltip>
           <UTooltip :text="$t('instance.tabs.settings')">
-            <UButton icon="i-lucide-settings-2" color="neutral" variant="soft" square :aria-label="$t('instance.tabs.settings')" @click="settingsOpen = true" />
+            <UButton icon="i-pixelarticons-settings-2" color="neutral" variant="soft" square :aria-label="$t('instance.tabs.settings')" @click="settingsOpen = true" />
           </UTooltip>
           <UDropdownMenu :items="menuItems" :content="{ align: 'end' }">
-            <UButton icon="i-lucide-ellipsis" color="neutral" variant="soft" square :aria-label="$t('instance.more')" />
+            <UButton icon="i-pixelarticons-more-horizontal" color="neutral" variant="soft" square :aria-label="$t('instance.more')" />
           </UDropdownMenu>
 
           <template v-if="mc.stage.value === 'running'">
-            <UButton icon="i-lucide-square" color="neutral" variant="soft" :loading="stopping" :label="$t('instance.close')" :title="$t('instance.closeHint')" @click="stopInstance(false)" />
-            <UButton icon="i-lucide-skull" color="error" variant="soft" :loading="killing" :label="$t('instance.kill')" :title="$t('instance.killHint')" @click="stopInstance(true)" />
+            <UButton icon="i-pixelarticons-square" color="neutral" variant="soft" :loading="stopping" :label="$t('instance.close')" :title="$t('instance.closeHint')" @click="stopInstance(false)" />
+            <UButton icon="i-pixelarticons-skull" color="error" variant="soft" :loading="killing" :label="$t('instance.kill')" :title="$t('instance.killHint')" @click="stopInstance(true)" />
           </template>
 
           <UButton
             size="lg"
             class="min-w-[140px] justify-center font-display font-bold uppercase tracking-[0.1em]"
-            :icon="isBusy ? 'i-lucide-loader-circle' : 'i-lucide-play'"
+            :icon="isBusy ? 'i-pixelarticons-loader' : 'i-pixelarticons-play'"
             :ui="{ leadingIcon: isBusy && mc.stage.value !== 'running' ? 'animate-spin' : '' }"
             :disabled="isBusy"
             :label="playLabel"
@@ -77,13 +77,13 @@
       </div>
 
       <p v-if="mc.error.value" class="mt-4 flex items-start gap-2 rounded-lg border border-error/30 bg-error/5 px-3 py-2 text-sm text-error">
-        <UIcon name="i-lucide-circle-alert" class="mt-0.5 size-4 shrink-0" />
+        <UIcon name="i-pixelarticons-alert" class="mt-0.5 size-4 shrink-0" />
         {{ mc.error.value }}
       </p>
 
       <div v-if="modpackUpdate" class="mt-5 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3">
         <div class="flex flex-wrap items-center gap-2">
-          <UIcon name="i-lucide-circle-arrow-up" class="size-4 text-primary" />
+          <UIcon name="i-pixelarticons-arrow-up-box" class="size-4 text-primary" />
           <span class="text-sm font-medium text-highlighted">{{ $t('instance.updateAvailable', { v: modpackUpdate.version_number }) }}</span>
           <UBadge v-if="modpackUpdate.version_type === 'beta'" color="warning" variant="subtle" size="xs" label="BETA" />
           <div class="ml-auto flex items-center gap-2">
@@ -92,7 +92,7 @@
               color="neutral"
               variant="ghost"
               size="xs"
-              :icon="showChangelog ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+              :icon="showChangelog ? 'i-pixelarticons-chevron-up' : 'i-pixelarticons-chevron-down'"
               :label="$t('instance.showChangelog')"
               @click="toggleChangelog"
             />
@@ -141,10 +141,10 @@
 
   <UiEmptyState
     v-else-if="instances.loaded"
-    icon="i-lucide-search-x"
+    icon="i-pixelarticons-search"
     :title="$t('instance.notFound')"
   >
-    <UButton color="neutral" variant="soft" icon="i-lucide-arrow-left" :label="$t('instance.back')" to="/instances" />
+    <UButton color="neutral" variant="soft" icon="i-pixelarticons-arrow-left" :label="$t('instance.back')" to="/instances" />
   </UiEmptyState>
 </template>
 
@@ -257,12 +257,12 @@ async function stopInstance(force: boolean) {
 
 type TabKey = 'content' | 'worlds' | 'screenshots' | 'servers' | 'logs' | 'snapshots'
 const tabs: { key: TabKey, label: string, icon: string }[] = [
-  { key: 'content', label: 'instance.tabs.content', icon: 'i-lucide-blocks' },
-  { key: 'worlds', label: 'instance.tabs.worlds', icon: 'i-lucide-globe' },
-  { key: 'screenshots', label: 'instance.tabs.screenshots', icon: 'i-lucide-image' },
-  { key: 'servers', label: 'instance.tabs.servers', icon: 'i-lucide-server' },
-  { key: 'logs', label: 'instance.tabs.logs', icon: 'i-lucide-scroll-text' },
-  { key: 'snapshots', label: 'instance.tabs.snapshots', icon: 'i-lucide-history' },
+  { key: 'content', label: 'instance.tabs.content', icon: 'i-pixelarticons-blocks' },
+  { key: 'worlds', label: 'instance.tabs.worlds', icon: 'i-pixelarticons-globe' },
+  { key: 'screenshots', label: 'instance.tabs.screenshots', icon: 'i-pixelarticons-image' },
+  { key: 'servers', label: 'instance.tabs.servers', icon: 'i-pixelarticons-server' },
+  { key: 'logs', label: 'instance.tabs.logs', icon: 'i-pixelarticons-script-text' },
+  { key: 'snapshots', label: 'instance.tabs.snapshots', icon: 'i-pixelarticons-clock' },
 ]
 const activeTab = ref<TabKey>('content')
 const settingsOpen = ref(false)
@@ -297,11 +297,11 @@ const GAME_FILE_TABS: GameFileTab[] = ['screenshots', 'worlds', 'servers']
 const isGameFileTab = computed(() => (GAME_FILE_TABS as string[]).includes(activeTab.value))
 
 const menuItems = computed(() => [[
-  { label: t('instance.export'), icon: 'i-lucide-package', onSelect: () => { if (instance.value) exportModal.open(id.value, instance.value.name) } },
-  { label: t('changeLoader.menu'), icon: 'i-lucide-layers', onSelect: () => changeLoaderModal.open(id.value) },
-  { label: t('instance.createShortcut'), icon: 'i-lucide-app-window', onSelect: createShortcut },
+  { label: t('instance.export'), icon: 'i-pixelarticons-package', onSelect: () => { if (instance.value) exportModal.open(id.value, instance.value.name) } },
+  { label: t('changeLoader.menu'), icon: 'i-pixelarticons-blocks', onSelect: () => changeLoaderModal.open(id.value) },
+  { label: t('instance.createShortcut'), icon: 'i-pixelarticons-app-windows', onSelect: createShortcut },
 ], [
-  { label: t('common.remove'), icon: 'i-lucide-trash-2', color: 'error' as const, onSelect: () => { if (instance.value) confirmRemove.request(instance.value) } },
+  { label: t('common.remove'), icon: 'i-pixelarticons-trash', color: 'error' as const, onSelect: () => { if (instance.value) confirmRemove.request(instance.value) } },
 ]])
 
 async function createShortcut() {

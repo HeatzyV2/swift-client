@@ -2,13 +2,13 @@
   <component
     :is="clickable ? 'button' : 'div'"
     :type="clickable ? 'button' : undefined"
-    class="flex h-9 items-center gap-2.5 rounded-lg border border-[var(--sw-line)] bg-[var(--sw-surface)] px-3.5 text-xs font-medium transition-colors"
+    class="flex h-9 items-center gap-2.5 sw-block-flat px-3.5 text-xs font-medium transition-colors"
     :class="clickable ? 'hover:border-[var(--sw-line-strong)] hover:bg-[var(--sw-surface-2)]' : ''"
     :title="clickable ? $t('activity.openLogs') : undefined"
     @click="onClick"
   >
     <template v-if="view.kind === 'install' || view.kind === 'task'">
-      <UIcon name="i-lucide-loader-circle" class="size-3.5 shrink-0 animate-spin text-primary" />
+      <UIcon name="i-pixelarticons-loader" class="size-3.5 shrink-0 animate-spin text-primary" />
       <span class="max-w-56 truncate text-toned">{{ view.label }}</span>
       <template v-if="view.percent !== null">
         <span class="font-mono text-[11px] tabular-nums text-muted">{{ view.percent }}%</span>

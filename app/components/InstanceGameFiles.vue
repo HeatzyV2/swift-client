@@ -7,13 +7,13 @@
       <div class="flex items-center gap-1.5">
         <UButton
           v-if="tab === 'servers'"
-          icon="i-lucide-plus"
+          icon="i-pixelarticons-plus"
           size="xs"
           :label="$t('content.addServer')"
           @click="addServerOpen = true"
         />
         <UButton
-          icon="i-lucide-refresh-cw"
+          icon="i-pixelarticons-reload"
           color="neutral"
           variant="ghost"
           size="xs"
@@ -27,7 +27,7 @@
     <p v-if="error" class="text-sm text-error">{{ error }}</p>
 
     <div v-else-if="!loading && count === 0" class="flex flex-col items-center justify-center gap-3 py-16 text-center">
-      <UIcon :name="emptyIcon" class="size-10 text-neutral-600" />
+      <BrandMascot class="h-[90px] w-auto" />
       <p class="text-sm text-muted">{{ $t('content.empty') }}</p>
     </div>
 
@@ -83,7 +83,7 @@
           :alt="w.name"
         />
         <div v-else class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white/5">
-          <UIcon name="i-lucide-globe" class="size-5 text-neutral-500" />
+          <UIcon name="i-pixelarticons-globe" class="size-5 text-neutral-500" />
         </div>
         <div class="min-w-0 flex-1">
           <div class="truncate font-medium">{{ w.name }}</div>
@@ -95,7 +95,7 @@
         </div>
         <UButton
           v-if="instanceSupportsQuickPlay"
-          icon="i-lucide-play"
+          icon="i-pixelarticons-play"
           size="xs"
           color="neutral"
           variant="ghost"
@@ -105,7 +105,7 @@
           @click="quickPlayWorld(w.folder)"
         />
         <UButton
-          icon="i-lucide-archive"
+          icon="i-pixelarticons-archive"
           size="xs"
           color="neutral"
           variant="ghost"
@@ -115,7 +115,7 @@
           @click="backupWorld(w)"
         />
         <UButton
-          icon="i-lucide-trash-2"
+          icon="i-pixelarticons-trash"
           size="xs"
           color="error"
           variant="ghost"
@@ -141,7 +141,7 @@
             :alt="s.name"
           />
           <div v-else class="flex size-11 items-center justify-center rounded-lg bg-white/5">
-            <UIcon name="i-lucide-server" class="size-5 text-neutral-500" />
+            <UIcon name="i-pixelarticons-server" class="size-5 text-neutral-500" />
           </div>
         </div>
 
@@ -157,7 +157,7 @@
         </div>
 
         <div class="flex shrink-0 items-center gap-2">
-          <UIcon v-if="pingStatus(s.ip) === 'loading'" name="i-lucide-loader-circle" class="size-3.5 animate-spin text-neutral-500" />
+          <UIcon v-if="pingStatus(s.ip) === 'loading'" name="i-pixelarticons-loader" class="size-3.5 animate-spin text-neutral-500" />
           <template v-else-if="pingFor(s.ip)">
             <span :class="latencyClass(pingFor(s.ip)!.latency_ms)" class="font-mono text-[11px]">{{ pingFor(s.ip)!.latency_ms }}ms</span>
             <span class="text-[11px] text-neutral-500">{{ pingFor(s.ip)!.online }}/{{ pingFor(s.ip)!.max }}</span>
@@ -168,7 +168,7 @@
         <div class="flex shrink-0 items-center gap-1">
           <UButton
             v-if="instanceSupportsQuickPlay"
-            icon="i-lucide-play"
+            icon="i-pixelarticons-play"
             size="xs"
             color="primary"
             variant="ghost"
@@ -178,7 +178,7 @@
             @click="quickPlayServer(s.ip)"
           />
           <UButton
-            icon="i-lucide-trash-2"
+            icon="i-pixelarticons-trash"
             color="error"
             variant="ghost"
             size="xs"
@@ -217,10 +217,10 @@
               <span class="ml-1 text-xs text-muted">{{ (lightboxIndex ?? 0) + 1 }} / {{ screenshots.length }}</span>
             </span>
             <div class="flex items-center gap-1.5">
-              <UButton icon="i-lucide-download" size="xs" color="neutral" variant="soft" :label="$t('content.download')" @click="downloadShot(lightbox)" />
-              <UButton icon="i-lucide-folder-open" size="xs" color="neutral" variant="soft" :label="$t('content.openLocation')" @click="revealShot(lightbox)" />
-              <UButton icon="i-lucide-trash-2" size="xs" color="error" variant="soft" :label="$t('common.remove')" @click="deleteScreenshot(lightbox)" />
-              <UButton icon="i-lucide-x" size="xs" color="neutral" variant="ghost" square @click="lightbox = null" />
+              <UButton icon="i-pixelarticons-download" size="xs" color="neutral" variant="soft" :label="$t('content.download')" @click="downloadShot(lightbox)" />
+              <UButton icon="i-pixelarticons-folder" size="xs" color="neutral" variant="soft" :label="$t('content.openLocation')" @click="revealShot(lightbox)" />
+              <UButton icon="i-pixelarticons-trash" size="xs" color="error" variant="soft" :label="$t('common.remove')" @click="deleteScreenshot(lightbox)" />
+              <UButton icon="i-pixelarticons-close" size="xs" color="neutral" variant="ghost" square @click="lightbox = null" />
             </div>
           </div>
 
@@ -228,14 +228,14 @@
             <img :src="assetUrl(lightbox.path)" class="max-h-[78vh] w-full object-contain" :alt="lightbox.name" >
             <UButton
               v-if="screenshots.length > 1"
-              icon="i-lucide-chevron-left"
+              icon="i-pixelarticons-chevron-left"
               color="neutral"
               class="absolute top-1/2 left-2 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100"
               @click="step(-1)"
             />
             <UButton
               v-if="screenshots.length > 1"
-              icon="i-lucide-chevron-right"
+              icon="i-pixelarticons-chevron-right"
               color="neutral"
               class="absolute top-1/2 right-2 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100"
               @click="step(1)"
@@ -274,9 +274,9 @@ const COMMANDS: Record<GameFileTab, string> = {
 }
 
 const EMPTY_ICONS: Record<GameFileTab, string> = {
-  screenshots: 'i-lucide-camera',
-  worlds: 'i-lucide-globe',
-  servers: 'i-lucide-server',
+  screenshots: 'i-pixelarticons-camera',
+  worlds: 'i-pixelarticons-globe',
+  servers: 'i-pixelarticons-server',
 }
 const emptyIcon = computed(() => EMPTY_ICONS[props.tab])
 

@@ -20,7 +20,7 @@
             <UInput
               ref="searchInput"
               v-model="query"
-              icon="i-lucide-search"
+              icon="i-pixelarticons-search"
               variant="soft"
               :placeholder="$t('modrinth.searchPlaceholder')"
               class="min-w-48 flex-1"
@@ -44,27 +44,27 @@
               <UButton
                 :color="view === 'grid' ? 'primary' : 'neutral'"
                 :variant="view === 'grid' ? 'subtle' : 'ghost'"
-                icon="i-lucide-layout-grid"
+                icon="i-pixelarticons-grid"
                 :title="$t('modrinth.viewGrid')"
                 @click="view = 'grid'"
               />
               <UButton
                 :color="view === 'list' ? 'primary' : 'neutral'"
                 :variant="view === 'list' ? 'subtle' : 'ghost'"
-                icon="i-lucide-list"
+                icon="i-pixelarticons-list"
                 :title="$t('modrinth.viewList')"
                 @click="view = 'list'"
               />
               <UButton
                 color="neutral"
                 variant="ghost"
-                :icon="density === 'compact' ? 'i-lucide-rows-3' : 'i-lucide-rows-2'"
+                :icon="density === 'compact' ? 'i-pixelarticons-layout-rows' : 'i-pixelarticons-layout-rows'"
                 :title="$t('modrinth.density')"
                 @click="density = density === 'compact' ? 'cosy' : 'compact'"
               />
             </UButtonGroup>
             <UButton
-              icon="i-lucide-sliders-horizontal"
+              icon="i-pixelarticons-sliders-horizontal"
               :color="showFilters ? 'primary' : 'neutral'"
               variant="soft"
               square
@@ -96,7 +96,7 @@
             v-for="hit in recent"
             :key="hit.project_id"
             type="button"
-            class="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/8 bg-white/4 px-2 py-1 text-xs text-neutral-300 transition hover:bg-white/10"
+            class="flex shrink-0 items-center gap-1.5 rounded-lg border-2 border-white/15 bg-white/4 px-2 py-1 text-xs text-neutral-300 transition hover:bg-white/10"
             @click="selectHit(hit)"
           >
             <img v-if="hit.icon_url" :src="hit.icon_url" alt="" class="size-4 rounded">
@@ -131,14 +131,14 @@
                 <div class="flex items-start gap-3 p-3">
                   <img v-if="hit.icon_url" :src="hit.icon_url" class="size-12 shrink-0 rounded-lg object-cover" :alt="hit.title">
                   <div v-else class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-white/5">
-                    <UIcon name="i-lucide-box" class="size-5 text-neutral-500" />
+                    <UIcon name="i-pixelarticons-box" class="size-5 text-neutral-500" />
                   </div>
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5">
                       <span class="truncate text-sm font-semibold">{{ hit.title }}</span>
                       <UIcon
                         v-if="installedIds.has(hit.project_id)"
-                        name="i-lucide-circle-check"
+                        name="i-pixelarticons-checkbox-on"
                         class="size-3.5 shrink-0 text-success"
                         :title="$t('modrinth.installedShort')"
                       />
@@ -148,7 +148,7 @@
                 </div>
                 <p v-if="density === 'cosy'" class="line-clamp-2 px-3 text-[12px] text-neutral-400">{{ hit.description }}</p>
                 <div class="mt-auto flex items-center gap-1 p-3 pt-2 text-[11px] text-neutral-500">
-                  <UIcon name="i-lucide-download" class="size-3" />{{ compactNumber(hit.downloads) }}
+                  <UIcon name="i-pixelarticons-download" class="size-3" />{{ compactNumber(hit.downloads) }}
                 </div>
               </div>
             </div>
@@ -173,14 +173,14 @@
               />
               <img v-if="hit.icon_url" :src="hit.icon_url" class="size-11 shrink-0 rounded-lg object-cover" :alt="hit.title" />
               <div v-else class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white/5">
-                <UIcon name="i-lucide-box" class="size-5 text-neutral-500" />
+                <UIcon name="i-pixelarticons-box" class="size-5 text-neutral-500" />
               </div>
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-1.5">
                   <span class="truncate text-sm font-semibold">{{ hit.title }}</span>
                   <UIcon
                     v-if="installedIds.has(hit.project_id)"
-                    name="i-lucide-circle-check"
+                    name="i-pixelarticons-checkbox-on"
                     class="size-3.5 shrink-0 text-success"
                     :title="$t('modrinth.installedShort')"
                   />
@@ -188,7 +188,7 @@
                 <div class="truncate text-[11px] text-neutral-500">{{ $t('modrinth.by', { author: hit.author }) }}</div>
                 <p class="mt-1 line-clamp-2 text-[12px] text-neutral-400">{{ hit.description }}</p>
                 <div class="mt-1 flex items-center gap-1 text-[11px] text-neutral-500">
-                  <UIcon name="i-lucide-download" class="size-3" />{{ compactNumber(hit.downloads) }}
+                  <UIcon name="i-pixelarticons-download" class="size-3" />{{ compactNumber(hit.downloads) }}
                 </div>
               </div>
             </button>
@@ -206,7 +206,7 @@
                 @click="loadMore"
               />
               <div v-else-if="loadingSearch" class="flex justify-center py-1">
-                <UIcon name="i-lucide-loader-circle" class="size-4 animate-spin text-muted" />
+                <UIcon name="i-pixelarticons-loader" class="size-4 animate-spin text-muted" />
               </div>
             </div>
 
@@ -243,7 +243,7 @@
                         @click="openProjectPage(selected)"
                       >
                         <span class="truncate text-lg font-bold">{{ selected.title }}</span>
-                        <UIcon name="i-lucide-external-link" class="size-4 shrink-0 opacity-0 transition group-hover/title:opacity-100" />
+                        <UIcon name="i-pixelarticons-external-link" class="size-4 shrink-0 opacity-0 transition group-hover/title:opacity-100" />
                       </button>
                       <UBadge v-if="installedIds.has(selected.project_id)" color="success" variant="subtle" size="xs" :label="$t('modrinth.installedShort')" />
                     </div>
@@ -252,7 +252,7 @@
                 </div>
                 <div v-if="selectedInstalled" class="flex shrink-0 items-center gap-1.5">
                   <UButton
-                    icon="i-lucide-replace"
+                    icon="i-pixelarticons-repeat"
                     color="neutral"
                     variant="soft"
                     :disabled="loadingVersions || !versions.length || uninstalling"
@@ -260,7 +260,7 @@
                     @click="showAllVersions = true"
                   />
                   <UButton
-                    icon="i-lucide-trash-2"
+                    icon="i-pixelarticons-trash"
                     color="error"
                     variant="soft"
                     square
@@ -298,7 +298,7 @@
                 class="mt-5 flex items-center gap-1.5 text-sm text-muted transition hover:text-default"
                 @click="showAllVersions = !showAllVersions"
               >
-                <UIcon :name="showAllVersions ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="size-4" />
+                <UIcon :name="showAllVersions ? 'i-pixelarticons-chevron-down' : 'i-pixelarticons-chevron-right'" class="size-4" />
                 {{ $t('modrinth.chooseVersion') }}
               </button>
 
@@ -389,12 +389,12 @@
             <div class="truncate text-sm font-medium">{{ galleryImage.title || `${(galleryIndex ?? 0) + 1} / ${gallery.length}` }}</div>
             <div v-if="galleryImage.description" class="truncate text-xs text-muted">{{ galleryImage.description }}</div>
           </div>
-          <UButton icon="i-lucide-x" size="xs" color="neutral" variant="ghost" square @click="galleryIndex = null" />
+          <UButton icon="i-pixelarticons-close" size="xs" color="neutral" variant="ghost" square @click="galleryIndex = null" />
         </div>
         <div class="relative bg-black/40">
           <img :src="galleryImage.raw_url || galleryImage.url" class="max-h-[78vh] w-full object-contain" :alt="galleryImage.title ?? ''" >
-          <UButton v-if="gallery.length > 1" icon="i-lucide-chevron-left" color="neutral" class="absolute top-1/2 left-2 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100" @click="stepGallery(-1)" />
-          <UButton v-if="gallery.length > 1" icon="i-lucide-chevron-right" color="neutral" class="absolute top-1/2 right-2 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100" @click="stepGallery(1)" />
+          <UButton v-if="gallery.length > 1" icon="i-pixelarticons-chevron-left" color="neutral" class="absolute top-1/2 left-2 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100" @click="stepGallery(-1)" />
+          <UButton v-if="gallery.length > 1" icon="i-pixelarticons-chevron-right" color="neutral" class="absolute top-1/2 right-2 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100" @click="stepGallery(1)" />
         </div>
       </div>
     </template>

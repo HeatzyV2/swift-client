@@ -1,3 +1,20 @@
+## Changes (v1.2.0)
+
+### 🎨 A new identity: Swift
+- The whole launcher is redrawn in its own style: square blocks with a black outline and a solid edge, a pixel font, stepped animations and pixel icons. Nothing is rounded, blurred or glowing any more.
+- Navigation moves to a **hotbar** along the bottom, like the game's own: press 1–8 anywhere to jump to a page.
+- Meet **Zip**, the Swift mascot, in empty states and while the game installs.
+- When you press Play, Zip dashes across the screen.
+
+### 🏠 New Home
+- Built around your **avatar**: your head, your name, your total playtime and your last session, next to the scene with the Play button.
+- Server status, last session and what's new sit in one row underneath.
+
+### 🧩 Swift Client mod 2.0.0
+- A new mods menu: a top bar, a bottom hotbar (keys 1–8), module cartridges with an ON/OFF key and square switches.
+- New language picker, a new Now Playing player (pixel equalizer, segmented progress bar, real transport keys), new HUD plates, keystrokes and notifications.
+- Colour emoji icons across the menus. The title screen is unchanged.
+
 ## Changes (v1.1.3)
 
 ### 🧩 Swift Client mod 1.2.0

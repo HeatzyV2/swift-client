@@ -21,7 +21,7 @@
     <template v-if="showBrowser">
       <div class="flex items-center gap-2">
         <UButton
-          icon="i-lucide-arrow-left"
+          icon="i-pixelarticons-arrow-left"
           color="neutral"
           variant="soft"
           size="sm"
@@ -30,7 +30,7 @@
         />
         <p class="text-sm text-muted">{{ $t('modrinth.browseHint') }}</p>
       </div>
-      <div class="h-[calc(100dvh-15rem)] min-h-[520px] overflow-hidden rounded-xl border border-default bg-[var(--sw-surface)]">
+      <div class="h-[calc(100dvh-15rem)] min-h-[520px] overflow-hidden rounded-xl border-2 border-[var(--sw-line-strong)] bg-[var(--sw-surface)]">
         <ModrinthBrowser
           :config="browserConfig"
           @installed="onInlineInstalled"
@@ -43,7 +43,7 @@
     <div class="flex flex-wrap items-center gap-2">
       <UInput
         v-model="search"
-        icon="i-lucide-search"
+        icon="i-pixelarticons-search"
         variant="soft"
         :placeholder="$t('content.searchPlaceholder')"
         class="min-w-44 flex-1"
@@ -51,7 +51,7 @@
       <USelect v-model="perPage" :items="perPageItems" value-key="value" class="w-28" />
       <UButton
         v-if="updateCount"
-        icon="i-lucide-circle-arrow-up"
+        icon="i-pixelarticons-arrow-up-box"
         color="primary"
         size="sm"
         :loading="updatingAll"
@@ -60,7 +60,7 @@
       />
       <UButton
         v-if="hasLocal"
-        icon="i-lucide-link"
+        icon="i-pixelarticons-link"
         color="neutral"
         variant="soft"
         size="sm"
@@ -71,17 +71,17 @@
       />
       <UButton
         v-if="blockedCount"
-        icon="i-lucide-file-warning"
+        icon="i-pixelarticons-file-minus"
         color="warning"
         variant="soft"
         size="sm"
         :label="$t('blocked.resolve', { n: blockedCount })"
         @click="openBlocked"
       />
-      <UButton icon="i-lucide-package-search" size="sm" :label="$t('modrinth.add')" @click="openBrowser" />
+      <UButton icon="i-pixelarticons-package" size="sm" :label="$t('modrinth.add')" @click="openBrowser" />
       <UButton
         v-if="hasMods"
-        icon="i-lucide-file-text"
+        icon="i-pixelarticons-file-text"
         color="neutral"
         variant="soft"
         size="sm"
@@ -89,7 +89,7 @@
         @click="modList.open(props.instanceId)"
       />
       <UButton
-        icon="i-lucide-refresh-cw"
+        icon="i-pixelarticons-reload"
         color="neutral"
         variant="ghost"
         size="sm"
@@ -104,7 +104,7 @@
 
     <div v-if="conflicts.length" class="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3">
       <div class="flex items-center gap-1.5 text-sm font-medium text-amber-300">
-        <UIcon name="i-lucide-triangle-alert" class="size-4" />
+        <UIcon name="i-pixelarticons-warning-diamond" class="size-4" />
         {{ $t('conflicts.title', { n: conflicts.length }) }}
       </div>
       <ul class="mt-1 space-y-0.5 text-xs text-amber-200/80">
@@ -114,7 +114,7 @@
       </ul>
     </div>
 
-    <div v-if="loading" class="overflow-hidden rounded-xl border border-default">
+    <div v-if="loading" class="overflow-hidden rounded-xl border-2 border-[var(--sw-line-strong)]">
       <div v-for="n in 8" :key="`mod-sk-${n}`" class="flex items-center gap-3 border-b border-default/50 px-3 py-2.5 last:border-0">
         <div class="size-9 shrink-0 sw-skeleton" />
         <div class="min-w-0 flex-1 space-y-2">
@@ -126,9 +126,9 @@
     </div>
 
     <div v-else-if="!ofKind.length" class="flex flex-col items-center justify-center gap-3 py-16 text-center">
-      <UIcon :name="kindIcon(browserKind)" class="size-10 text-neutral-600" />
+      <BrandMascot class="h-[90px] w-auto" />
       <p class="max-w-sm text-sm text-muted">{{ kind === 'mod' || kind === 'all' ? $t('content.emptyMods') : $t('content.empty') }}</p>
-      <UButton icon="i-lucide-package-search" :label="$t('modrinth.add')" @click="openBrowser" />
+      <UButton icon="i-pixelarticons-package" :label="$t('modrinth.add')" @click="openBrowser" />
     </div>
 
     <div v-else-if="!filtered.length" class="py-12 text-center text-sm text-muted">{{ $t('content.empty') }}</div>
@@ -136,7 +136,7 @@
     <template v-else>
       <p class="text-xs text-muted">{{ $t('content.count', { n: filtered.length }) }}</p>
 
-      <div class="overflow-hidden rounded-xl border border-default">
+      <div class="overflow-hidden rounded-xl border-2 border-[var(--sw-line-strong)]">
         <div class="grid grid-cols-[auto_2.75rem_minmax(0,1fr)_8rem_7rem_4rem_auto] items-center gap-3 border-b border-default bg-white/4 px-3 py-2 text-[11px] font-medium tracking-wide text-neutral-500 uppercase">
           <span />
           <button type="button" class="flex items-center justify-center gap-1 transition hover:text-neutral-200" :class="{ 'text-primary-400': sortCol === 'state' }" @click="toggleSort('state')">
@@ -156,7 +156,7 @@
             <UIcon :name="sortIcon('updated')" class="size-3" :class="{ 'opacity-30': sortCol !== 'updated' }" />
           </button>
           <button type="button" class="flex items-center justify-center gap-1 transition hover:text-neutral-200" :class="{ 'text-primary-400': sortCol === 'update' }" :title="$t('mods.col.update')" @click="toggleSort('update')">
-            <UIcon name="i-lucide-circle-arrow-up" class="size-3.5" />
+            <UIcon name="i-pixelarticons-arrow-up-box" class="size-3.5" />
             <UIcon :name="sortIcon('update')" class="size-3" :class="{ 'opacity-30': sortCol !== 'update' }" />
           </button>
           <span />
@@ -185,7 +185,7 @@
               <span class="truncate font-medium" :title="m.filename">{{ m.name ?? m.filename }}</span>
               <UButton
                 v-if="m.project_id"
-                icon="i-lucide-external-link"
+                icon="i-pixelarticons-external-link"
                 color="neutral"
                 variant="ghost"
                 size="xs"
@@ -212,7 +212,7 @@
           <div class="flex items-center justify-end gap-0.5">
             <UButton
               v-if="!m.project_id && m.kind === 'mod'"
-              icon="i-lucide-search"
+              icon="i-pixelarticons-search"
               color="neutral"
               variant="ghost"
               size="xs"
@@ -222,7 +222,7 @@
             />
             <UButton
               v-if="m.project_id && updates[m.project_id]"
-              icon="i-lucide-circle-arrow-up"
+              icon="i-pixelarticons-arrow-up-box"
               color="primary"
               variant="soft"
               size="xs"
@@ -232,7 +232,7 @@
             />
             <UButton
               v-if="m.project_id && m.kind === 'mod'"
-              icon="i-lucide-replace"
+              icon="i-pixelarticons-repeat"
               color="neutral"
               variant="ghost"
               size="xs"
@@ -240,7 +240,7 @@
               @click="openVersions(m)"
             />
             <UButton
-              icon="i-lucide-trash-2"
+              icon="i-pixelarticons-trash"
               color="error"
               variant="ghost"
               size="xs"
@@ -308,7 +308,7 @@
             />
             <img v-if="d.icon_url" :src="d.icon_url" class="size-8 shrink-0 rounded-md object-cover" :alt="d.name" >
             <div v-else class="flex size-8 shrink-0 items-center justify-center rounded-md bg-white/5">
-              <UIcon name="i-lucide-blocks" class="size-4 text-neutral-500" />
+              <UIcon name="i-pixelarticons-blocks" class="size-4 text-neutral-500" />
             </div>
             <span class="min-w-0 flex-1 truncate text-sm">{{ d.name }}</span>
           </label>
@@ -319,7 +319,7 @@
           <UButton variant="ghost" color="neutral" :label="$t('mods.depsKeep')" @click="keepDeps" />
           <UButton
             color="error"
-            icon="i-lucide-trash-2"
+            icon="i-pixelarticons-trash"
             :label="allDepsChecked ? $t('mods.depsDeleteAll') : $t('mods.depsDeleteSelected')"
             @click="confirmDeps"
           />
@@ -360,16 +360,16 @@ const error = ref<string | null>(null)
 const kind = ref<Kind | 'all'>(props.initialKind ?? 'all')
 
 const KIND_META: Record<Kind, { label: string; icon: string }> = {
-  mod: { label: 'instance.tabs.mods', icon: 'i-lucide-blocks' },
-  resourcepack: { label: 'instance.tabs.resourcepacks', icon: 'i-lucide-image' },
-  shader: { label: 'instance.tabs.shaders', icon: 'i-lucide-sparkles' },
-  datapack: { label: 'instance.tabs.datapacks', icon: 'i-lucide-package' },
+  mod: { label: 'instance.tabs.mods', icon: 'i-pixelarticons-blocks' },
+  resourcepack: { label: 'instance.tabs.resourcepacks', icon: 'i-pixelarticons-image' },
+  shader: { label: 'instance.tabs.shaders', icon: 'i-pixelarticons-sparkles' },
+  datapack: { label: 'instance.tabs.datapacks', icon: 'i-pixelarticons-package' },
 }
 const kindIcon = (k: Kind) => KIND_META[k].icon
 const kindLabel = (k: Kind) => KIND_META[k].label
 
 const kindTabs = [
-  { key: 'all' as const, label: 'content.all', icon: 'i-lucide-layers' },
+  { key: 'all' as const, label: 'content.all', icon: 'i-pixelarticons-blocks' },
   ...KINDS.map(k => ({ key: k, label: KIND_META[k].label, icon: KIND_META[k].icon })),
 ]
 
@@ -536,7 +536,7 @@ function toggleSort(col: SortCol) {
   }
 }
 const sortIcon = (col: SortCol) =>
-  sortCol.value === col ? (sortDir.value === 'asc' ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down') : 'i-lucide-chevrons-up-down'
+  sortCol.value === col ? (sortDir.value === 'asc' ? 'i-pixelarticons-arrow-up' : 'i-pixelarticons-arrow-down') : 'i-pixelarticons-chevrons-vertical'
 
 const perPageItems = [10, 25, 50, 100].map(n => ({ label: t('mods.perPage', { n }), value: n }))
 
