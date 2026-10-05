@@ -930,5 +930,63 @@
       "java": "Descargando Java",
       "files": "Descargando archivos"
     }
+  },
+  "swiftx": {
+    "palette": {
+      "placeholder": "Buscar páginas, instancias, acciones…",
+      "empty": "No se encontró nada",
+      "nav": "Ir a",
+      "instances": "Jugar",
+      "actions": "Acciones",
+      "play": "Jugar a {name}",
+      "card": "Compartir mi tarjeta de jugador",
+      "hint": "Ctrl K"
+    },
+    "stats": {
+      "launched": "Iniciado en {s} s",
+      "record": "¡Nuevo récord!",
+      "best": "Inicio más rápido",
+      "level": "Nivel {n}",
+      "streak": "Racha de días",
+      "days": "{n} d",
+      "badges": "Insignias",
+      "share": "Compartir tarjeta",
+      "copy": "Copiar imagen",
+      "save": "Guardar imagen",
+      "copied": "Tarjeta copiada al portapapeles",
+      "saved": "Tarjeta guardada",
+      "cardTitle": "Tarjeta de jugador",
+      "none": "—"
+    },
+    "badge": {
+      "first": "Primer inicio",
+      "ten": "10 horas",
+      "fifty": "50 horas",
+      "hundred": "100 horas",
+      "streak3": "Racha de 3 días",
+      "streak7": "Racha de 7 días",
+      "builder": "3 instancias",
+      "speedy": "Inicio en menos de 10 s"
+    },
+    "zip": {
+      "hello": "¡Hola! Soy Zip.",
+      "playing": "¡Que te diviertas!",
+      "installing": "Espera, estoy trayendo los archivos…",
+      "sleep": "z z z",
+      "tip1": "Pulsa Ctrl+K para hacerlo todo rápido.",
+      "tip2": "Las teclas 1 a 8 cambian de página.",
+      "tip3": "Prueba Boost en una instancia para más FPS.",
+      "tip4": "Comparte tu tarjeta de jugador desde tu perfil.",
+      "tip5": "¡Haz clic en mí para otro consejo!",
+      "settingLabel": "Zip, el compañero",
+      "settingDesc": "Muestra a Zip en una esquina del launcher."
+    },
+    "boost": {
+      "button": "Boost",
+      "on": "Potenciado",
+      "applied": "Boost aplicado: {gb} GB y argumentos de Java optimizados",
+      "removed": "Boost quitado",
+      "hint": "Ajusta la memoria a tu PC y usa argumentos de Java más fluidos"
+    }
   }
 }

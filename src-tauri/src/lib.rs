@@ -178,6 +178,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             paths::get_launcher_paths,
             commands::images::get_image_thumbnail,
+            commands::images::save_png,
             commands::settings::get_settings,
             commands::settings::save_settings,
             commands::settings::set_last_instance,

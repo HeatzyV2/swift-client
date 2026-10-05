@@ -26,6 +26,29 @@ pub fn cache_icon(bytes: &[u8], ext: &str) -> Option<String> {
     Some(target.to_string_lossy().into_owned())
 }
 
+/// Writes a PNG the user chose to save (the player card). Only `.png` paths are accepted.
+#[tauri::command]
+pub async fn save_png(path: String, data_base64: String) -> AppResult<()> {
+    use base64::Engine;
+    crate::blocking(move || {
+        let target = PathBuf::from(&path);
+        let is_png = target
+            .extension()
+            .and_then(|e| e.to_str())
+            .is_some_and(|e| e.eq_ignore_ascii_case("png"));
+        if !is_png {
+            return Err(crate::error::AppError::invalid("only .png files can be written"));
+        }
+        let bytes = base64::engine::general_purpose::STANDARD
+            .decode(data_base64.as_bytes())
+            .map_err(|e| crate::error::AppError::invalid(format!("invalid image data: {e}")))?;
+        std::fs::write(&target, bytes)
+            .map_err(|e| crate::error::AppError::new("io", format!("could not save the image: {e}")))?;
+        Ok(())
+    })
+    .await
+}
+
 #[tauri::command]
 pub async fn get_image_thumbnail(path: String, size: u32) -> AppResult<String> {
     crate::blocking(move || {

@@ -18,6 +18,7 @@ export const useLaunchFlow = () => {
   const sysMem = useSystemMemory()
   const mc = useMinecraftLaunch()
   const dash = useLaunchDash()
+  const swiftStats = useSwiftStats()
   const toast = useToast()
   const { t, te } = useI18n()
 
@@ -51,6 +52,7 @@ export const useLaunchFlow = () => {
     // Best-effort: install/refresh Swift client mod before launch path runs again.
     invoke('ensure_client_mod', { instanceId }).catch(() => {})
     dash.trigger()
+    swiftStats.noteStart(instanceId)
     mc.launch(instanceId, quickPlay).catch(() => { /* surfaced through mc.error */ })
   }
 

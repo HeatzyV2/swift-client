@@ -41,6 +41,16 @@
         </div>
 
         <div class="flex items-center gap-2">
+          <UTooltip :text="$t('swiftx.boost.hint')">
+            <UButton
+              icon="i-pixelarticons-zap"
+              :color="boost.boosted.value ? 'primary' : 'neutral'"
+              :variant="boost.boosted.value ? 'solid' : 'soft'"
+              :label="boost.boosted.value ? $t('swiftx.boost.on') : $t('swiftx.boost.button')"
+              :disabled="isBusy"
+              @click="boost.toggle()"
+            />
+          </UTooltip>
           <UTooltip :text="$t('instance.openGameFolder')">
             <UButton icon="i-pixelarticons-folder" color="neutral" variant="soft" square :aria-label="$t('instance.openGameFolder')" @click="openGameFolder" />
           </UTooltip>
@@ -180,6 +190,7 @@ onMounted(async () => {
 })
 
 const instance = computed(() => instances.instances.find(i => i.id === id.value))
+const boost = useBoost(instance)
 const isSelected = computed(() => instances.selectedId === id.value)
 
 const modpackUpdate = ref<ModpackUpdate | null>(null)

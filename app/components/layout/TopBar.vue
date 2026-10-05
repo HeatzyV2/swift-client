@@ -14,6 +14,15 @@
 
     <div class="flex h-full items-center gap-2" :class="isMac ? 'pr-4' : ''" style="-webkit-app-region: no-drag">
       <template v-if="!compact">
+        <button
+          type="button"
+          class="sw-block-flat hidden h-9 items-center gap-2 px-3 text-xs text-muted transition-colors hover:text-highlighted sm:flex"
+          :aria-label="$t('swiftx.palette.placeholder')"
+          @click="palette.open.value = true"
+        >
+          <UIcon name="i-pixelarticons-search" class="size-4" />
+          <span class="font-display tracking-wide">{{ $t('swiftx.palette.hint') }}</span>
+        </button>
         <LayoutStatusChip />
         <LayoutAccountMenu />
         <div class="mx-1 h-6 w-px bg-[var(--sw-line)]" />
@@ -26,6 +35,7 @@
 <script setup lang="ts">
 defineProps<{ compact?: boolean }>()
 
+const palette = useCommandPalette()
 const { platform } = usePlatform()
 const isMac = computed(() => platform.value === 'macos')
 </script>

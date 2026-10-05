@@ -94,6 +94,14 @@
         </button>
       </div>
     </section>
+
+    <section class="sw-settings-card mb-4 flex items-center justify-between gap-4">
+      <div class="min-w-0">
+        <h3 class="sw-eyebrow">{{ t('swiftx.zip.settingLabel') }}</h3>
+        <p class="mt-1 text-[13px] text-muted">{{ t('swiftx.zip.settingDesc') }}</p>
+      </div>
+      <USwitch v-model="zipEnabled" />
+    </section>
   </div>
 </template>
 
@@ -103,6 +111,7 @@ import { THEME_META, THEME_MODES } from '~/stores/useThemeStore'
 /** Settings → Theme: the colour theme and the interface language. */
 const { t, locale, setLocale } = useI18n()
 const theme = useThemeStore()
+const { enabled: zipEnabled } = useZipPrefs()
 
 const themeOptions = computed(() =>
   THEME_MODES.map(value => ({

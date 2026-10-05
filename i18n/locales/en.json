@@ -930,5 +930,63 @@
       "java": "Downloading Java",
       "files": "Downloading files"
     }
+  },
+  "swiftx": {
+    "palette": {
+      "placeholder": "Search pages, instances, actions…",
+      "empty": "Nothing found",
+      "nav": "Go to",
+      "instances": "Play",
+      "actions": "Actions",
+      "play": "Play {name}",
+      "card": "Share my player card",
+      "hint": "Ctrl K"
+    },
+    "stats": {
+      "launched": "Launched in {s} s",
+      "record": "New record!",
+      "best": "Fastest launch",
+      "level": "Level {n}",
+      "streak": "Day streak",
+      "days": "{n} d",
+      "badges": "Badges",
+      "share": "Share card",
+      "copy": "Copy image",
+      "save": "Save image",
+      "copied": "Card copied to the clipboard",
+      "saved": "Card saved",
+      "cardTitle": "Player card",
+      "none": "—"
+    },
+    "badge": {
+      "first": "First launch",
+      "ten": "10 hours",
+      "fifty": "50 hours",
+      "hundred": "100 hours",
+      "streak3": "3-day streak",
+      "streak7": "7-day streak",
+      "builder": "3 instances",
+      "speedy": "Launch under 10 s"
+    },
+    "zip": {
+      "hello": "Hey! I'm Zip.",
+      "playing": "Have fun!",
+      "installing": "Hang on, I'm fetching the files…",
+      "sleep": "z z z",
+      "tip1": "Press Ctrl+K to do anything fast.",
+      "tip2": "Keys 1 to 8 jump between pages.",
+      "tip3": "Try Boost on an instance for smoother FPS.",
+      "tip4": "Share your player card from your profile.",
+      "tip5": "Click me for another tip!",
+      "settingLabel": "Zip, the companion",
+      "settingDesc": "Show Zip in a corner of the launcher."
+    },
+    "boost": {
+      "button": "Boost",
+      "on": "Boosted",
+      "applied": "Boost applied: {gb} GB and tuned Java flags",
+      "removed": "Boost removed",
+      "hint": "Sets memory for your PC and smoother Java flags"
+    }
   }
 }

@@ -930,5 +930,63 @@
       "java": "Pobieranie Javy",
       "files": "Pobieranie plików"
     }
+  },
+  "swiftx": {
+    "palette": {
+      "placeholder": "Szukaj stron, instancji, akcji…",
+      "empty": "Nic nie znaleziono",
+      "nav": "Przejdź do",
+      "instances": "Graj",
+      "actions": "Akcje",
+      "play": "Graj w {name}",
+      "card": "Udostępnij moją kartę gracza",
+      "hint": "Ctrl K"
+    },
+    "stats": {
+      "launched": "Uruchomiono w {s} s",
+      "record": "Nowy rekord!",
+      "best": "Najszybsze uruchomienie",
+      "level": "Poziom {n}",
+      "streak": "Seria dni",
+      "days": "{n} d",
+      "badges": "Odznaki",
+      "share": "Udostępnij kartę",
+      "copy": "Kopiuj obraz",
+      "save": "Zapisz obraz",
+      "copied": "Karta skopiowana do schowka",
+      "saved": "Karta zapisana",
+      "cardTitle": "Karta gracza",
+      "none": "—"
+    },
+    "badge": {
+      "first": "Pierwsze uruchomienie",
+      "ten": "10 godzin",
+      "fifty": "50 godzin",
+      "hundred": "100 godzin",
+      "streak3": "Seria 3 dni",
+      "streak7": "Seria 7 dni",
+      "builder": "3 instancje",
+      "speedy": "Start poniżej 10 s"
+    },
+    "zip": {
+      "hello": "Hej! Jestem Zip.",
+      "playing": "Miłej gry!",
+      "installing": "Chwila, pobieram pliki…",
+      "sleep": "z z z",
+      "tip1": "Ctrl+K pozwala zrobić wszystko szybko.",
+      "tip2": "Klawisze 1–8 przełączają strony.",
+      "tip3": "Wypróbuj Boost w instancji, by mieć więcej FPS.",
+      "tip4": "Udostępnij kartę gracza ze swojego profilu.",
+      "tip5": "Kliknij mnie po kolejną wskazówkę!",
+      "settingLabel": "Zip, towarzysz",
+      "settingDesc": "Pokazuje Zipa w rogu launchera."
+    },
+    "boost": {
+      "button": "Boost",
+      "on": "Wzmocniona",
+      "applied": "Boost zastosowany: {gb} GB i zoptymalizowane argumenty Javy",
+      "removed": "Boost usunięty",
+      "hint": "Ustawia pamięć pod Twój komputer i płynniejsze argumenty Javy"
+    }
   }
 }

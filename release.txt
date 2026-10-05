@@ -1,3 +1,24 @@
+## Changes (v1.3.0)
+
+### ⚡ Built to be fast
+- **Launch timer**: a notification tells you how long the game took to start, and celebrates a new record. A launch that had to download files does not count.
+- **Ctrl+K palette**: type to launch an instance, create one, share your card or jump to any page. The keys 1–8 still change page.
+- **Boost mode**: one click on an instance sizes its memory for your PC and adds smoother Java flags. Click again and your previous settings come back exactly as they were.
+
+### 🏆 Your profile
+- The Home avatar card now has a **level** with a segmented XP bar, your **day streak**, your **fastest launch** and eight **badges**.
+- **Share card**: turns all of it into an image you can copy or save. Everything stays on your computer.
+- The avatar floats smoothly instead of stepping.
+
+### 🐾 Zip, rebuilt
+- A new little speedster mascot with a bolt helmet, in empty states, on the Play button and in the mod.
+- **Zip the companion** blinks, falls asleep when you are away, gives tips and says something when the game starts. Switch him off in Settings, Theme.
+
+### 🧩 Swift Client mod 2.1.0
+- **HUD scenes**: pick a profile for singleplayer, for servers and for fights, and the client switches by itself.
+- **Session page** (key 9 in the menu): time in worlds and distance walked, this session, the last one, all time.
+- **Quick wheel** (key G): switch common modules on or off from a ring, without opening the menu.
+
 ## Changes (v1.2.0)
 
 ### 🎨 A new identity: Swift

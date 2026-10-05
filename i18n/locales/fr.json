@@ -930,5 +930,63 @@
       "java": "Téléchargement de Java",
       "files": "Téléchargement des fichiers"
     }
+  },
+  "swiftx": {
+    "palette": {
+      "placeholder": "Chercher une page, une instance, une action…",
+      "empty": "Rien trouvé",
+      "nav": "Aller à",
+      "instances": "Jouer",
+      "actions": "Actions",
+      "play": "Jouer à {name}",
+      "card": "Partager ma carte joueur",
+      "hint": "Ctrl K"
+    },
+    "stats": {
+      "launched": "Lancé en {s} s",
+      "record": "Nouveau record !",
+      "best": "Lancement le plus rapide",
+      "level": "Niveau {n}",
+      "streak": "Série de jours",
+      "days": "{n} j",
+      "badges": "Badges",
+      "share": "Partager la carte",
+      "copy": "Copier l'image",
+      "save": "Enregistrer l'image",
+      "copied": "Carte copiée dans le presse-papiers",
+      "saved": "Carte enregistrée",
+      "cardTitle": "Carte joueur",
+      "none": "—"
+    },
+    "badge": {
+      "first": "Premier lancement",
+      "ten": "10 heures",
+      "fifty": "50 heures",
+      "hundred": "100 heures",
+      "streak3": "Série de 3 jours",
+      "streak7": "Série de 7 jours",
+      "builder": "3 instances",
+      "speedy": "Lancement sous 10 s"
+    },
+    "zip": {
+      "hello": "Salut ! Moi c'est Zip.",
+      "playing": "Bon jeu !",
+      "installing": "Patiente, je récupère les fichiers…",
+      "sleep": "z z z",
+      "tip1": "Ctrl+K pour tout faire en vitesse.",
+      "tip2": "Les touches 1 à 8 changent de page.",
+      "tip3": "Essaie Boost sur une instance pour plus de FPS.",
+      "tip4": "Partage ta carte joueur depuis ton profil.",
+      "tip5": "Clique sur moi pour une autre astuce !",
+      "settingLabel": "Zip, le compagnon",
+      "settingDesc": "Affiche Zip dans un coin du launcher."
+    },
+    "boost": {
+      "button": "Boost",
+      "on": "Boosté",
+      "applied": "Boost appliqué : {gb} Go et arguments Java optimisés",
+      "removed": "Boost retiré",
+      "hint": "Règle la mémoire selon ton PC et des arguments Java plus fluides"
+    }
   }
 }

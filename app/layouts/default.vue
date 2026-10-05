@@ -12,6 +12,9 @@
     <LinkModsModal />
     <BlockedModsModal />
     <OnboardingModal />
+    <CommandPalette />
+    <PlayerCardModal />
+    <ZipCompanion />
     <RemoveInstanceModal />
 
     <Transition name="sw-fade">
@@ -38,9 +41,20 @@ const route = useRoute()
 const toast = useToast()
 const { t } = useI18n()
 
+const { open: paletteOpen } = useCommandPalette()
+
+function onPaletteKey(e: KeyboardEvent) {
+  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 'k') {
+    e.preventDefault()
+    paletteOpen.value = !paletteOpen.value
+  }
+}
+
 onMounted(() => {
   instances.ensureLoaded()
+  window.addEventListener('keydown', onPaletteKey)
 })
+onBeforeUnmount(() => window.removeEventListener('keydown', onPaletteKey))
 
 const dragging = ref(false)
 const currentInstanceId = computed(() => (route.path.startsWith('/instance/') ? String(route.params.id) : null))

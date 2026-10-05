@@ -930,5 +930,63 @@
       "java": "正在下载 Java",
       "files": "正在下载文件"
     }
+  },
+  "swiftx": {
+    "palette": {
+      "placeholder": "搜索页面、实例、操作…",
+      "empty": "没有找到结果",
+      "nav": "前往",
+      "instances": "开始游戏",
+      "actions": "操作",
+      "play": "开始 {name}",
+      "card": "分享我的玩家卡",
+      "hint": "Ctrl K"
+    },
+    "stats": {
+      "launched": "用时 {s} 秒启动",
+      "record": "新纪录！",
+      "best": "最快启动",
+      "level": "等级 {n}",
+      "streak": "连续天数",
+      "days": "{n} 天",
+      "badges": "徽章",
+      "share": "分享卡片",
+      "copy": "复制图片",
+      "save": "保存图片",
+      "copied": "卡片已复制到剪贴板",
+      "saved": "卡片已保存",
+      "cardTitle": "玩家卡",
+      "none": "—"
+    },
+    "badge": {
+      "first": "首次启动",
+      "ten": "10 小时",
+      "fifty": "50 小时",
+      "hundred": "100 小时",
+      "streak3": "连续 3 天",
+      "streak7": "连续 7 天",
+      "builder": "3 个实例",
+      "speedy": "10 秒内启动"
+    },
+    "zip": {
+      "hello": "嗨！我是 Zip。",
+      "playing": "玩得开心！",
+      "installing": "稍等，我在下载文件…",
+      "sleep": "z z z",
+      "tip1": "按 Ctrl+K 快速完成任何操作。",
+      "tip2": "按键 1 到 8 可切换页面。",
+      "tip3": "在实例上试试 Boost，帧数更高。",
+      "tip4": "可在个人资料中分享你的玩家卡。",
+      "tip5": "点我获取另一条提示！",
+      "settingLabel": "Zip 伙伴",
+      "settingDesc": "在启动器的角落显示 Zip。"
+    },
+    "boost": {
+      "button": "Boost",
+      "on": "已加速",
+      "applied": "已应用 Boost：{gb} GB 内存和优化的 Java 参数",
+      "removed": "已取消 Boost",
+      "hint": "按你的电脑设置内存和更流畅的 Java 参数"
+    }
   }
 }

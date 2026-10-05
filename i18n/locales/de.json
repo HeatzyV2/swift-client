@@ -930,5 +930,63 @@
       "java": "Java wird heruntergeladen",
       "files": "Dateien werden heruntergeladen"
     }
+  },
+  "swiftx": {
+    "palette": {
+      "placeholder": "Seiten, Instanzen, Aktionen suchen…",
+      "empty": "Nichts gefunden",
+      "nav": "Gehe zu",
+      "instances": "Spielen",
+      "actions": "Aktionen",
+      "play": "{name} spielen",
+      "card": "Meine Spielerkarte teilen",
+      "hint": "Strg K"
+    },
+    "stats": {
+      "launched": "In {s} s gestartet",
+      "record": "Neuer Rekord!",
+      "best": "Schnellster Start",
+      "level": "Level {n}",
+      "streak": "Tage in Folge",
+      "days": "{n} T",
+      "badges": "Abzeichen",
+      "share": "Karte teilen",
+      "copy": "Bild kopieren",
+      "save": "Bild speichern",
+      "copied": "Karte in die Zwischenablage kopiert",
+      "saved": "Karte gespeichert",
+      "cardTitle": "Spielerkarte",
+      "none": "—"
+    },
+    "badge": {
+      "first": "Erster Start",
+      "ten": "10 Stunden",
+      "fifty": "50 Stunden",
+      "hundred": "100 Stunden",
+      "streak3": "3 Tage in Folge",
+      "streak7": "7 Tage in Folge",
+      "builder": "3 Instanzen",
+      "speedy": "Start unter 10 s"
+    },
+    "zip": {
+      "hello": "Hey! Ich bin Zip.",
+      "playing": "Viel Spaß!",
+      "installing": "Moment, ich hole die Dateien…",
+      "sleep": "z z z",
+      "tip1": "Mit Strg+K geht alles schneller.",
+      "tip2": "Die Tasten 1 bis 8 wechseln die Seite.",
+      "tip3": "Probier Boost bei einer Instanz für mehr FPS.",
+      "tip4": "Teile deine Spielerkarte über dein Profil.",
+      "tip5": "Klick mich für einen weiteren Tipp!",
+      "settingLabel": "Zip, der Begleiter",
+      "settingDesc": "Zeigt Zip in einer Ecke des Launchers."
+    },
+    "boost": {
+      "button": "Boost",
+      "on": "Geboostet",
+      "applied": "Boost angewendet: {gb} GB und optimierte Java-Argumente",
+      "removed": "Boost entfernt",
+      "hint": "Stellt den Speicher passend zu deinem PC und flüssigere Java-Argumente ein"
+    }
   }
 }

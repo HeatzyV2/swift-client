@@ -41,6 +41,25 @@ const contentWindow = useContentWindow()
 
 useHead({ title: BRAND.name })
 
+// Launch chrono: how long from Play to the game being up (a download in between does not count)
+const swiftStats = useSwiftStats()
+watch(() => activity.list.value.map(a => `${a.instanceId}:${a.kind}`).join('|'), () => {
+  for (const a of activity.list.value) {
+    if (a.kind === 'install') swiftStats.noteInstall(a.instanceId)
+    if (a.kind === 'running') {
+      const r = swiftStats.noteRunning(a.instanceId)
+      if (r) {
+        toast.add({
+          title: t('swiftx.stats.launched', { s: (r.ms / 1000).toFixed(1) }),
+          description: r.record ? t('swiftx.stats.record') : undefined,
+          icon: 'i-pixelarticons-zap',
+          color: r.record ? 'success' : 'neutral',
+        })
+      }
+    }
+  }
+})
+
 const unlisteners: UnlistenFn[] = []
 
 function discordScreenFromPath(path: string): string {

@@ -2,17 +2,17 @@
   <svg
     class="sw-mascot"
     :class="{ 'is-running': pose === 'run' }"
-    :viewBox="`${pose === 'run' ? -9 : 0} 0 ${MASCOT_W + (pose === 'run' ? 9 : 0)} ${MASCOT_H}`"
+    :viewBox="`${pose === 'run' ? -11 : 0} 0 ${MASCOT_W + (pose === 'run' ? 11 : 0)} ${MASCOT_H}`"
     shape-rendering="crispEdges"
     role="img"
     aria-label="Zip"
   >
     <!-- Speed lines trail behind a running Zip -->
     <g v-if="pose === 'run'" class="sw-mascot-lines">
-      <rect x="-9" y="7" width="6" height="1" fill="var(--sw-accent)" />
-      <rect x="-7" y="10" width="7" height="1" fill="color-mix(in srgb, var(--sw-accent) 45%, #ffffff)" />
-      <rect x="-9" y="13" width="5" height="1" fill="var(--sw-accent)" />
-      <rect x="-5" y="15" width="4" height="1" fill="color-mix(in srgb, var(--sw-accent) 45%, #ffffff)" />
+      <rect x="-11" y="8" width="8" height="1" fill="var(--sw-accent)" />
+      <rect x="-8" y="12" width="9" height="1" fill="color-mix(in srgb, var(--sw-accent) 45%, #ffffff)" />
+      <rect x="-11" y="16" width="7" height="1" fill="var(--sw-accent)" />
+      <rect x="-6" y="20" width="5" height="1" fill="color-mix(in srgb, var(--sw-accent) 45%, #ffffff)" />
     </g>
 
     <g v-if="pose === 'run'" class="sw-mascot-body">
@@ -20,7 +20,7 @@
       <g class="sw-frame-b"><rect v-for="(r, i) in runB" :key="i" :x="r.x" :y="r.y" :width="r.w" height="1" :fill="r.c" /></g>
     </g>
     <g v-else class="sw-mascot-body sw-mascot-idle">
-      <rect v-for="(r, i) in idle" :key="i" :x="r.x" :y="r.y" :width="r.w" height="1" :fill="r.c" />
+      <rect v-for="(r, i) in (pose === 'sleep' || pose === 'blink' ? sleep : idle)" :key="i" :x="r.x" :y="r.y" :width="r.w" height="1" :fill="r.c" />
     </g>
   </svg>
 </template>
@@ -28,11 +28,12 @@
 <script setup lang="ts">
 import { MASCOT_FRAMES, MASCOT_H, MASCOT_W, frameRuns } from '~/utils/mascot'
 
-withDefaults(defineProps<{ pose?: 'run' | 'idle' }>(), { pose: 'idle' })
+withDefaults(defineProps<{ pose?: 'run' | 'idle' | 'sleep' | 'blink' }>(), { pose: 'idle' })
 
 const runA = frameRuns(MASCOT_FRAMES.runA)
 const runB = frameRuns(MASCOT_FRAMES.runB)
 const idle = frameRuns(MASCOT_FRAMES.idle)
+const sleep = frameRuns(MASCOT_FRAMES.sleep)
 </script>
 
 <style scoped>
