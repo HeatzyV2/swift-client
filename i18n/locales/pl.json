@@ -438,7 +438,9 @@
       "track_playtimeDesc": "Mierz i zapisuj łączny czas gry dla każdej instancji.",
       "discord_rpc": "Discord Rich Presence",
       "discord_rpcDesc": "Pokazuj w Discordzie, w co aktualnie grasz.",
-      "noTelemetry": "Swift Client nie wysyła telemetrii, analityki ani raportów awarii."
+      "noTelemetry": "Swift Client wysyła anonimowe statystyki użycia i raporty o błędach tylko wtedy, gdy je włączysz (domyślnie wyłączone). Nie zapisujemy konta, adresu IP ani ścieżek plików, a wyłączyć możesz w każdej chwili.",
+      "analytics": "Udostępniaj anonimowe dane o użyciu",
+      "analyticsDesc": "Pomaga ulepszać Swift Client: liczba uruchomień, wersje i kategorie błędów. Nie zapisujemy konta, adresu IP ani ścieżek plików."
     },
     "java": {
       "title": "Java",
@@ -987,6 +989,29 @@
       "applied": "Boost zastosowany: {gb} GB i zoptymalizowane argumenty Javy",
       "removed": "Boost usunięty",
       "hint": "Ustawia pamięć pod Twój komputer i płynniejsze argumenty Javy"
+    }
+  },
+  "platform": {
+    "maintenance": {
+      "title": "Trwa konserwacja",
+      "until": "do {date}",
+      "default": "Usługi online Swift Client są chwilowo niedostępne.",
+      "hint": "Nadal możesz uruchamiać gry; funkcje online mogą nie działać.",
+      "continue": "Rozumiem"
+    },
+    "announcement": {
+      "open": "Dowiedz się więcej",
+      "dismiss": "Zamknij"
+    },
+    "verified": "Zweryfikowany przez Swift",
+    "copy": "Kopiuj adres",
+    "play": "Graj",
+    "partner": "Partner",
+    "ask": {
+      "title": "Pomóc ulepszać Swift Client?",
+      "desc": "Wysyłaj anonimowe statystyki użycia i raporty o błędach. Domyślnie wyłączone; zmienisz to w Ustawienia → Prywatność.",
+      "yes": "Tak, udostępniaj",
+      "no": "Nie, dziękuję"
     }
   }
 }

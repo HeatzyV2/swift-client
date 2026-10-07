@@ -438,7 +438,9 @@
       "track_playtimeDesc": "测量并保存每个实例的总游玩时长。",
       "discord_rpc": "Discord Rich Presence",
       "discord_rpcDesc": "在 Discord 上显示你正在玩什么。",
-      "noTelemetry": "Swift Client 不发送遥测、分析或崩溃数据。"
+      "noTelemetry": "只有在你开启后，Swift Client 才会发送匿名使用统计和错误报告（默认关闭）。不会保存账号、IP 地址或文件路径，你可以随时关闭。",
+      "analytics": "分享匿名使用数据",
+      "analyticsDesc": "帮助改进 Swift Client：启动次数、版本和错误类别。不会保存账号、IP 地址或文件路径。"
     },
     "java": {
       "title": "Java",
@@ -987,6 +989,29 @@
       "applied": "已应用 Boost：{gb} GB 内存和优化的 Java 参数",
       "removed": "已取消 Boost",
       "hint": "按你的电脑设置内存和更流畅的 Java 参数"
+    }
+  },
+  "platform": {
+    "maintenance": {
+      "title": "正在维护",
+      "until": "至 {date}",
+      "default": "Swift Client 在线服务暂时不可用。",
+      "hint": "你仍然可以启动游戏；在线功能可能无法使用。",
+      "continue": "知道了"
+    },
+    "announcement": {
+      "open": "了解更多",
+      "dismiss": "关闭"
+    },
+    "verified": "Swift 已验证",
+    "copy": "复制地址",
+    "play": "开始游戏",
+    "partner": "合作伙伴",
+    "ask": {
+      "title": "帮助改进 Swift Client？",
+      "desc": "发送匿名使用统计和错误报告。默认关闭；可随时在 设置 → 隐私 中更改。",
+      "yes": "好的，分享",
+      "no": "不用了"
     }
   }
 }

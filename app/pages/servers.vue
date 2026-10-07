@@ -63,9 +63,22 @@ interface ServerCard {
   ping: PingResult | null
 }
 
-const servers = reactive<ServerCard[]>(
-  PARTNER_SERVERS.map(s => ({ id: s.id, name: s.name, address: s.address, status: 'checking' as const, ping: null })),
-)
+const platform = useSwiftPlatform()
+
+/** What the admin published; the list that ships with the launcher is only the fallback. */
+const source = computed(() => {
+  const live = platform.servers.value.filter(s => s.edition !== 'bedrock')
+  if (live.length) {
+    return live.map(s => ({ id: s.id, name: s.name, address: s.port && s.port !== 25565 ? `${s.address}:${s.port}` : s.address }))
+  }
+  return PARTNER_SERVERS.map(s => ({ id: s.id, name: s.name, address: s.address }))
+})
+
+const servers = ref<ServerCard[]>([])
+watch(source, (list) => {
+  servers.value = list.map(s => ({ ...s, status: 'checking' as const, ping: null }))
+  servers.value.forEach(check)
+}, { immediate: true })
 
 const INTERVAL_MS = 20_000
 
@@ -84,8 +97,8 @@ async function check(entry: ServerCard) {
 
 let timer: ReturnType<typeof setInterval> | null = null
 onMounted(() => {
-  servers.forEach(check)
-  timer = setInterval(() => servers.forEach(check), INTERVAL_MS)
+  servers.value.forEach(check)
+  timer = setInterval(() => servers.value.forEach(check), INTERVAL_MS)
 })
 onBeforeUnmount(() => { if (timer) clearInterval(timer) })
 

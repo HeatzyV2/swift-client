@@ -85,7 +85,8 @@ export async function requireAuth(c: Context<{ Variables: AuthVariables }>, next
   if (!token) return c.json({ message: 'sign in required' }, 401)
   const user = await verifyToken(token)
   // A merged or deleted account keeps valid-looking tokens: the client must sign in again.
-  if (!user || !findUserById(user.id)) return c.json({ message: 'invalid or expired session' }, 401)
+  const account = user && findUserById(user.id)
+  if (!user || !account || account.disabled_at) return c.json({ message: 'invalid or expired session' }, 401)
   c.set('user', user)
   await next()
 }

@@ -438,7 +438,9 @@
       "track_playtimeDesc": "Measure and store total playtime for each instance.",
       "discord_rpc": "Discord Rich Presence",
       "discord_rpcDesc": "Show what you are playing on Discord.",
-      "noTelemetry": "Swift Client sends no telemetry, analytics or crash data. Nothing leaves your computer except what is needed to download and play Minecraft."
+      "noTelemetry": "Swift Client only sends anonymous usage statistics and error reports if you turn them on (off by default). No account, IP address or file path is stored, and you can switch it off at any time.",
+      "analytics": "Share anonymous usage data",
+      "analyticsDesc": "Helps improve Swift Client: launch counts, versions and error categories. No account, IP address or file path is stored."
     },
     "java": {
       "title": "Java",
@@ -987,6 +989,29 @@
       "applied": "Boost applied: {gb} GB and tuned Java flags",
       "removed": "Boost removed",
       "hint": "Sets memory for your PC and smoother Java flags"
+    }
+  },
+  "platform": {
+    "maintenance": {
+      "title": "Maintenance in progress",
+      "until": "until {date}",
+      "default": "Swift Client online services are temporarily unavailable.",
+      "hint": "You can still launch your games; online features may not work.",
+      "continue": "Understood"
+    },
+    "announcement": {
+      "open": "Learn more",
+      "dismiss": "Dismiss"
+    },
+    "verified": "Verified by Swift",
+    "copy": "Copy address",
+    "play": "Play",
+    "partner": "Partner",
+    "ask": {
+      "title": "Help improve Swift Client?",
+      "desc": "Send anonymous usage statistics and error reports. Off by default; change it any time in Settings → Privacy.",
+      "yes": "Yes, share",
+      "no": "No thanks"
     }
   }
 }

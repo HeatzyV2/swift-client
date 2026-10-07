@@ -109,6 +109,8 @@ export const useActivityCenter = () => {
           await listen<CrashInfo>('mc://crashed', (e) => {
             const iid = e.payload.instance_id
             crashes.value = { ...crashes.value, [iid]: e.payload }
+            // Counted, not read: no log or crash report content leaves the machine
+            void reportIssue('game_crash', e.payload.code === null ? undefined : String(e.payload.code), `Minecraft exited with code ${e.payload.code ?? 'unknown'}`)
             crashInstance.value = iid
             crashOpen.value = true
           }),

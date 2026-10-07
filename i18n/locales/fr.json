@@ -438,7 +438,9 @@
       "track_playtimeDesc": "Mesurer et enregistrer le temps de jeu total de chaque instance.",
       "discord_rpc": "Discord Rich Presence",
       "discord_rpcDesc": "Afficher ce à quoi tu joues sur Discord.",
-      "noTelemetry": "Swift Client n'envoie aucune télémétrie, statistique ni rapport de crash. Rien ne quitte votre ordinateur, hormis ce qui est nécessaire pour télécharger et jouer à Minecraft."
+      "noTelemetry": "Swift Client n’envoie des statistiques d’usage anonymes et des rapports d’erreur que si tu les actives (désactivé par défaut). Aucun compte, adresse IP ni chemin de fichier n’est enregistré, et tu peux le couper à tout moment.",
+      "analytics": "Partager des données d’usage anonymes",
+      "analyticsDesc": "Aide à améliorer Swift Client : nombre de lancements, versions et catégories d’erreurs. Aucun compte, adresse IP ni chemin de fichier n’est enregistré."
     },
     "java": {
       "title": "Java",
@@ -987,6 +989,29 @@
       "applied": "Boost appliqué : {gb} Go et arguments Java optimisés",
       "removed": "Boost retiré",
       "hint": "Règle la mémoire selon ton PC et des arguments Java plus fluides"
+    }
+  },
+  "platform": {
+    "maintenance": {
+      "title": "Maintenance en cours",
+      "until": "jusqu’au {date}",
+      "default": "Les services en ligne de Swift Client sont temporairement indisponibles.",
+      "hint": "Tu peux toujours lancer tes jeux ; les fonctions en ligne peuvent ne pas marcher.",
+      "continue": "Compris"
+    },
+    "announcement": {
+      "open": "En savoir plus",
+      "dismiss": "Fermer"
+    },
+    "verified": "Vérifié par Swift",
+    "copy": "Copier l’adresse",
+    "play": "Jouer",
+    "partner": "Partenaire",
+    "ask": {
+      "title": "Aider à améliorer Swift Client ?",
+      "desc": "Envoyer des statistiques d’usage anonymes et des rapports d’erreur. Désactivé par défaut ; modifiable à tout moment dans Paramètres → Confidentialité.",
+      "yes": "Oui, partager",
+      "no": "Non merci"
     }
   }
 }

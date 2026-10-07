@@ -4,10 +4,14 @@
 
     <NuxtLoadingIndicator color="var(--sw-accent)" :height="2" />
 
-    <div class="relative h-screen w-screen overflow-hidden pt-[60px]">
-      <NuxtLayout>
-        <NuxtPage />
-      </NuxtLayout>
+    <div class="relative flex h-screen w-screen flex-col overflow-hidden pt-[60px]">
+      <!-- Announcements and maintenance notice set from the admin platform -->
+      <PlatformAnnouncementBar v-if="!isContentWindow" />
+      <div class="relative min-h-0 flex-1">
+        <NuxtLayout>
+          <NuxtPage />
+        </NuxtLayout>
+      </div>
     </div>
 
     <template v-if="!isContentWindow">
@@ -49,6 +53,7 @@ watch(() => activity.list.value.map(a => `${a.instanceId}:${a.kind}`).join('|'),
     if (a.kind === 'running') {
       const r = swiftStats.noteRunning(a.instanceId)
       if (r) {
+        track('launch_success', { durationMs: Math.min(r.ms, 3_600_000) })
         toast.add({
           title: t('swiftx.stats.launched', { s: (r.ms / 1000).toFixed(1) }),
           description: r.record ? t('swiftx.stats.record') : undefined,

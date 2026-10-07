@@ -4,6 +4,7 @@ mod discord;
 mod error;
 mod models;
 mod paths;
+mod platform;
 mod store;
 
 pub use error::{AppError, AppResult};
@@ -324,6 +325,11 @@ pub fn run() {
             backend::swift_login,
             backend::swift_logout,
             backend::swift_link_minecraft,
+            platform::platform_bootstrap,
+            platform::platform_telemetry_status,
+            platform::platform_set_telemetry,
+            platform::platform_track,
+            platform::platform_report,
 
             commands::mods::list_mods,
             commands::mods::list_content,

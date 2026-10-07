@@ -89,6 +89,7 @@ function isDiscord(item: NewsItem) {
 }
 
 function select(item: NewsItem) {
+  track('news_open', { newsId: item.id })
   if (item.direct && item.url) openExternal(item.url).catch(() => {})
   else open.value = item
 }

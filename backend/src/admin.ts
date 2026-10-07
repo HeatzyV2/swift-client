@@ -7,6 +7,8 @@
 //   give <player> <cosmeticId>          coins <player> <+N|-N>
 //   grade <player> <grade|none>         plus <player> <days|0>
 //   user <player>
+//   role grant <player> <ROLE>    role revoke <player> <ROLE>    role list [player]
+//   account disable|enable <player>   (disabled accounts cannot sign in; sessions are revoked)
 //
 // <player> is a Swift username or a Minecraft name/UUID.
 import { copyFileSync, existsSync } from 'node:fs'
@@ -15,6 +17,10 @@ import { findUserByUsername } from './auth.js'
 import { db, type UserRow } from './db.js'
 import { env } from './env.js'
 import { findUserByMinecraft, findUserByMinecraftName } from './minecraft.js'
+import { revokeAllSessions, userRoles } from './platform/core/auth.js'
+import { isRole, ROLES } from './platform/core/rbac.js'
+import { initPlatform } from './platform/index.js'
+import { countOwners, setRoles } from './platform/modules/iam/service.js'
 
 function die(message: string): never {
   console.error(message)
@@ -161,6 +167,37 @@ switch (cmd) {
   case 'user':
     show(player(args[0]))
     break
+  case 'role': {
+    // Bootstrap path for the admin platform: the first OWNER is granted here, on the server console.
+    initPlatform()
+    const [sub, ref, roleName] = args
+    if (sub === 'list') {
+      const rows = ref ? [player(ref)] : (db.prepare('SELECT DISTINCT u.* FROM users u JOIN user_roles r ON r.user_id = u.id').all() as UserRow[])
+      for (const u of rows) console.log(`${u.username}: ${userRoles(u.id).join(', ') || '-'}`)
+    } else if (sub === 'grant' || sub === 'revoke') {
+      const row = player(ref)
+      const role = (roleName ?? '').toUpperCase()
+      if (!isRole(role)) die(`role: ${ROLES.join(' | ')}`)
+      const current = userRoles(row.id)
+      if (sub === 'revoke' && role === 'OWNER' && current.includes('OWNER') && countOwners() <= 1) die('the last OWNER cannot be removed')
+      const next = sub === 'grant' ? [...new Set([...current, role])] : current.filter(r => r !== role)
+      setRoles(row.id, next, null)
+      console.log(`${row.username}: ${next.join(', ') || '-'}`)
+    } else {
+      die('role grant|revoke <player> <ROLE> | role list [player]')
+    }
+    break
+  }
+  case 'account': {
+    initPlatform()
+    const [sub, ref] = args
+    if (sub !== 'disable' && sub !== 'enable') die('account disable|enable <player>')
+    const row = player(ref)
+    db.prepare('UPDATE users SET disabled_at = ? WHERE id = ?').run(sub === 'disable' ? new Date().toISOString() : null, row.id)
+    if (sub === 'disable') revokeAllSessions(row.id)
+    console.log(`${row.username}: ${sub}d`)
+    break
+  }
   default:
-    console.log('commands: cosmetic add|rm|list, give, coins, grade, plus, user (see the top of src/admin.ts)')
+    console.log('commands: cosmetic add|rm|list, give, coins, grade, plus, user, role, account (see the top of src/admin.ts)')
 }

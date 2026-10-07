@@ -56,6 +56,9 @@ export const useMinecraftLaunch = (instanceId?: MaybeRefOrGetter<string | undefi
     } catch (e) {
       errors.value = { ...errors.value, [launchId]: errorText(e) }
       ac.clear(launchId)
+      const category = failureCategory(e)
+      track('launch_fail', { reason: category })
+      void reportIssue(category, errorCode(e), errorDetail(e), { mcVersion: inst?.mc_version ?? '', loader: inst?.loader.type ?? '' })
       throw e
     } finally {
       launchingIds.value = { ...launchingIds.value, [launchId]: false }

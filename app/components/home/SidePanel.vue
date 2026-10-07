@@ -102,6 +102,12 @@ const { t, locale } = useI18n()
 const tr = useLocalized()
 
 const { changelog } = useHomeContent()
+const platform = useSwiftPlatform()
+/** Featured server chosen in the admin; the one bundled with the launcher is the fallback. */
+const featured = computed(() => {
+  const s = platform.servers.value.find(x => x.featured && x.edition !== 'bedrock')
+  return s ? { name: s.name, address: s.port && s.port !== 25565 ? `${s.address}:${s.port}` : s.address } : FEATURED_SERVER
+})
 const release = computed(() => changelog.value[0])
 const gradientId = `sw-spark-${useId()}`
 
@@ -130,7 +136,7 @@ const server = computed<Target | null>(() => {
   if (instanceServer.value) {
     return { name: instanceServer.value.name, address: instanceServer.value.ip, fromInstance: props.instance?.name }
   }
-  return FEATURED_SERVER.address ? { ...FEATURED_SERVER } : null
+  return featured.value.address ? { name: featured.value.name, address: featured.value.address } : null
 })
 
 const ping = ref<PingResult | null>(null)

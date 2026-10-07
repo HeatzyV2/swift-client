@@ -8,6 +8,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { basename, extname, resolve } from 'node:path'
 import { Hono } from 'hono'
 import { env } from '../env.js'
+import { legacyNews } from '../platform/modules/cms/news.js'
 
 type Localized = { en: string } & Record<string, string>
 
@@ -69,7 +70,7 @@ function readNews() {
 export const contentRoutes = new Hono()
 
 contentRoutes.get('/', (c) => {
-  const content = readNews()
+  const content = legacyNews() ?? readNews()
   return content ? c.json(content) : c.json({ message: 'no news published' }, 404)
 })
 

@@ -1,5 +1,6 @@
 // Routes used by the Swift Client mod (in game). Authenticated with the token from
 // POST /api/auth/minecraft; the mod identifies players by Minecraft UUID.
+import { legacyIngameSlots } from '../platform/modules/servers/servers.js'
 import { existsSync, readFileSync } from 'node:fs'
 import { Hono } from 'hono'
 import { requireAuth, findUserById, type AuthVariables } from '../auth.js'
@@ -62,6 +63,8 @@ function owns(userId: string, cosmeticId: string): boolean {
 }
 
 function readPartners(): { name: string, ip: string, port: number }[] {
+  const managed = legacyIngameSlots()
+  if (managed) return managed
   try {
     if (existsSync(env.partnersFile)) {
       const raw = JSON.parse(readFileSync(env.partnersFile, 'utf8')) as { servers?: unknown }

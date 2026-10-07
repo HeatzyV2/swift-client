@@ -53,21 +53,25 @@ export const useLaunchFlow = () => {
     invoke('ensure_client_mod', { instanceId }).catch(() => {})
     dash.trigger()
     swiftStats.noteStart(instanceId)
+    const inst = instances.instances.find(i => i.id === instanceId)
+    track('launch_game', { mcVersion: inst?.mc_version, loader: inst?.loader.type })
     mc.launch(instanceId, quickPlay).catch(() => { /* surfaced through mc.error */ })
   }
 
-  async function play(instanceId: string, quickPlay?: QuickPlay) {
+  /** Resolves to true when the game was actually started (false: no account, or waiting for confirmation). */
+  async function play(instanceId: string, quickPlay?: QuickPlay): Promise<boolean> {
     await accounts.ensureLoaded()
     if (!accounts.activeAccount) {
       toast.add({ title: t('prelaunch.noAccount'), color: 'error', icon: 'i-pixelarticons-user-x' })
-      return
+      return false
     }
     const warnings = await collectWarnings(instanceId)
     if (warnings.length) {
       pending.value = { instanceId, quickPlay, warnings }
-      return
+      return false
     }
     start(instanceId, quickPlay)
+    return true
   }
 
   function confirm() {

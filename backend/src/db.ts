@@ -146,4 +146,5 @@ export type UserRow = {
   cape_animated?: number
   mojang_cape_url?: string | null
   mc_verified?: number
+  disabled_at?: string | null
 }

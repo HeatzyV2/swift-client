@@ -1,6 +1,6 @@
 {
   "name": "swift-client-backend",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -14,7 +14,9 @@
     "start:ts-node": "ts-node --esm index.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "admin": "node dist/admin.js"
+    "admin": "node dist/admin.js",
+    "test": "node --import tsx --test test/*.test.ts",
+    "docs:api": "node --import tsx scripts/gen-api-docs.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",
@@ -27,7 +29,8 @@
     "jose": "^6.0.11",
     "nanoid": "^5.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "tsx": "^4.20.3"

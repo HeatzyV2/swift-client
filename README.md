@@ -26,7 +26,7 @@
 
 ### Privacy
 
-Swift Client sends **no telemetry, analytics or crash data**. It only contacts the services needed to play: Microsoft/Xbox (sign-in), Mojang (game files), Modrinth (content), your mod loader's servers, and — only when you ask — mclo.gs for log sharing.
+Swift Client sends **no telemetry by default**. If you opt in (Settings → Privacy, asked once), it sends anonymous usage statistics (launch counts, versions, error categories) and error reports to the Swift Platform: a random device id that stays hashed server side, no account, IP address or file path stored; you can turn it off at any time. Otherwise it only contacts the services needed to play: Microsoft/Xbox (sign-in), Mojang (game files), Modrinth (content), your mod loader's servers, and — only when you ask — mclo.gs for log sharing.
 
 ### Not available yet / online service
 

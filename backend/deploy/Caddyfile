@@ -21,3 +21,38 @@ api.swiftclient.fr {
 		-Server
 	}
 }
+
+# Admin panel: the same backend serves it (it recognises the host). Consider adding basicauth or an
+# access proxy in front: the panel is the control room of the whole platform.
+admin.swiftclient.fr {
+	encode gzip
+
+	reverse_proxy 127.0.0.1:10049 {
+		header_up X-Forwarded-Proto https
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+}
+
+# Optional public file host for uploaded images (set CDN_BASE_URL=https://cdn.swiftclient.fr).
+# Only the asset files are exposed here.
+cdn.swiftclient.fr {
+	encode gzip
+
+	@assets path /assets/*
+	handle @assets {
+		rewrite * /cdn{uri}
+		reverse_proxy 127.0.0.1:10049
+	}
+	handle {
+		respond 404
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+}

@@ -1,4 +1,33 @@
-# Swift Client online service
+# Swift Platform (Swift Client online service)
+
+Backend of the Swift Client launcher and in-game mod, and the **admin platform** that drives them: home builder, news,
+servers, partners & campaigns, releases & updates, feature flags, remote config, maintenance mode, analytics,
+diagnostics, users & roles, audit log, webhooks. One Node process, one SQLite file.
+
+| | |
+|---|---|
+| Legacy API (launcher, mod) | `/api/*`: **unchanged**, documented below |
+| Platform API | `/api/v1/*`: versioned, validated, RBAC, [docs/API.md](docs/API.md), `/api/v1/openapi.json` |
+| Admin panel | `/admin` (or `https://admin.swiftclient.fr`) |
+| Launcher bootstrap | `GET /api/v1/launcher/bootstrap` |
+| Health | `/health`, `/ready`, `/version` |
+
+Docs: [CLIENTS](docs/CLIENTS.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [API](docs/API.md) · [SECURITY](docs/SECURITY.md) · [DEPLOYMENT](docs/DEPLOYMENT.md) · [ENVIRONMENT](docs/ENVIRONMENT.md)
+
+```bash
+npm install            # builds native modules and compiles to dist/
+npm run dev            # tsx watch
+npm test               # 42 tests, throw-away databases
+npm run typecheck
+npm run docs:api       # regenerate the route table of docs/API.md
+node dist/admin.js role grant <player> OWNER    # first admin, from the server console
+```
+
+Required in production: `JWT_SECRET` (long random string). Everything else has a default, see [ENVIRONMENT](docs/ENVIRONMENT.md).
+
+---
+
+# Swift Client online service (legacy API reference)
 
 HTTP API for the launcher and the in-game Swift Client mod: auth, CurseForge proxy, instance share codes,
 Social (friends + chat), cosmetics / shop / grades, partner servers, and the world hosting relay.

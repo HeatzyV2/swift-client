@@ -1,71 +1,19 @@
-## Changes (v1.3.0)
+## Changes (v1.4.0)
 
-### ⚡ Built to be fast
-- **Launch timer**: a notification tells you how long the game took to start, and celebrates a new record. A launch that had to download files does not count.
-- **Ctrl+K palette**: type to launch an instance, create one, share your card or jump to any page. The keys 1–8 still change page.
-- **Boost mode**: one click on an instance sizes its memory for your PC and adds smoother Java flags. Click again and your previous settings come back exactly as they were.
+### 🛰️ The launcher now follows the Swift Platform
+- **Announcements**: info, success, warning and critical banners under the top bar, set from the admin panel. Close one and it stays closed.
+- **Maintenance notice**: when the online services are down you are told once, then a banner stays. Your games still launch.
+- **Home sections**: the Home can show a hero, a banner, text, quick links, servers and partners published from the admin, above the news.
+- **Servers**: the Servers tab and the featured server of the Home panel are now managed online (the built-in list stays as a fallback).
+- Works offline: the last answer is kept on your computer.
 
-### 🏆 Your profile
-- The Home avatar card now has a **level** with a segmented XP bar, your **day streak**, your **fastest launch** and eight **badges**.
-- **Share card**: turns all of it into an image you can copy or save. Everything stays on your computer.
-- The avatar floats smoothly instead of stepping.
+### 🔒 Anonymous statistics are opt-in
+- Asked once, off by default, and switchable any time in Settings, Privacy. When on, only launch counts, versions and error categories are sent: no account, no IP address, no file path. When off, nothing is sent.
 
-### 🐾 Zip, rebuilt
-- A new little speedster mascot with a bolt helmet, in empty states, on the Play button and in the mod.
-- **Zip the companion** blinks, falls asleep when you are away, gives tips and says something when the game starts. Switch him off in Settings, Theme.
+### 🧩 Swift Client mod 2.2.0
+- Announcements and the maintenance notice show up as in-game toasts.
+- A broken module can be switched off remotely without a new release.
 
-### 🧩 Swift Client mod 2.1.0
-- **HUD scenes**: pick a profile for singleplayer, for servers and for fights, and the client switches by itself.
-- **Session page** (key 9 in the menu): time in worlds and distance walked, this session, the last one, all time.
-- **Quick wheel** (key G): switch common modules on or off from a ring, without opening the menu.
-
-## Changes (v1.2.0)
-
-### 🎨 A new identity: Swift
-- The whole launcher is redrawn in its own style: square blocks with a black outline and a solid edge, a pixel font, stepped animations and pixel icons. Nothing is rounded, blurred or glowing any more.
-- Navigation moves to a **hotbar** along the bottom, like the game's own: press 1–8 anywhere to jump to a page.
-- Meet **Zip**, the Swift mascot, in empty states and while the game installs.
-- When you press Play, Zip dashes across the screen.
-
-### 🏠 New Home
-- Built around your **avatar**: your head, your name, your total playtime and your last session, next to the scene with the Play button.
-- Server status, last session and what's new sit in one row underneath.
-
-### 🧩 Swift Client mod 2.0.0
-- A new mods menu: a top bar, a bottom hotbar (keys 1–8), module cartridges with an ON/OFF key and square switches.
-- New language picker, a new Now Playing player (pixel equalizer, segmented progress bar, real transport keys), new HUD plates, keystrokes and notifications.
-- Colour emoji icons across the menus. The title screen is unchanged.
-
-## Changes (v1.1.3)
-
-### 🧩 Swift Client mod 1.2.0
-- Ships the new mod: 40 new modules (Minimap, Waypoints, PvP Info, Motion Blur, Item Physics, Friends...), a reorganised mods menu and Bloomy as the one theme.
-- The launcher now downloads the latest Swift Client mod from GitHub before each launch: new mod versions reach players without waiting for a launcher update.
-
-### 🌍 Host World
-- Hosted worlds get an address that works while 25565 is used by another server (`pseudo.swiftclient.fr:<port>`).
-
-## Changes (v1.1.2)
-
-### 🔄 Automatic updates actually work now
-- The updater was pointed at a domain that was never set up, so "Check for updates" always failed. It now reads the update file GitHub publishes on every signed release.
-- The launcher checks once on start-up and offers the update as a toast — install is blocked while a game is running or a download is in progress.
-
-### 🌐 New Servers tab
-- Lists partner servers with live status, player count and MOTD.
-
-### 🏠 Home
-- Live news and changelog can now be updated from the Swift Client backend without a launcher release.
-- Quick Start creates and launches the recommended instance in one click.
-
-### 🔒 Backend
-- `api.swiftclient.fr` is enforced over HTTPS (except localhost, for development); the backend can now terminate TLS itself when no reverse proxy is available.
-
-## Changes (v0.1.0)
-
-### ✨ First Swift Client release
-- New identity, interface and navigation: Home, Instances, Worlds, Screenshots, Skins, Settings.
-- Home is built around launching: the selected instance, its version and loader, and one Play button.
-- No telemetry, no analytics, no crash data sent anywhere.
-- CurseForge, instance sharing by code and automatic updates are switched off until the Swift Client online service exists. Modrinth works as before.
-- Backups and share packs made with Spectra Launcher can still be imported.
+### Also
+- The Home avatar floats smoothly.
+- Backend: the Swift Platform admin panel (French or English), versioned API, roles, audit log, webhooks and more.

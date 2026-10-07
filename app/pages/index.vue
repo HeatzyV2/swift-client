@@ -22,6 +22,9 @@
         </div>
       </div>
 
+      <!-- Sections published from the admin platform (hero, servers, partners, links…) -->
+      <PlatformHomeSections />
+
       <HomeNews />
     </div>
   </div>
@@ -30,7 +33,12 @@
 <script setup lang="ts">
 const instances = useInstancesStore()
 
+let viewed = false
 onMounted(() => {
   instances.ensureLoaded()
+  if (!viewed) {
+    viewed = true
+    track('home_view')
+  }
 })
 </script>

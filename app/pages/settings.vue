@@ -228,6 +228,9 @@
             <SettingsRow :label="t('settings.privacy.discord_rpc')" :description="t('settings.privacy.discord_rpcDesc')">
               <USwitch v-model="settings.discord_rpc" />
             </SettingsRow>
+            <SettingsRow v-if="backend.configured.value" :label="t('settings.privacy.analytics')" :description="t('settings.privacy.analyticsDesc')">
+              <USwitch :model-value="analytics" @update:model-value="setAnalytics" />
+            </SettingsRow>
           </SettingsGroup>
           <p class="flex items-start gap-2.5 px-1 text-xs leading-relaxed text-muted">
             <UIcon name="i-pixelarticons-shield" class="mt-px size-4 shrink-0 text-[var(--sw-accent)]" />
@@ -347,6 +350,17 @@ const java = useJava()
 const sysMem = useSystemMemory()
 const backend = useBackend()
 const toast = useToast()
+
+// Anonymous usage data towards the Swift Platform: opt-in, off until the player turns it on
+const analytics = ref(false)
+onMounted(async () => {
+  try { analytics.value = (await invoke<{ enabled: boolean }>('platform_telemetry_status')).enabled } catch { /* not in Tauri */ }
+})
+async function setAnalytics(value: boolean) {
+  analytics.value = value
+  try { await invoke('platform_set_telemetry', { enabled: value }) } catch (e) { toast.add({ title: errorText(e), color: 'error' }) }
+  setTelemetryEnabled(value)
+}
 
 type Section = 'appearance' | 'accounts' | 'minecraft' | 'sync' | 'privacy' | 'advanced' | 'about'
 

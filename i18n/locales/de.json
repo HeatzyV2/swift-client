@@ -438,7 +438,9 @@
       "track_playtimeDesc": "Gesamte Spielzeit pro Instanz messen und speichern.",
       "discord_rpc": "Discord Rich Presence",
       "discord_rpcDesc": "Zeige auf Discord, was du spielst.",
-      "noTelemetry": "Swift Client sendet keine Telemetrie, Analysen oder Absturzdaten."
+      "noTelemetry": "Swift Client sendet anonyme Nutzungsstatistiken und Fehlerberichte nur, wenn du sie aktivierst (standardmäßig aus). Es werden weder Konto, IP-Adresse noch Dateipfade gespeichert, und du kannst es jederzeit abschalten.",
+      "analytics": "Anonyme Nutzungsdaten teilen",
+      "analyticsDesc": "Hilft, Swift Client zu verbessern: Startzahlen, Versionen und Fehlerkategorien. Es werden weder Konto, IP-Adresse noch Dateipfade gespeichert."
     },
     "java": {
       "title": "Java",
@@ -987,6 +989,29 @@
       "applied": "Boost angewendet: {gb} GB und optimierte Java-Argumente",
       "removed": "Boost entfernt",
       "hint": "Stellt den Speicher passend zu deinem PC und flüssigere Java-Argumente ein"
+    }
+  },
+  "platform": {
+    "maintenance": {
+      "title": "Wartung läuft",
+      "until": "bis {date}",
+      "default": "Die Online-Dienste von Swift Client sind vorübergehend nicht verfügbar.",
+      "hint": "Du kannst deine Spiele weiterhin starten; Online-Funktionen funktionieren eventuell nicht.",
+      "continue": "Verstanden"
+    },
+    "announcement": {
+      "open": "Mehr erfahren",
+      "dismiss": "Schließen"
+    },
+    "verified": "Von Swift verifiziert",
+    "copy": "Adresse kopieren",
+    "play": "Spielen",
+    "partner": "Partner",
+    "ask": {
+      "title": "Swift Client verbessern helfen?",
+      "desc": "Anonyme Nutzungsstatistiken und Fehlerberichte senden. Standardmäßig aus; jederzeit änderbar unter Einstellungen → Datenschutz.",
+      "yes": "Ja, teilen",
+      "no": "Nein danke"
     }
   }
 }

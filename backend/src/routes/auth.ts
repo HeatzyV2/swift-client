@@ -52,7 +52,7 @@ authRoutes.post('/login', async (c) => {
   const username = body?.username?.trim() ?? ''
   const password = body?.password ?? ''
   const row = findUserByUsername(username)
-  if (!row || !(await verifyPassword(row.password_hash, password))) {
+  if (!row || row.disabled_at || !(await verifyPassword(row.password_hash, password))) {
     return c.json({ message: 'invalid username or password' }, 401)
   }
   const token = await signToken({
