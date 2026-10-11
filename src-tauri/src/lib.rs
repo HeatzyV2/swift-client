@@ -126,6 +126,7 @@ pub fn run() {
             }
 
             commands::launch::reconcile_running(app.handle());
+            commands::client_mod::spawn_background_update(app.handle().clone());
 
             app.handle().plugin(
                 tauri_plugin_log::Builder::default()
@@ -253,6 +254,18 @@ pub fn run() {
             commands::client_mod::prelaunch_checks,
             commands::client_mod::import_client_mod_jar,
             commands::client_mod::create_swift_instance,
+            commands::client_mod::mod_update_status,
+            commands::client_mod::mod_update_check,
+            commands::client_mod::mod_update_install,
+            commands::client_mod::mod_use_version,
+            commands::client_mod::mod_unpin,
+            commands::crash_analyzer::analyze_crash,
+            commands::memory_advisor::recommend_memory,
+            commands::diagnostics::export_diagnostics,
+            commands::world_backups::list_world_backups,
+            commands::world_backups::create_world_backup,
+            commands::world_backups::delete_world_backup,
+            commands::world_backups::restore_world_backup,
             commands::ping::ping_server,
             commands::meta::get_minecraft_versions,
             commands::meta::get_loader_versions,

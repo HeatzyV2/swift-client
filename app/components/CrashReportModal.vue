@@ -22,6 +22,8 @@
         </div>
 
         <div class="min-h-0 flex-1 px-5 py-4">
+          <CrashDiagnosis :instance-id="instanceId" :rel="crash?.crash_report_rel ?? null" :active="open" @close="dismiss" />
+
           <div v-if="crash?.crash_report_rel" class="mb-2 flex items-center gap-2">
             <UIcon name="i-pixelarticons-file-text" class="size-3.5 shrink-0 text-red-400" />
             <span class="truncate font-mono text-[11px] text-neutral-500">{{ crash.crash_report_rel }}</span>

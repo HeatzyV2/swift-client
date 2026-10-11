@@ -192,7 +192,34 @@
     "loadError": "Could not load crash report.",
     "share": "Share on mclo.gs",
     "openLogs": "View in Logs",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "diag": {
+      "title": "What probably happened",
+      "none": "No known cause found in this report.",
+      "out_of_memory": {
+        "heap": "The game ran out of memory.",
+        "metaspace": "The game ran out of class memory (Metaspace): too many mods for the current settings."
+      },
+      "out_of_memory_maxed": "The game ran out of memory and this computer has no more to give: close other programs or remove mods.",
+      "heap_too_big": "The memory given to the game is more than this computer can provide.",
+      "java_too_old": "The game needs a newer Java than the one used.",
+      "missing_dependency": "{a} needs {b}, which is not installed.",
+      "wrong_version": "{a} needs {b}, but another version is installed.",
+      "mixin_failed": "The mod {a} failed to apply its changes to the game: it is probably incompatible with another mod or this version.",
+      "swift_mod_crash": "The Swift Client mod is involved in this crash.",
+      "graphics_driver": "The graphics driver does not support what the game needs: update it.",
+      "stack_overflow": "A mod looped endlessly (stack overflow).",
+      "disk_full": "The disk is full."
+    },
+    "fix": {
+      "raise_memory": "Give {mb} MB",
+      "lower_memory": "Lower to {mb} MB",
+      "rollback_mod": "Go back to mod {version}",
+      "open_mods": "Open mods",
+      "open_java": "Java settings",
+      "memorySet": "Memory set to {mb} MB for this instance",
+      "rolledBack": "Swift Client mod {version} will be used"
+    }
   },
   "quickPlay": {
     "playWorld": "Quick Play",
@@ -219,7 +246,10 @@
     "subtitle": "Communities partnered with Swift Client",
     "copied": "Address copied",
     "empty": "No partner servers yet",
-    "emptyDesc": "Check back soon."
+    "emptyDesc": "Check back soon.",
+    "join": "Join",
+    "joinHint": "Launch Swift Client and join {name}",
+    "joinNoInstance": "Create a Swift Client instance first to join a server from here."
   },
   "jvmPreset": {
     "label": "Preset",
@@ -421,7 +451,8 @@
       "appearance": "Theme",
       "minecraft": "Minecraft",
       "advanced": "Folders",
-      "about": "Updates"
+      "about": "Updates",
+      "swiftmod": "Swift Client mod"
     },
     "sectionDesc": {
       "appearance": "Theme and language for the launcher.",
@@ -430,7 +461,8 @@
       "sync": "Share content across your instances.",
       "privacy": "Playtime tracking and Discord presence.",
       "advanced": "Launcher folders and default launch hooks.",
-      "about": "Version, updates and legal information."
+      "about": "Version, updates and legal information.",
+      "swiftmod": "Which version of the mod the launcher installs, and how it stays up to date."
     },
     "privacy": {
       "title": "Your data",
@@ -464,7 +496,15 @@
       "windowTitle": "Game window",
       "resolution": "Resolution",
       "resolutionDesc": "Window size in windowed or borderless mode.",
-      "resetResolution": "Reset"
+      "resetResolution": "Reset",
+      "autoMemory": "Auto",
+      "autoMemoryApplied": "Set to {gb} GB: {reason}.",
+      "memoryReason": {
+        "vanilla": "comfortable for the game without mods",
+        "light": "suits your mods",
+        "heavy": "a heavy modpack needs room",
+        "limited": "your computer limits it"
+      }
     },
     "advanced": {
       "launchTitle": "Default launch options",
@@ -1012,6 +1052,81 @@
       "desc": "Send anonymous usage statistics and error reports. Off by default; change it any time in Settings → Privacy.",
       "yes": "Yes, share",
       "no": "No thanks"
+    },
+    "offline": {
+      "title": "Offline mode",
+      "body": "Showing saved information. Playing still works.",
+      "retry": "Retry"
     }
+  },
+  "swiftMod": {
+    "status": {
+      "loading": "Checking the mod…",
+      "local": "Local channel: the launcher never downloads",
+      "available": "Version {version} is available",
+      "offline": "Could not reach the update server",
+      "upToDate": "Swift Client {version} is up to date",
+      "pinned": "Pinned to {version}: updates are paused"
+    },
+    "desc": {
+      "installed": "In use: {version}. It is installed in your Swift instances at the next launch.",
+      "upToDate": "New versions are fetched in the background while the launcher is open."
+    },
+    "check": "Check now",
+    "install": "Update",
+    "updating": "Downloading {version}",
+    "channelTitle": "Channel",
+    "channel": "Update channel",
+    "channelDesc": "Stable is for everyone. Beta gets pre-releases first. Local never downloads and uses the build next to the launcher.",
+    "channels": {
+      "stable": "Stable",
+      "beta": "Beta",
+      "local": "Local build"
+    },
+    "auto": "Update in the background",
+    "autoDesc": "Download new versions while the launcher is open, not only when you launch the game.",
+    "versionsTitle": "Versions on this computer",
+    "versionsDesc": "The launcher keeps the last three downloads so you can go back if a version misbehaves.",
+    "pinNote": "You are on pinned version {version}: updates are paused until you go back to the newest.",
+    "unpin": "Back to newest",
+    "inUse": "In use",
+    "pinnedBadge": "Pinned",
+    "betaBadge": "Beta",
+    "useVersion": "Use this one",
+    "source": {
+      "cache": "Downloaded",
+      "bundled": "Bundled with the launcher",
+      "local": "Local build"
+    },
+    "noVersions": "No copy of the mod found on this computer.",
+    "updatedToast": "Swift Client {version} downloaded",
+    "updatedToastDesc": "It will be installed next time you launch a Swift instance.",
+    "pinnedToast": "Version {version} will be used",
+    "instanceBadge": "Swift mod {version}",
+    "instanceBadgeHint": "Manage the Swift Client mod"
+  },
+  "worldBackups": {
+    "title": "World backups",
+    "intro": "The launcher zips your worlds before you play when they changed, and keeps the newest ones. Restoring never deletes your current world: it is set aside.",
+    "autoLabel": "Back up worlds before launching",
+    "autoHint": "Only worlds that changed since their last backup, and at most every two hours.",
+    "keepLabel": "Automatic backups to keep per world",
+    "chooseWorld": "Choose a world",
+    "backNow": "Back up now",
+    "noWorlds": "No world to back up in this instance.",
+    "autoBadge": "Automatic",
+    "manual": "Manual",
+    "empty": "No world backup yet.",
+    "restoreWarning": "The world as it is now is set aside in the saves folder, then the backup is put back. Close the game first.",
+    "created": "World backed up",
+    "restored": "World {world} restored"
+  },
+  "diagnostics": {
+    "title": "Support",
+    "export": "Export diagnostics",
+    "exportDesc": "Creates a zip with versions, settings and recent logs, with secrets masked, to send to support.",
+    "exportButton": "Export",
+    "done": "Diagnostics saved",
+    "show": "Show in folder"
   }
 }

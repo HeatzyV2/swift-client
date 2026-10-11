@@ -192,7 +192,34 @@
     "loadError": "Impossible de charger le rapport de plantage.",
     "share": "Partager sur mclo.gs",
     "openLogs": "Voir dans les journaux",
-    "dismiss": "Fermer"
+    "dismiss": "Fermer",
+    "diag": {
+      "title": "Ce qui s'est probablement passé",
+      "none": "Aucune cause connue trouvée dans ce rapport.",
+      "out_of_memory": {
+        "heap": "Le jeu a manqué de mémoire.",
+        "metaspace": "Le jeu a manqué de mémoire de classes (Metaspace) : trop de mods pour les réglages actuels."
+      },
+      "out_of_memory_maxed": "Le jeu a manqué de mémoire et cet ordinateur n'a plus rien à donner : ferme d'autres programmes ou retire des mods.",
+      "heap_too_big": "La mémoire donnée au jeu dépasse ce que cet ordinateur peut fournir.",
+      "java_too_old": "Le jeu a besoin d'une version de Java plus récente que celle utilisée.",
+      "missing_dependency": "{a} a besoin de {b}, qui n'est pas installé.",
+      "wrong_version": "{a} a besoin de {b}, mais une autre version est installée.",
+      "mixin_failed": "Le mod {a} n'a pas pu appliquer ses changements au jeu : il est probablement incompatible avec un autre mod ou cette version.",
+      "swift_mod_crash": "Le mod Swift Client est impliqué dans ce plantage.",
+      "graphics_driver": "Le pilote graphique ne gère pas ce dont le jeu a besoin : mets-le à jour.",
+      "stack_overflow": "Un mod a bouclé sans fin (dépassement de pile).",
+      "disk_full": "Le disque est plein."
+    },
+    "fix": {
+      "raise_memory": "Donner {mb} Mo",
+      "lower_memory": "Baisser à {mb} Mo",
+      "rollback_mod": "Revenir au mod {version}",
+      "open_mods": "Ouvrir les mods",
+      "open_java": "Réglages Java",
+      "memorySet": "Mémoire réglée sur {mb} Mo pour cette instance",
+      "rolledBack": "Le mod Swift Client {version} sera utilisé"
+    }
   },
   "quickPlay": {
     "playWorld": "Partie rapide",
@@ -219,7 +246,10 @@
     "subtitle": "Communautés partenaires de Swift Client",
     "copied": "Adresse copiée",
     "empty": "Aucun serveur partenaire pour l'instant",
-    "emptyDesc": "Reviens bientôt."
+    "emptyDesc": "Reviens bientôt.",
+    "join": "Rejoindre",
+    "joinHint": "Lancer Swift Client et rejoindre {name}",
+    "joinNoInstance": "Crée d'abord une instance Swift Client pour rejoindre un serveur d'ici."
   },
   "jvmPreset": {
     "label": "Préréglage",
@@ -421,7 +451,8 @@
       "appearance": "Thème",
       "minecraft": "Minecraft",
       "advanced": "Dossiers",
-      "about": "Mises à jour"
+      "about": "Mises à jour",
+      "swiftmod": "Mod Swift Client"
     },
     "sectionDesc": {
       "appearance": "Thème et langue du launcher.",
@@ -430,7 +461,8 @@
       "sync": "Partage de contenu entre tes instances.",
       "privacy": "Temps de jeu et présence Discord.",
       "advanced": "Dossiers du launcher et hooks de lancement.",
-      "about": "Version, mises à jour et informations légales."
+      "about": "Version, mises à jour et informations légales.",
+      "swiftmod": "Quelle version du mod le launcher installe, et comment elle reste à jour."
     },
     "privacy": {
       "title": "Mes données",
@@ -464,7 +496,15 @@
       "windowTitle": "Fenêtre du jeu",
       "resolution": "Résolution",
       "resolutionDesc": "Taille de fenêtre en mode fenêtré ou sans bordure.",
-      "resetResolution": "Réinitialiser"
+      "resetResolution": "Réinitialiser",
+      "autoMemory": "Auto",
+      "autoMemoryApplied": "Réglé sur {gb} Go : {reason}.",
+      "memoryReason": {
+        "vanilla": "confortable pour le jeu sans mods",
+        "light": "adapté à tes mods",
+        "heavy": "un gros modpack a besoin de place",
+        "limited": "ton ordinateur est la limite"
+      }
     },
     "advanced": {
       "launchTitle": "Options de lancement par défaut",
@@ -1012,6 +1052,81 @@
       "desc": "Envoyer des statistiques d’usage anonymes et des rapports d’erreur. Désactivé par défaut ; modifiable à tout moment dans Paramètres → Confidentialité.",
       "yes": "Oui, partager",
       "no": "Non merci"
+    },
+    "offline": {
+      "title": "Mode hors ligne",
+      "body": "Les infos enregistrées sont affichées. Jouer fonctionne toujours.",
+      "retry": "Réessayer"
     }
+  },
+  "swiftMod": {
+    "status": {
+      "loading": "Vérification du mod…",
+      "local": "Canal local : le launcher ne télécharge jamais",
+      "available": "La version {version} est disponible",
+      "offline": "Impossible de joindre le serveur de mises à jour",
+      "upToDate": "Swift Client {version} est à jour",
+      "pinned": "Épinglé sur {version} : mises à jour en pause"
+    },
+    "desc": {
+      "installed": "Utilisée : {version}. Elle est installée dans tes instances Swift au prochain lancement.",
+      "upToDate": "Les nouvelles versions sont récupérées en arrière-plan quand le launcher est ouvert."
+    },
+    "check": "Vérifier",
+    "install": "Mettre à jour",
+    "updating": "Téléchargement de {version}",
+    "channelTitle": "Canal",
+    "channel": "Canal de mise à jour",
+    "channelDesc": "Stable convient à tout le monde. Bêta reçoit les préversions en premier. Local ne télécharge jamais et utilise le build à côté du launcher.",
+    "channels": {
+      "stable": "Stable",
+      "beta": "Bêta",
+      "local": "Build local"
+    },
+    "auto": "Mettre à jour en arrière-plan",
+    "autoDesc": "Télécharge les nouvelles versions quand le launcher est ouvert, pas seulement au lancement du jeu.",
+    "versionsTitle": "Versions sur cet ordinateur",
+    "versionsDesc": "Le launcher garde les trois derniers téléchargements pour que tu puisses revenir en arrière si une version pose problème.",
+    "pinNote": "Tu es sur la version épinglée {version} : les mises à jour sont en pause jusqu'au retour à la plus récente.",
+    "unpin": "Revenir à la plus récente",
+    "inUse": "Utilisée",
+    "pinnedBadge": "Épinglée",
+    "betaBadge": "Bêta",
+    "useVersion": "Utiliser celle-ci",
+    "source": {
+      "cache": "Téléchargée",
+      "bundled": "Fournie avec le launcher",
+      "local": "Build local"
+    },
+    "noVersions": "Aucune copie du mod trouvée sur cet ordinateur.",
+    "updatedToast": "Swift Client {version} téléchargé",
+    "updatedToastDesc": "Il sera installé au prochain lancement d'une instance Swift.",
+    "pinnedToast": "La version {version} sera utilisée",
+    "instanceBadge": "Mod Swift {version}",
+    "instanceBadgeHint": "Gérer le mod Swift Client"
+  },
+  "worldBackups": {
+    "title": "Sauvegardes de mondes",
+    "intro": "Le launcher archive tes mondes avant de jouer quand ils ont changé, et garde les plus récentes. Restaurer ne supprime jamais ton monde actuel : il est mis de côté.",
+    "autoLabel": "Sauvegarder les mondes avant le lancement",
+    "autoHint": "Seulement les mondes modifiés depuis leur dernière sauvegarde, et au plus toutes les deux heures.",
+    "keepLabel": "Sauvegardes automatiques à garder par monde",
+    "chooseWorld": "Choisir un monde",
+    "backNow": "Sauvegarder maintenant",
+    "noWorlds": "Aucun monde à sauvegarder dans cette instance.",
+    "autoBadge": "Automatique",
+    "manual": "Manuelle",
+    "empty": "Aucune sauvegarde de monde pour l'instant.",
+    "restoreWarning": "Le monde actuel est mis de côté dans le dossier saves, puis la sauvegarde est remise en place. Ferme d'abord le jeu.",
+    "created": "Monde sauvegardé",
+    "restored": "Monde {world} restauré"
+  },
+  "diagnostics": {
+    "title": "Assistance",
+    "export": "Exporter les diagnostics",
+    "exportDesc": "Crée un zip avec les versions, les réglages et les logs récents, secrets masqués, à envoyer au support.",
+    "exportButton": "Exporter",
+    "done": "Diagnostics enregistrés",
+    "show": "Afficher dans le dossier"
   }
 }

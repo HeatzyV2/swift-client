@@ -199,6 +199,23 @@ pub struct Settings {
 
     #[serde(default)]
     pub sync_announce_seen: bool,
+
+    /// Where the Swift Client mod comes from: "stable" releases, "beta" (pre-releases too) or "local"
+    /// (never download: only the bundled jar and local builds).
+    #[serde(default = "default_mod_channel")]
+    pub mod_channel: String,
+    /// A mod version the player rolled back to; it is used instead of the newest one until released.
+    #[serde(default)]
+    pub mod_pinned: Option<String>,
+    /// Fetch new mod versions in the background, not only when launching.
+    #[serde(default = "default_true")]
+    pub mod_auto_update: bool,
+
+    /// Back up singleplayer worlds before launching when they changed since the last backup.
+    #[serde(default = "default_true")]
+    pub auto_world_backup: bool,
+    #[serde(default = "default_world_backup_keep")]
+    pub world_backup_keep: u32,
 }
 
 fn default_true() -> bool {
@@ -210,6 +227,14 @@ fn default_memory() -> u32 {
 }
 
 fn default_snapshot_keep() -> u32 {
+    5
+}
+
+fn default_mod_channel() -> String {
+    "stable".to_string()
+}
+
+fn default_world_backup_keep() -> u32 {
     5
 }
 
@@ -239,6 +264,11 @@ impl Default for Settings {
             discord_rpc: true,
             sync_announced: false,
             sync_announce_seen: false,
+            mod_channel: default_mod_channel(),
+            mod_pinned: None,
+            mod_auto_update: true,
+            auto_world_backup: true,
+            world_backup_keep: default_world_backup_keep(),
         }
     }
 }

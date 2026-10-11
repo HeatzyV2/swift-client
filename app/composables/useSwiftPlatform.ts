@@ -96,6 +96,8 @@ export const useSwiftPlatform = () => {
   const data = useState<PlatformData | null>('sw-platform', () => null)
   const dismissed = useState<string[]>('sw-platform-dismissed', () => [])
   const maintenanceSeen = useState('sw-platform-maintenance-seen', () => false)
+  /** The last attempt to reach the platform failed and nothing was cached: there is no data at all. */
+  const unreachable = useState('sw-platform-unreachable', () => false)
   // The i18n instance of the Nuxt app works from components and from plugins alike
   const locale = (useNuxtApp().$i18n as { locale: Ref<string> }).locale
   const backend = useBackend()
@@ -111,12 +113,16 @@ export const useSwiftPlatform = () => {
         authenticated: backend.accounts.value,
         mcVersion: instances.selected?.mc_version ?? null,
       })
+      unreachable.value = !next
       if (next) {
         data.value = next
         setTelemetryEnabled(next.analytics?.enabled !== false && telemetryEnabled())
       }
     } catch { /* keep what we have */ }
   }
+
+  /** Offline mode: the platform could not be reached, so what is shown comes from the last saved answer. */
+  const offline = computed(() => data.value?.stale === true || unreachable.value)
 
   /** Telemetry is opt-in: ask once, a few seconds after start-up, and never again. */
   function askConsent() {
@@ -200,7 +206,7 @@ export const useSwiftPlatform = () => {
   const links = computed(() => data.value?.links ?? {})
 
   return {
-    data, load, start, announcements, dismiss, maintenance, maintenanceSeen, flag, config, variant,
+    data, load, start, offline, announcements, dismiss, maintenance, maintenanceSeen, flag, config, variant,
     homeSections, servers, campaigns, links,
   }
 }

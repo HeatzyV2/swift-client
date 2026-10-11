@@ -192,7 +192,34 @@
     "loadError": "无法加载崩溃报告。",
     "share": "分享到 mclo.gs",
     "openLogs": "在日志中查看",
-    "dismiss": "关闭"
+    "dismiss": "关闭",
+    "diag": {
+      "title": "可能的原因",
+      "none": "此报告中未发现已知原因。",
+      "out_of_memory": {
+        "heap": "游戏内存不足。",
+        "metaspace": "游戏类内存（Metaspace）不足：当前设置下模组过多。"
+      },
+      "out_of_memory_maxed": "游戏内存不足，而这台电脑已无更多内存可用：请关闭其他程序或移除模组。",
+      "heap_too_big": "分配给游戏的内存超过了这台电脑的承受能力。",
+      "java_too_old": "游戏需要比当前使用的更新的 Java。",
+      "missing_dependency": "{a} 需要 {b}，但它未安装。",
+      "wrong_version": "{a} 需要 {b}，但安装的是其他版本。",
+      "mixin_failed": "模组 {a} 无法对游戏应用其修改：可能与其他模组或此版本不兼容。",
+      "swift_mod_crash": "Swift Client 模组与此次崩溃有关。",
+      "graphics_driver": "显卡驱动不支持游戏所需功能：请更新驱动。",
+      "stack_overflow": "某个模组无限循环（栈溢出）。",
+      "disk_full": "磁盘已满。"
+    },
+    "fix": {
+      "raise_memory": "分配 {mb} MB",
+      "lower_memory": "降低到 {mb} MB",
+      "rollback_mod": "回退到模组 {version}",
+      "open_mods": "打开模组",
+      "open_java": "Java 设置",
+      "memorySet": "此实例的内存已设为 {mb} MB",
+      "rolledBack": "将使用 Swift Client 模组 {version}"
+    }
   },
   "quickPlay": {
     "playWorld": "快速游戏",
@@ -219,7 +246,10 @@
     "subtitle": "与 Swift Client 合作的社区",
     "copied": "地址已复制",
     "empty": "暂无合作服务器",
-    "emptyDesc": "请稍后再来查看。"
+    "emptyDesc": "请稍后再来查看。",
+    "join": "加入",
+    "joinHint": "启动 Swift Client 并加入 {name}",
+    "joinNoInstance": "请先创建 Swift Client 实例，才能从这里加入服务器。"
   },
   "jvmPreset": {
     "label": "预设",
@@ -421,7 +451,8 @@
       "appearance": "主题",
       "minecraft": "Minecraft",
       "advanced": "文件夹",
-      "about": "更新"
+      "about": "更新",
+      "swiftmod": "Swift Client 模组"
     },
     "sectionDesc": {
       "appearance": "启动器主题与语言。",
@@ -430,7 +461,8 @@
       "sync": "在实例间共享内容。",
       "privacy": "游玩时长与 Discord 状态。",
       "advanced": "启动器文件夹与启动钩子。",
-      "about": "版本、更新与法律信息。"
+      "about": "版本、更新与法律信息。",
+      "swiftmod": "启动器安装哪个版本的模组，以及如何保持更新。"
     },
     "privacy": {
       "title": "我的数据",
@@ -464,7 +496,15 @@
       "windowTitle": "游戏窗口",
       "resolution": "分辨率",
       "resolutionDesc": "非全屏时的默认窗口大小。",
-      "resetResolution": "重置"
+      "resetResolution": "重置",
+      "autoMemory": "自动",
+      "autoMemoryApplied": "已设为 {gb} GB：{reason}。",
+      "memoryReason": {
+        "vanilla": "适合无模组的游戏",
+        "light": "适合你的模组",
+        "heavy": "大型整合包需要更多空间",
+        "limited": "受电脑内存限制"
+      }
     },
     "advanced": {
       "launchTitle": "默认启动选项",
@@ -1012,6 +1052,81 @@
       "desc": "发送匿名使用统计和错误报告。默认关闭；可随时在 设置 → 隐私 中更改。",
       "yes": "好的，分享",
       "no": "不用了"
+    },
+    "offline": {
+      "title": "离线模式",
+      "body": "显示的是已保存的信息，游戏仍可正常运行。",
+      "retry": "重试"
     }
+  },
+  "swiftMod": {
+    "status": {
+      "loading": "正在检查模组…",
+      "local": "本地通道：启动器不会下载",
+      "available": "版本 {version} 可用",
+      "offline": "无法连接到更新服务器",
+      "upToDate": "Swift Client {version} 已是最新",
+      "pinned": "已固定在 {version}：更新已暂停"
+    },
+    "desc": {
+      "installed": "使用中：{version}。将在下次启动时安装到你的 Swift 实例中。",
+      "upToDate": "启动器打开时会在后台获取新版本。"
+    },
+    "check": "立即检查",
+    "install": "更新",
+    "updating": "正在下载 {version}",
+    "channelTitle": "通道",
+    "channel": "更新通道",
+    "channelDesc": "稳定版适合所有人。测试版会优先获得预发布版本。本地通道从不下载，使用启动器旁边的构建。",
+    "channels": {
+      "stable": "稳定版",
+      "beta": "测试版",
+      "local": "本地构建"
+    },
+    "auto": "后台更新",
+    "autoDesc": "启动器打开时下载新版本，而不仅是在启动游戏时。",
+    "versionsTitle": "此电脑上的版本",
+    "versionsDesc": "启动器会保留最近三次下载，以便某个版本出问题时可以回退。",
+    "pinNote": "你正在使用固定版本 {version}：在返回最新版本之前更新已暂停。",
+    "unpin": "回到最新版",
+    "inUse": "使用中",
+    "pinnedBadge": "已固定",
+    "betaBadge": "测试版",
+    "useVersion": "使用此版本",
+    "source": {
+      "cache": "已下载",
+      "bundled": "随启动器附带",
+      "local": "本地构建"
+    },
+    "noVersions": "此电脑上未找到模组副本。",
+    "updatedToast": "已下载 Swift Client {version}",
+    "updatedToastDesc": "将在下次启动 Swift 实例时安装。",
+    "pinnedToast": "将使用版本 {version}",
+    "instanceBadge": "Swift 模组 {version}",
+    "instanceBadgeHint": "管理 Swift Client 模组"
+  },
+  "worldBackups": {
+    "title": "世界备份",
+    "intro": "世界发生变化时，启动器会在游戏前将其打包，并保留最新的备份。还原绝不会删除当前世界：它会被另行保存。",
+    "autoLabel": "启动前备份世界",
+    "autoHint": "仅备份自上次备份后有变化的世界，最多每两小时一次。",
+    "keepLabel": "每个世界保留的自动备份数",
+    "chooseWorld": "选择世界",
+    "backNow": "立即备份",
+    "noWorlds": "此实例中没有可备份的世界。",
+    "autoBadge": "自动",
+    "manual": "手动",
+    "empty": "还没有世界备份。",
+    "restoreWarning": "当前世界会先保存在 saves 文件夹中，然后恢复备份。请先关闭游戏。",
+    "created": "世界已备份",
+    "restored": "已还原世界 {world}"
+  },
+  "diagnostics": {
+    "title": "支持",
+    "export": "导出诊断信息",
+    "exportDesc": "生成包含版本、设置和最近日志（已隐藏敏感信息）的压缩包，可发送给支持人员。",
+    "exportButton": "导出",
+    "done": "诊断信息已保存",
+    "show": "在文件夹中显示"
   }
 }

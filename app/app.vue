@@ -7,6 +7,7 @@
     <div class="relative flex h-screen w-screen flex-col overflow-hidden pt-[60px]">
       <!-- Announcements and maintenance notice set from the admin platform -->
       <PlatformAnnouncementBar v-if="!isContentWindow" />
+      <PlatformOfflineBar v-if="!isContentWindow" />
       <div class="relative min-h-0 flex-1">
         <NuxtLayout>
           <NuxtPage />
@@ -42,6 +43,7 @@ const launchFlow = useLaunchFlow()
 const createModal = useCreateInstanceModal()
 const backend = useBackend()
 const contentWindow = useContentWindow()
+const swiftMod = useSwiftMod()
 
 useHead({ title: BRAND.name })
 
@@ -100,6 +102,7 @@ onMounted(async () => {
   if (isContentWindow.value) return
 
   syncDiscordPresence()
+  swiftMod.attach()
   activity.attach()
   activity.withTask(t('activity.optimizing'), () => invoke('migrate_shared_dirs')).catch(() => {})
   instances.ensureLoaded()
@@ -150,6 +153,7 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
+  swiftMod.detach()
   for (const off of unlisteners) off()
   if (!isContentWindow.value) activity.detach()
 })

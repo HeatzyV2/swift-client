@@ -34,7 +34,17 @@
             <p class="font-display text-[13px] font-semibold tabular-nums text-highlighted">
               {{ entry.ping ? t('server.players', { online: entry.ping.online, max: entry.ping.max }) : '—' }}
             </p>
-            <div class="flex gap-1.5">
+            <div class="flex items-center gap-1.5">
+              <UButton
+                size="xs"
+                color="primary"
+                variant="soft"
+                icon="i-pixelarticons-play"
+                :label="t('servers.join')"
+                :disabled="entry.status === 'offline'"
+                :title="t('servers.joinHint', { name: entry.name })"
+                @click="join(entry)"
+              />
               <UButton size="xs" color="neutral" variant="ghost" icon="i-pixelarticons-clipboard" square @click="copyAddress(entry)" />
               <UButton size="xs" color="neutral" variant="ghost" icon="i-pixelarticons-corner-right-up" square @click="openExternal(`https://${entry.address}`)" />
             </div>
@@ -64,6 +74,20 @@ interface ServerCard {
 }
 
 const platform = useSwiftPlatform()
+const instances = useInstancesStore()
+const launchFlow = useLaunchFlow()
+
+/** Starts the player's Swift Client instance and connects to the server straight away. */
+async function join(entry: ServerCard) {
+  await instances.ensureLoaded()
+  const swift = instances.instances.find(i => i.swift)
+  if (!swift) {
+    toast.add({ title: t('servers.joinNoInstance'), color: 'warning', icon: 'i-pixelarticons-zap' })
+    return
+  }
+  const { host, port } = parseServerAddress(entry.address)
+  await launchFlow.play(swift.id, { kind: 'Multiplayer', host, port })
+}
 
 /** What the admin published; the list that ships with the launcher is only the fallback. */
 const source = computed(() => {

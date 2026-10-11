@@ -88,6 +88,11 @@ export interface Settings {
   discord_rpc: boolean
   snapshot_before_updates: boolean
   snapshot_keep: number
+  mod_channel: 'stable' | 'beta' | 'local'
+  mod_pinned?: string | null
+  mod_auto_update: boolean
+  auto_world_backup: boolean
+  world_backup_keep: number
 }
 
 export interface SavedSkin {
@@ -235,4 +240,54 @@ export interface ModEntry {
   project_id: string | null
   provider: 'local' | 'modrinth' | 'curseforge'
   modified: number
+}
+
+
+export interface ModVersion {
+  version: string
+  /** "cache" (downloaded), "bundled" (shipped with the launcher) or "local" (a build next to the launcher sources). */
+  source: 'cache' | 'bundled' | 'local'
+  size: number
+  current: boolean
+  pinned: boolean
+}
+
+export interface ModUpdateStatus {
+  installed: string | null
+  latest: string | null
+  latest_prerelease: boolean
+  update_available: boolean
+  channel: 'stable' | 'beta' | 'local'
+  pinned: string | null
+  auto_update: boolean
+  offline: boolean
+  versions: ModVersion[]
+}
+
+export interface WorldBackup {
+  file: string
+  world: string
+  created: number
+  size: number
+  auto: boolean
+}
+
+export interface MemoryAdvice {
+  recommended_mb: number
+  min_mb: number
+  max_mb: number
+  system_mb: number
+  mods: number
+  reason: 'vanilla' | 'light' | 'heavy' | 'limited'
+}
+
+export interface CrashFix {
+  kind: 'raise_memory' | 'lower_memory' | 'rollback_mod' | 'open_mods' | 'open_java'
+  value: string | null
+}
+
+export interface CrashFinding {
+  id: string
+  args: string[]
+  fix: CrashFix | null
 }

@@ -561,7 +561,7 @@ pub async fn read_log_file(id: String, rel: String) -> AppResult<String> {
     .await
 }
 
-fn read_log_text(id: &str, rel: &str) -> AppResult<String> {
+pub(crate) fn read_log_text(id: &str, rel: &str) -> AppResult<String> {
     if (!rel.starts_with("logs/") && !rel.starts_with("crash-reports/")) || rel.contains("..") {
         return Err("invalid log path".into());
     }
@@ -746,7 +746,7 @@ fn strip_disabled(name: &str) -> (String, bool) {
     }
 }
 
-fn safe_name(name: &str) -> AppResult<String> {
+pub(crate) fn safe_name(name: &str) -> AppResult<String> {
     Path::new(name)
         .file_name()
         .map(|n| n.to_string_lossy().into_owned())
@@ -754,7 +754,7 @@ fn safe_name(name: &str) -> AppResult<String> {
         .ok_or_else(|| "invalid name".into())
 }
 
-fn zip_dir(src: &Path, root_name: &str, dest: &Path) -> std::io::Result<()> {
+pub(crate) fn zip_dir(src: &Path, root_name: &str, dest: &Path) -> std::io::Result<()> {
     use std::io::Write;
     let file = std::fs::File::create(dest)?;
     let mut zip = zip::ZipWriter::new(file);

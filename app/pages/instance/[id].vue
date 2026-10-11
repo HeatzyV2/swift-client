@@ -37,6 +37,9 @@
               <UIcon name="i-pixelarticons-hourglass" class="size-3.5 text-dimmed" />{{ formatPlaytime(instance.playtime_seconds, locale) }}
             </span>
             <UBadge v-if="instance.group" color="neutral" variant="subtle" size="sm" :label="instance.group" />
+            <NuxtLink v-if="instance.swift && swiftModVersion" to="/settings?section=swiftmod" :title="$t('swiftMod.instanceBadgeHint')">
+              <UBadge color="primary" variant="subtle" size="sm" icon="i-pixelarticons-zap" :label="$t('swiftMod.instanceBadge', { version: swiftModVersion })" />
+            </NuxtLink>
           </div>
         </div>
 
@@ -190,6 +193,18 @@ onMounted(async () => {
 })
 
 const instance = computed(() => instances.instances.find(i => i.id === id.value))
+
+/** Version of the Swift Client mod in this instance, shown next to the loader. Follows a rollback or an update. */
+const swiftModVersion = ref<string | null>(null)
+const swiftMod = useSwiftMod()
+async function loadSwiftModVersion() {
+  swiftModVersion.value = null
+  if (!instance.value?.swift) return
+  try {
+    swiftModVersion.value = (await invoke<{ version_hint: string | null }>('client_mod_status', { instanceId: id.value })).version_hint
+  } catch { /* the badge is optional */ }
+}
+watch([id, () => instance.value?.swift, () => swiftMod.status.value?.installed], loadSwiftModVersion, { immediate: true })
 const boost = useBoost(instance)
 const isSelected = computed(() => instances.selectedId === id.value)
 

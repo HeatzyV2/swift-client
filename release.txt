@@ -1,3 +1,23 @@
+## Changes (v1.5.0)
+
+### 🧩 The Swift Client mod stays up to date by itself
+- New **Swift Client mod** page in Settings: pick a channel (Stable, Beta or Local build), see the versions on your computer and go back to an older one in one click. The last three downloads are kept.
+- New versions are downloaded in the background while the launcher is open, with a progress bar. Launching the game no longer waits for the network.
+- The mod version is shown on the instance page.
+- Mod 2.4.0: performance HUD, combat recap, streamer mode, auto profiles per server, chat filters, new menus.
+
+### 💾 Safer worlds
+- Worlds are backed up automatically before you play when they changed, and you can back one up or restore one from the Snapshots tab. Restoring never deletes your current world.
+
+### 🩺 When something goes wrong
+- The crash window now says what probably happened (out of memory, missing mod, wrong Java, broken mixin, graphics driver...) with a one-click fix when there is one.
+- **Export diagnostics** (Settings, Advanced) makes a zip for support with secrets masked.
+- An **Offline mode** bar appears when the Swift Platform cannot be reached; saved information is shown and playing still works.
+
+### Also
+- **Auto** button for memory, computed from your computer and your mods.
+- **Join** button on the Servers page: launches your Swift Client instance and connects.
+
 ## Changes (v1.4.0)
 
 ### 🛰️ The launcher now follows the Swift Platform

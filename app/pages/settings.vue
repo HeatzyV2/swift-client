@@ -123,9 +123,12 @@
               <p class="font-display text-3xl font-semibold tracking-tight text-highlighted">
                 {{ memoryGb.toFixed(1) }} <span class="text-lg font-medium text-muted">GB</span>
               </p>
-              <p v-if="sysMem.totalMb.value" class="text-xs text-muted">
-                {{ t('settings.minecraft.memoryUsage', { total: (sysMem.totalMb.value / 1024).toFixed(0) }) }}
-              </p>
+              <div class="flex flex-col items-end gap-1.5">
+                <p v-if="sysMem.totalMb.value" class="text-xs text-muted">
+                  {{ t('settings.minecraft.memoryUsage', { total: (sysMem.totalMb.value / 1024).toFixed(0) }) }}
+                </p>
+                <UButton size="xs" color="neutral" variant="soft" icon="i-pixelarticons-zap" :label="t('settings.minecraft.autoMemory')" :loading="autoMemoryBusy" @click="autoMemory" />
+              </div>
             </div>
             <USlider
               v-model="settings.default_memory_mb"
@@ -144,6 +147,10 @@
             >
               <UIcon name="i-pixelarticons-warning-diamond" class="mt-px size-3.5 shrink-0" />
               {{ t('settings.minecraft.memoryWarn') }}
+            </p>
+            <p v-if="autoMemoryNote" class="mb-2 flex items-start gap-2 text-xs text-[var(--sw-accent)]">
+              <UIcon name="i-pixelarticons-zap" class="mt-px size-3.5 shrink-0" />
+              {{ autoMemoryNote }}
             </p>
             <p class="text-xs text-muted">{{ t('settings.minecraft.memoryHint') }}</p>
           </section>
@@ -212,6 +219,9 @@
           </SettingsGroup>
         </template>
 
+        <!-- Swift Client mod: channel, updates, versions -->
+        <SettingsSwiftMod v-else-if="section === 'swiftmod' && settings" :settings="settings" />
+
         <!-- Sync -->
         <template v-else-if="section === 'sync'">
           <div class="sw-settings-card">
@@ -251,6 +261,12 @@
                 :disabled="!folder.path"
                 @click="reveal(folder.path)"
               />
+            </SettingsRow>
+          </SettingsGroup>
+
+          <SettingsGroup :title="t('diagnostics.title')">
+            <SettingsRow :label="t('diagnostics.export')" :description="t('diagnostics.exportDesc')">
+              <UButton icon="i-pixelarticons-archive" color="neutral" variant="soft" :label="t('diagnostics.exportButton')" :loading="diagBusy" @click="exportDiagnostics" />
             </SettingsRow>
           </SettingsGroup>
 
@@ -341,7 +357,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { getVersion } from '@tauri-apps/api/app'
 import { open } from '@tauri-apps/plugin-dialog'
-import type { DisplayMode, LauncherPaths, Settings } from '~/types/launcher'
+import type { DisplayMode, LauncherPaths, MemoryAdvice, Settings } from '~/types/launcher'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -362,7 +378,7 @@ async function setAnalytics(value: boolean) {
   setTelemetryEnabled(value)
 }
 
-type Section = 'appearance' | 'accounts' | 'minecraft' | 'sync' | 'privacy' | 'advanced' | 'about'
+type Section = 'appearance' | 'accounts' | 'minecraft' | 'swiftmod' | 'sync' | 'privacy' | 'advanced' | 'about'
 
 const navGroups: { id: string, items: { key: Section, icon: string }[] }[] = [
   {
@@ -371,7 +387,10 @@ const navGroups: { id: string, items: { key: Section, icon: string }[] }[] = [
   },
   {
     id: 'game',
-    items: [{ key: 'minecraft', icon: 'i-pixelarticons-box' }],
+    items: [
+      { key: 'minecraft', icon: 'i-pixelarticons-box' },
+      { key: 'swiftmod', icon: 'i-pixelarticons-zap' },
+    ],
   },
   {
     id: 'launcher',
@@ -393,7 +412,7 @@ const resolvedInitial: Section | undefined
     ? 'appearance'
     : (allSections.some(s => s.key === initial) ? initial as Section : undefined)
 const section = ref<Section>(resolvedInitial ?? 'appearance')
-const needsSettings = computed(() => ['minecraft', 'privacy', 'advanced'].includes(section.value))
+const needsSettings = computed(() => ['minecraft', 'swiftmod', 'privacy', 'advanced'].includes(section.value))
 
 const offlineName = ref('')
 const settings = ref<Settings | null>(null)
@@ -492,6 +511,26 @@ const memoryWarn = computed(() => {
   return alloc > total * 0.5
 })
 
+const autoMemoryBusy = ref(false)
+const autoMemoryNote = ref('')
+/** The launcher picks a RAM value from this computer's memory instead of the player guessing one. */
+async function autoMemory() {
+  if (!settings.value) return
+  autoMemoryBusy.value = true
+  try {
+    const advice = await invoke<MemoryAdvice>('recommend_memory', { instanceId: null })
+    settings.value.default_memory_mb = advice.recommended_mb
+    autoMemoryNote.value = t('settings.minecraft.autoMemoryApplied', {
+      gb: (advice.recommended_mb / 1024).toFixed(1),
+      reason: t(`settings.minecraft.memoryReason.${advice.reason}`),
+    })
+  } catch (e) {
+    toast.add({ title: errorText(e), color: 'error' })
+  } finally {
+    autoMemoryBusy.value = false
+  }
+}
+
 async function browseDefaultJava() {
   const p = await open({ multiple: false, directory: false })
   if (typeof p === 'string' && settings.value) settings.value.default_java_path = p
@@ -524,6 +563,24 @@ async function reveal(path: string) {
     await invoke('reveal_in_explorer', { path })
   } catch (e) {
     toast.add({ title: errorText(e), color: 'error' })
+  }
+}
+
+const diagBusy = ref(false)
+async function exportDiagnostics() {
+  diagBusy.value = true
+  try {
+    const path = await invoke<string>('export_diagnostics')
+    toast.add({
+      title: t('diagnostics.done'),
+      description: path,
+      color: 'success',
+      actions: [{ label: t('diagnostics.show'), onClick: () => { invoke('reveal_in_explorer', { path }).catch(() => {}) } }],
+    })
+  } catch (e) {
+    toast.add({ title: errorText(e), color: 'error' })
+  } finally {
+    diagBusy.value = false
   }
 }
 

@@ -133,7 +133,10 @@
         </div>
 
         <div class="space-y-2">
-          <USwitch v-model="form.override_memory" :label="$t('instSettings.customMemory')" :description="$t('instSettings.customMemoryDesc')" />
+          <div class="flex items-start justify-between gap-3">
+            <USwitch v-model="form.override_memory" :label="$t('instSettings.customMemory')" :description="$t('instSettings.customMemoryDesc')" />
+            <UButton size="xs" color="neutral" variant="soft" icon="i-pixelarticons-zap" :label="$t('settings.minecraft.autoMemory')" :loading="autoMemoryBusy" @click="autoMemory" />
+          </div>
           <fieldset :disabled="!form.override_memory" :class="{ 'opacity-50': !form.override_memory }">
             <UFormField :label="$t('instSettings.memory')" :description="$t('instSettings.memoryDesc')">
               <div class="flex items-center gap-3 pt-1">
@@ -385,6 +388,22 @@ watch(
 const loaderVersion = computed(() =>
   form.value && 'version' in form.value.loader ? form.value.loader.version : '',
 )
+
+const autoMemoryBusy = ref(false)
+/** RAM picked from this computer's memory and the mods in this instance. */
+async function autoMemory() {
+  if (!form.value) return
+  autoMemoryBusy.value = true
+  try {
+    const advice = await invoke<{ recommended_mb: number }>('recommend_memory', { instanceId: form.value.id })
+    form.value.override_memory = true
+    form.value.memory_mb = advice.recommended_mb
+  } catch (e) {
+    toast.add({ title: errorText(e), color: 'error' })
+  } finally {
+    autoMemoryBusy.value = false
+  }
+}
 
 const memoryMb = computed({
   get: () => form.value?.memory_mb ?? 4096,
