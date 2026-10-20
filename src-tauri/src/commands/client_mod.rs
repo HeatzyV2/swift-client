@@ -31,7 +31,7 @@ static RESOURCE_DIR: std::sync::OnceLock<PathBuf> = std::sync::OnceLock::new();
 pub fn set_resource_dir(dir: PathBuf) {
     let _ = RESOURCE_DIR.set(dir);
 }
-const LEGACY_NAMES: &[&str] = &["lightclient-mod.jar", "swiftclient.jar"];
+const LEGACY_NAMES: &[&str] = &["swiftclient.jar"];
 /// Releases of the mod, newest first: more than the latest one, so the beta channel can see pre-releases.
 const MOD_RELEASES_API: &str = "https://api.github.com/repos/HeatzyV2/swiftclient-mod/releases?per_page=12";
 /// How many downloaded versions stay on disk, for rolling back.
@@ -105,14 +105,8 @@ fn parse_version_str(raw: &str) -> (u32, u32, u32, u32) {
 fn version_from_filename(path: &Path) -> Option<(u32, u32, u32, u32)> {
     let name = path.file_name()?.to_string_lossy();
     let stem = name.trim_end_matches(".jar");
-    for prefix in ["swiftclient-mod-", "lightclient-mod-"] {
-        if let Some(v) = stem.strip_prefix(prefix) {
-            if !v.is_empty() && v.chars().next().is_some_and(|c| c.is_ascii_digit()) {
-                return Some(parse_version_str(v));
-            }
-        }
-    }
-    None
+    let v = stem.strip_prefix("swiftclient-mod-")?;
+    v.chars().next().is_some_and(|c| c.is_ascii_digit()).then(|| parse_version_str(v))
 }
 
 fn version_from_fabric_json(path: &Path) -> Option<(u32, u32, u32, u32)> {
@@ -165,7 +159,7 @@ fn newest_versioned_jar(dir: &Path) -> Option<Candidate> {
             continue;
         }
         let stem = name.trim_end_matches(".jar");
-        if !(stem.starts_with("swiftclient-mod") || stem.starts_with("lightclient-mod")) {
+        if !stem.starts_with("swiftclient-mod") {
             continue;
         }
         let Some(c) = candidate_from(path) else { continue };
@@ -207,12 +201,9 @@ pub fn is_newer_version(local: &str, remote: &str) -> bool {
 fn version_string_from_filename(path: &Path) -> Option<String> {
     let name = path.file_name()?.to_string_lossy();
     let stem = name.trim_end_matches(".jar");
-    for prefix in ["swiftclient-mod-", "lightclient-mod-"] {
-        if let Some(v) = stem.strip_prefix(prefix) {
-            if v.chars().next().is_some_and(|c| c.is_ascii_digit()) {
-                return Some(v.to_string());
-            }
-        }
+    let v = stem.strip_prefix("swiftclient-mod-")?;
+    if v.chars().next().is_some_and(|c| c.is_ascii_digit()) {
+        return Some(v.to_string());
     }
     None
 }
@@ -281,7 +272,7 @@ fn all_jars() -> Vec<(String, Candidate)> {
             if !name.ends_with(".jar") || name.contains("sources") || name.contains("-dev") {
                 continue;
             }
-            if !(stem.starts_with("swiftclient-mod") || stem.starts_with("lightclient-mod")) {
+            if !stem.starts_with("swiftclient-mod") {
                 continue;
             }
             let path = entry.path();
@@ -762,7 +753,7 @@ fn purge_legacy(mods: &Path) {
     for entry in entries.flatten() {
         let name = entry.file_name().to_string_lossy().to_lowercase();
         let is_legacy = LEGACY_NAMES.iter().any(|n| name == *n)
-            || ((name.contains("lightclient") || name.contains("swiftclient"))
+            || (name.contains("swiftclient")
                 && name.ends_with(".jar")
                 && name != MOD_FILE_NAME);
         if is_legacy {
