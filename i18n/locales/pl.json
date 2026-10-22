@@ -713,7 +713,10 @@
     "defaultsEmpty": "Domyślne skórki pojawią się, gdy zainstalujesz jakąś wersję Minecrafta.",
     "demoTitle": "Przeglądasz w trybie demo",
     "demoDesc": "Możesz oglądać i podejrzeć każdą skórkę. Zaloguj się przez Microsoft, żeby ustawić ją na koncie.",
-    "signIn": "Zaloguj przez Microsoft"
+    "signIn": "Zaloguj przez Microsoft",
+    "offlineTitle": "Twój skin, widoczny tylko dla ciebie",
+    "offlineDesc": "Konto offline: Mojang go nie zna, więc nałożony skin widać na twojej postaci w grze (trzecia osoba, ekwipunek, lista graczy). Inni gracze nadal widzą domyślny skin.",
+    "appliedOffline": "Skin nałożony, widoczny w grze tylko dla ciebie"
   },
   "instSettings": {
     "tabs": {
