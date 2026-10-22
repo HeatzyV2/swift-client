@@ -1,12 +1,12 @@
 <template>
   <Transition name="sw-fade">
     <div v-if="offline" class="sw-offline" role="status">
-      <UIcon name="i-pixelarticons-cellular-signal-off" class="size-4 shrink-0" />
+      <UIcon name="i-lucide-signal-zero" class="size-4 shrink-0" />
       <p class="min-w-0 flex-1 text-[12.5px] leading-snug">
         <b class="font-semibold">{{ t('platform.offline.title') }}</b>
         <span> — {{ t('platform.offline.body') }}</span>
       </p>
-      <UButton size="xs" color="neutral" variant="soft" icon="i-pixelarticons-reload" :label="t('platform.offline.retry')" :loading="retrying" @click="retry" />
+      <UButton size="xs" color="neutral" variant="soft" icon="i-lucide-refresh-cw" :label="t('platform.offline.retry')" :loading="retrying" @click="retry" />
     </div>
   </Transition>
 </template>

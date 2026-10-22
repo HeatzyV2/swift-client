@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="enabled"
-    class="pointer-events-none fixed bottom-[22px] left-[18px] z-[55] flex items-end gap-2 max-[720px]:hidden"
+    class="pointer-events-none relative flex justify-center pt-4 max-[720px]:hidden"
   >
     <button
       type="button"
@@ -15,7 +15,7 @@
     <Transition name="sw-pop-bubble">
       <p
         v-if="bubble"
-        class="sw-block pointer-events-none mb-9 max-w-[210px] px-3 py-2 font-display text-[14px] leading-snug text-highlighted"
+        class="sw-block pointer-events-none absolute bottom-full left-1/2 z-[55] mb-1 w-[200px] -translate-x-1/2 px-3 py-2 text-center text-[13px] font-semibold leading-snug text-highlighted"
       >
         {{ bubble }}
       </p>
@@ -110,10 +110,10 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .sw-pop-bubble-enter-active {
-  transition: opacity 120ms steps(3), transform 120ms steps(3);
+  transition: opacity 180ms var(--ease-swift), transform 180ms var(--ease-swift);
 }
 .sw-pop-bubble-leave-active {
-  transition: opacity 90ms steps(2);
+  transition: opacity 140ms var(--ease-swift);
 }
 .sw-pop-bubble-enter-from {
   opacity: 0;

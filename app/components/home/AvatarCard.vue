@@ -1,25 +1,20 @@
 <template>
-  <section class="sw-block relative flex flex-col items-center gap-4 overflow-hidden px-5 pb-5 pt-7">
-    <!-- Speed streak across the top edge -->
-    <div class="absolute inset-x-0 top-0 flex h-[7px]" aria-hidden="true">
-      <span class="h-full flex-[6] bg-primary" />
-      <span class="h-full w-[6px]" />
-      <span class="h-full flex-[2] bg-primary/60" />
-      <span class="h-full w-[6px]" />
-      <span class="h-full flex-1 bg-primary/30" />
-    </div>
+  <section class="relative flex flex-col items-center gap-4 overflow-hidden px-5 pb-5" :class="part === 'identity' ? 'sw-glass rounded-[20px] pt-6' : 'sw-block pt-7'">
+    <!-- Accent glow behind the avatar -->
+    <div v-if="part !== 'stats'" class="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[radial-gradient(60%_100%_at_50%_0%,color-mix(in_srgb,var(--sw-accent)_28%,transparent),transparent)]" aria-hidden="true" />
 
-    <!-- The avatar: the player's head, big and sharp, framed like a sticker -->
+    <template v-if="part !== 'stats'">
+    <!-- The avatar: the player's head, big and sharp, floating -->
     <div class="sw-avatar">
       <img v-if="face" :src="face" alt="" draggable="false" class="size-full [image-rendering:pixelated]">
       <span v-else class="font-display text-[56px] font-bold text-toned">{{ initial }}</span>
     </div>
 
     <div class="flex flex-col items-center gap-2 text-center">
-      <p class="sw-sign-text max-w-[240px] truncate text-[28px] font-semibold leading-none text-highlighted">
+      <p class="max-w-[240px] truncate text-[24px] font-extrabold leading-none tracking-[-0.02em] text-highlighted">
         {{ account?.username ?? $t('account.signIn') }}
       </p>
-      <span v-if="account" class="bg-primary px-2 py-0.5 font-display text-[12px] uppercase tracking-[0.12em] sw-on-accent">
+      <span v-if="account" class="rounded-[6px] bg-primary px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] sw-on-accent">
         {{ $t(`account.kind.${account.kind}`) }}
       </span>
     </div>
@@ -34,6 +29,9 @@
         <span v-for="i in SEGS" :key="i" class="sw-xp-cell" :class="{ 'is-lit': i <= litSegs }" />
       </div>
     </div>
+    </template>
+
+    <template v-if="part !== 'identity'">
 
     <!-- Stats, like the game's own statistics screen -->
     <dl class="w-full space-y-2">
@@ -71,14 +69,16 @@
       </div>
     </div>
 
-    <div class="flex w-full gap-2">
-      <UButton to="/skins" color="neutral" variant="soft" icon="i-pixelarticons-human" :label="$t('nav.skins')" class="flex-1 justify-center" />
-      <UButton icon="i-pixelarticons-trophy" :label="$t('swiftx.stats.share')" class="flex-1 justify-center" @click="cardOpen = true" />
+    </template>
+
+    <div v-if="part !== 'stats'" class="flex w-full gap-2">
+      <UButton to="/skins" color="neutral" variant="soft" icon="i-lucide-user-round" :label="$t('nav.skins')" class="flex-1 justify-center" />
+      <UButton icon="i-lucide-trophy" :label="$t('swiftx.stats.share')" class="flex-1 justify-center" @click="cardOpen = true" />
     </div>
     <UButton
-      v-if="!account"
+      v-if="!account && part !== 'stats'"
       :to="{ path: '/settings', query: { section: 'accounts' } }"
-      icon="i-pixelarticons-user-plus"
+      icon="i-lucide-user-plus"
       :label="$t('home.welcome.addAccount')"
       class="w-full justify-center"
     />
@@ -86,6 +86,9 @@
 </template>
 
 <script setup lang="ts">
+/** `identity`: head, name, level and buttons (Home scene). `stats`: statistics and badges. Default: everything. */
+withDefaults(defineProps<{ part?: 'all' | 'identity' | 'stats' }>(), { part: 'all' })
+
 const accounts = useAccountStore()
 const instances = useInstancesStore()
 const { locale } = useI18n()
@@ -102,23 +105,21 @@ const playtime = computed(() => formatPlaytime(totalSeconds.value, locale.value)
 </script>
 
 <style scoped>
-/* A 3D-less sticker: thick ink frame, solid side, a slight tilt */
+/* The player's head, framed with the accent and floating gently */
 .sw-avatar {
+  position: relative;
   display: flex;
-  width: 148px;
-  height: 148px;
+  width: 128px;
+  height: 128px;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background: var(--sw-surface-3);
-  border: 4px solid var(--sw-ink);
-  border-radius: 4px;
+  border-radius: 28px;
   box-shadow:
     0 0 0 3px var(--sw-accent),
-    0 9px 0 3px var(--sw-ink),
-    0 12px 0 3px var(--sw-block-side);
-  rotate: -2.5deg;
-  /* A slow, continuous float: smooth on purpose (the pixel sprites step, the avatar does not) */
+    0 0 0 7px var(--sw-accent-soft),
+    0 18px 40px -10px color-mix(in srgb, var(--sw-accent) 55%, transparent);
   animation: sw-avatar-float 3.6s ease-in-out infinite;
   will-change: transform;
 }
@@ -128,33 +129,31 @@ const playtime = computed(() => formatPlaytime(totalSeconds.value, locale.value)
 }
 .sw-xp {
   display: flex;
-  gap: 2px;
-  padding: 3px;
-  background: var(--sw-ink);
-  border-radius: 2px;
+  gap: 3px;
 }
 .sw-xp-cell {
-  height: 12px;
+  height: 8px;
   flex: 1;
+  border-radius: 999px;
   background: var(--sw-surface-3);
 }
 .sw-xp-cell.is-lit {
   background: var(--sw-accent);
-  box-shadow: inset 0 3px 0 rgb(255 255 255 / 0.35);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--sw-accent) 55%, transparent);
 }
 .sw-badge {
   display: flex;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   align-items: center;
   justify-content: center;
   font-size: 18px;
-  border: 3px solid var(--sw-ink);
-  border-radius: 3px;
+  border-radius: 10px;
+  border: 1px solid var(--sw-line);
 }
 .sw-badge.is-earned {
   background: var(--sw-surface-3);
-  box-shadow: 0 3px 0 0 var(--sw-block-side);
+  box-shadow: var(--shadow-sm);
 }
 .sw-badge.is-locked {
   background: var(--sw-surface);

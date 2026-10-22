@@ -15,12 +15,12 @@
               : 'bg-white/5 text-neutral-300 hover:bg-white/10'"
             @click="loader = l.value"
           >
-            <UIcon v-if="loader === l.value" name="i-pixelarticons-check" class="size-3.5" />
+            <UIcon v-if="loader === l.value" name="i-lucide-check" class="size-3.5" />
             {{ l.label }}
           </button>
         </div>
 
-        <div v-if="loader !== 'vanilla'" class="space-y-3 rounded-lg border-2 border-[var(--sw-line-strong)] p-3">
+        <div v-if="loader !== 'vanilla'" class="space-y-3 rounded-lg border border-[var(--sw-line)] p-3">
           <URadioGroup v-model="loaderMode" :items="loaderModeItems" orientation="horizontal" />
           <USelectMenu
             v-if="loaderMode === 'other'"

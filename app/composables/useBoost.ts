@@ -52,7 +52,7 @@ export const useBoost = (instance: Ref<Instance | undefined> | ComputedRef<Insta
       next.override_java_args = prev?.override_java_args ?? false
       next.java_args = prev?.java_args ?? inst.java_args.filter(a => !FLAGS.includes(a))
       await instances.update(next)
-      toast.add({ title: t('swiftx.boost.removed'), icon: 'i-pixelarticons-zap-off' })
+      toast.add({ title: t('swiftx.boost.removed'), icon: 'i-lucide-zap-off' })
       return
     }
     const prev: Previous = {
@@ -71,7 +71,7 @@ export const useBoost = (instance: Ref<Instance | undefined> | ComputedRef<Insta
     next.override_java_args = true
     next.java_args = [...inst.java_args.filter(a => !FLAGS.includes(a)), ...FLAGS]
     await instances.update(next)
-    toast.add({ title: t('swiftx.boost.applied', { gb: (mb / 1024).toFixed(mb % 1024 ? 1 : 0) }), icon: 'i-pixelarticons-zap', color: 'success' })
+    toast.add({ title: t('swiftx.boost.applied', { gb: (mb / 1024).toFixed(mb % 1024 ? 1 : 0) }), icon: 'i-lucide-zap', color: 'success' })
   }
 
   return { boosted, toggle }

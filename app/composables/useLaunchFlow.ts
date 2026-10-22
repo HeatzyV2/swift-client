@@ -62,7 +62,7 @@ export const useLaunchFlow = () => {
   async function play(instanceId: string, quickPlay?: QuickPlay): Promise<boolean> {
     await accounts.ensureLoaded()
     if (!accounts.activeAccount) {
-      toast.add({ title: t('prelaunch.noAccount'), color: 'error', icon: 'i-pixelarticons-user-x' })
+      toast.add({ title: t('prelaunch.noAccount'), color: 'error', icon: 'i-lucide-user-x' })
       return false
     }
     const warnings = await collectWarnings(instanceId)

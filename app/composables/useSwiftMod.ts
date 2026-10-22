@@ -61,7 +61,7 @@ export const useSwiftMod = () => {
       toast.add({
         title: t('swiftMod.updatedToast', { version: e.payload.version }),
         description: t('swiftMod.updatedToastDesc'),
-        icon: 'i-pixelarticons-download',
+        icon: 'i-lucide-download',
         color: 'success',
       })
     }))

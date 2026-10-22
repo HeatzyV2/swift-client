@@ -65,7 +65,7 @@ onBeforeUnmount(() => { if (timer) clearTimeout(timer) })
   color: #ffffff;
   -webkit-text-stroke: 6px var(--sw-ink);
   paint-order: stroke fill;
-  text-shadow: 8px 8px 0 var(--sw-accent);
+  text-shadow: 0 0 40px var(--sw-accent);
   animation: sw-dash-go 1100ms steps(10, end) 250ms both;
 }
 @keyframes sw-dash-run {

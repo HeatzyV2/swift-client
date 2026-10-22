@@ -59,7 +59,7 @@ watch(() => activity.list.value.map(a => `${a.instanceId}:${a.kind}`).join('|'),
         toast.add({
           title: t('swiftx.stats.launched', { s: (r.ms / 1000).toFixed(1) }),
           description: r.record ? t('swiftx.stats.record') : undefined,
-          icon: 'i-pixelarticons-zap',
+          icon: 'i-lucide-zap',
           color: r.record ? 'success' : 'neutral',
         })
       }
@@ -114,7 +114,7 @@ onMounted(async () => {
     toast.add({
       title: t('sync.announceTitle'),
       description: t('sync.announceDesc'),
-      icon: 'i-pixelarticons-reload',
+      icon: 'i-lucide-refresh-cw',
       color: 'primary',
       actions: [{
         label: t('sync.announceAction'),

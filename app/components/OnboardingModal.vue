@@ -9,7 +9,7 @@
         <div class="min-h-[320px] px-8 py-8">
           <Transition name="sw-fade" mode="out-in">
             <div v-if="step === 0" key="welcome" class="flex flex-col items-center gap-5 pt-6 text-center">
-              <div class="flex size-16 items-center justify-center rounded-2xl border-2 border-[var(--sw-line-strong)] bg-[var(--sw-canvas)]">
+              <div class="flex size-16 items-center justify-center rounded-2xl border border-[var(--sw-line)] bg-[var(--sw-canvas)]">
                 <BrandMark class="size-9 text-primary" />
               </div>
               <div>
@@ -26,10 +26,10 @@
               <div v-if="accounts.activeAccount" class="sw-panel flex items-center gap-3 p-3 text-sm">
                 <AccountAvatar :account="accounts.activeAccount" class="size-8" />
                 <span class="flex-1 text-highlighted">{{ $t('onboarding.signedInAs', { name: accounts.activeAccount.username }) }}</span>
-                <UIcon name="i-pixelarticons-checkbox-on" class="size-4 text-[var(--sw-success)]" />
+                <UIcon name="i-lucide-circle-check" class="size-4 text-[var(--sw-success)]" />
               </div>
               <template v-else>
-                <UButton block size="lg" icon="i-pixelarticons-login" :loading="loggingIn" :label="$t('settings.accounts.microsoft')" @click="msLogin" />
+                <UButton block size="lg" icon="i-lucide-log-in" :loading="loggingIn" :label="$t('settings.accounts.microsoft')" @click="msLogin" />
                 <div class="flex items-center gap-3 text-xs text-dimmed">
                   <div class="h-px flex-1 bg-[var(--sw-line)]" />{{ $t('onboarding.or') }}<div class="h-px flex-1 bg-[var(--sw-line)]" />
                 </div>
@@ -48,7 +48,7 @@
               </div>
               <div class="sw-panel flex items-center justify-between p-3 text-sm">
                 <span class="flex items-center gap-2 text-toned">
-                  <UIcon name="i-pixelarticons-coffee" class="size-4 text-dimmed" />
+                  <UIcon name="i-lucide-coffee" class="size-4 text-dimmed" />
                   {{ java.scanning.value ? $t('settings.java.scanning') : $t('onboarding.javaFound', { n: java.installations.value.length }) }}
                 </span>
                 <UButton size="xs" color="neutral" variant="soft" :loading="java.scanning.value" :label="$t('settings.java.autoDetect')" @click="java.scan()" />
@@ -76,14 +76,14 @@
                 </SettingsRow>
               </div>
               <p class="flex items-start gap-2 text-xs text-muted">
-                <UIcon name="i-pixelarticons-shield" class="mt-px size-4 shrink-0 text-primary" />
+                <UIcon name="i-lucide-shield" class="mt-px size-4 shrink-0 text-primary" />
                 {{ $t('settings.privacy.noTelemetry') }}
               </p>
             </div>
 
             <div v-else key="done" class="flex flex-col items-center gap-4 pt-8 text-center">
               <div class="flex size-12 items-center justify-center rounded-full bg-primary/12">
-                <UIcon name="i-pixelarticons-check" class="size-6 text-primary" />
+                <UIcon name="i-lucide-check" class="size-6 text-primary" />
               </div>
               <div>
                 <h2 class="font-display text-xl font-semibold text-highlighted">{{ $t('onboarding.doneTitle') }}</h2>
@@ -96,8 +96,8 @@
         <div class="flex items-center justify-between border-t border-default px-6 py-3">
           <UButton v-if="step > 0 && step < STEPS - 1" variant="ghost" color="neutral" :label="$t('create.back')" @click="step--" />
           <UButton v-else variant="ghost" color="neutral" :label="$t('onboarding.skip')" @click="finish" />
-          <UButton v-if="step < STEPS - 1" :label="$t('onboarding.next')" trailing-icon="i-pixelarticons-arrow-right" @click="step++" />
-          <UButton v-else icon="i-pixelarticons-check" :label="$t('onboarding.start')" @click="complete" />
+          <UButton v-if="step < STEPS - 1" :label="$t('onboarding.next')" trailing-icon="i-lucide-arrow-right" @click="step++" />
+          <UButton v-else icon="i-lucide-check" :label="$t('onboarding.start')" @click="complete" />
         </div>
       </div>
     </template>

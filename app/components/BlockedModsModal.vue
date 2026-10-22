@@ -9,7 +9,7 @@
             size="xs"
             color="primary"
             variant="soft"
-            icon="i-pixelarticons-external-link"
+            icon="i-lucide-external-link"
             class="shrink-0"
             :label="$t('blocked.openAll', { n: blocked.length })"
             @click="openAll"
@@ -17,7 +17,7 @@
         </div>
 
         <div v-if="!blocked.length" class="flex flex-col items-center gap-2 py-8 text-center">
-          <UIcon name="i-pixelarticons-checkbox-on" class="size-9 text-emerald-400" />
+          <UIcon name="i-lucide-circle-check" class="size-9 text-emerald-400" />
           <p class="text-sm font-medium">{{ $t('blocked.allDone') }}</p>
         </div>
 
@@ -26,15 +26,15 @@
             <div
               v-for="b in blocked"
               :key="b.file_id"
-              class="flex items-center gap-2.5 rounded-lg border-2 border-[var(--sw-line-strong)] p-2.5"
+              class="flex items-center gap-2.5 rounded-lg border border-[var(--sw-line)] p-2.5"
             >
-              <UIcon name="i-pixelarticons-file-minus" class="size-4 shrink-0 text-amber-400" />
+              <UIcon name="i-lucide-file-minus" class="size-4 shrink-0 text-amber-400" />
               <div class="min-w-0 flex-1">
                 <div class="truncate text-sm font-medium">{{ b.name }}</div>
                 <div class="truncate font-mono text-[11px] text-muted">{{ b.filename }}</div>
               </div>
               <UButton
-                icon="i-pixelarticons-external-link"
+                icon="i-lucide-external-link"
                 color="primary"
                 variant="soft"
                 size="xs"
@@ -47,13 +47,13 @@
           <div class="space-y-1.5 rounded-lg border border-dashed border-default p-3">
             <div class="flex items-center justify-between gap-2">
               <span class="flex items-center gap-1.5 text-xs text-muted">
-                <UIcon v-if="scanning" name="i-pixelarticons-loader" class="size-3.5 animate-spin text-primary-400" />
-                <UIcon v-else name="i-pixelarticons-folder" class="size-3.5" />
+                <UIcon v-if="scanning" name="i-lucide-loader-circle" class="size-3.5 animate-spin text-primary-400" />
+                <UIcon v-else name="i-lucide-folder" class="size-3.5" />
                 {{ $t('blocked.watching') }}
               </span>
               <div class="flex gap-1.5">
-                <UButton size="xs" color="neutral" variant="ghost" icon="i-pixelarticons-folder" :label="$t('blocked.chooseFolder')" @click="chooseFolder" />
-                <UButton size="xs" color="neutral" variant="soft" icon="i-pixelarticons-reload" :loading="scanning" :label="$t('blocked.rescan')" @click="rescan(false)" />
+                <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-folder" :label="$t('blocked.chooseFolder')" @click="chooseFolder" />
+                <UButton size="xs" color="neutral" variant="soft" icon="i-lucide-refresh-cw" :loading="scanning" :label="$t('blocked.rescan')" @click="rescan(false)" />
               </div>
             </div>
             <p class="truncate font-mono text-[11px] text-neutral-500">{{ scanDir || '—' }}</p>

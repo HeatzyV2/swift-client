@@ -6,10 +6,10 @@
         <img v-if="s.imageUrl" :src="s.imageUrl" alt="" class="absolute inset-0 size-full object-cover opacity-50">
         <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent" />
         <div class="relative flex min-h-[170px] flex-col justify-end gap-2 p-6">
-          <span v-if="s.badge" class="w-fit rounded-[3px] bg-primary px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white">{{ s.badge }}</span>
+          <span v-if="s.badge" class="w-fit rounded-[6px] bg-primary px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white">{{ s.badge }}</span>
           <h2 v-if="s.title" class="font-display text-[24px] font-semibold leading-tight text-white">{{ s.title }}</h2>
           <p v-if="s.subtitle" class="max-w-2xl text-[13.5px] text-white/80">{{ s.subtitle }}</p>
-          <UButton v-if="s.cta" class="mt-1 w-fit" color="primary" :label="s.cta.label" trailing-icon="i-pixelarticons-corner-right-up" @click="open(s.cta.url)" />
+          <UButton v-if="s.cta" class="mt-1 w-fit" color="primary" :label="s.cta.label" trailing-icon="i-lucide-corner-right-up" @click="open(s.cta.url)" />
         </div>
       </section>
 
@@ -27,7 +27,7 @@
       <!-- Quick links -->
       <section v-else-if="s.kind === 'links' && s.items?.length" class="flex flex-wrap items-center gap-2">
         <h2 v-if="s.title" class="mr-1 font-display text-[14px] font-semibold text-highlighted">{{ s.title }}</h2>
-        <UButton v-for="(l, i) in s.items" :key="i" size="sm" color="neutral" variant="soft" :label="l.label" trailing-icon="i-pixelarticons-corner-right-up" @click="open(l.url)" />
+        <UButton v-for="(l, i) in s.items" :key="i" size="sm" color="neutral" variant="soft" :label="l.label" trailing-icon="i-lucide-corner-right-up" @click="open(l.url)" />
       </section>
 
       <!-- Servers -->
@@ -38,12 +38,12 @@
             <div class="flex items-center gap-3">
               <img v-if="srv.iconUrl" :src="srv.iconUrl" alt="" class="size-10 shrink-0 rounded-lg">
               <div v-else class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[var(--sw-surface-3)]">
-                <UIcon name="i-pixelarticons-server" class="size-5 text-dimmed" />
+                <UIcon name="i-lucide-server" class="size-5 text-dimmed" />
               </div>
               <div class="min-w-0">
                 <p class="flex items-center gap-1.5 truncate font-display text-[15px] font-semibold text-highlighted">
                   {{ srv.name }}
-                  <UIcon v-if="srv.verified" name="i-pixelarticons-check" class="size-4 shrink-0 text-[var(--sw-success)]" :title="t('platform.verified')" />
+                  <UIcon v-if="srv.verified" name="i-lucide-check" class="size-4 shrink-0 text-[var(--sw-success)]" :title="t('platform.verified')" />
                 </p>
                 <p class="truncate font-mono text-[11px] text-dimmed">{{ address(srv) }}</p>
               </div>
@@ -51,11 +51,11 @@
             <p v-if="srv.description" class="line-clamp-2 text-[12px] leading-relaxed text-muted">{{ srv.description }}</p>
             <div class="mt-auto flex items-center justify-between gap-2">
               <div class="flex flex-wrap gap-1">
-                <span v-for="tag in (srv.tags ?? []).slice(0, 3)" :key="tag" class="rounded-[3px] bg-[var(--sw-surface-3)] px-1.5 py-0.5 text-[10.5px] text-muted">{{ tag }}</span>
+                <span v-for="tag in (srv.tags ?? []).slice(0, 3)" :key="tag" class="rounded-[6px] bg-[var(--sw-surface-3)] px-1.5 py-0.5 text-[10.5px] text-muted">{{ tag }}</span>
               </div>
               <div class="flex gap-1.5">
-                <UButton size="xs" color="neutral" variant="ghost" icon="i-pixelarticons-clipboard" square :aria-label="t('platform.copy')" @click="copy(address(srv))" />
-                <UButton v-if="canPlay && srv.edition !== 'bedrock'" size="xs" color="primary" icon="i-pixelarticons-play" :label="t('platform.play')" @click="play({ serverId: srv.id, host: srv.address, port: srv.port })" />
+                <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-clipboard" square :aria-label="t('platform.copy')" @click="copy(address(srv))" />
+                <UButton v-if="canPlay && srv.edition !== 'bedrock'" size="xs" color="primary" icon="i-lucide-play" :label="t('platform.play')" @click="play({ serverId: srv.id, host: srv.address, port: srv.port })" />
               </div>
             </div>
           </article>
@@ -70,12 +70,12 @@
             <img v-if="c.imageUrl" :src="c.imageUrl" alt="" class="absolute inset-0 size-full object-cover opacity-40">
             <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-black/10" />
             <div class="relative flex min-h-[140px] flex-col justify-end gap-1.5 p-4">
-              <span class="w-fit rounded-[3px] bg-black/50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/80">{{ t('platform.partner') }}</span>
+              <span class="w-fit rounded-[6px] bg-black/50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/80">{{ t('platform.partner') }}</span>
               <p class="font-display text-[16px] font-semibold text-white">{{ c.title }}</p>
               <p v-if="c.subtitle" class="line-clamp-2 text-[12px] text-white/75">{{ c.subtitle }}</p>
               <div class="mt-1 flex gap-2">
                 <UButton v-if="c.cta" size="xs" color="primary" :label="c.cta.label" @click="clicked(c); open(c.cta.url)" />
-                <UButton v-if="c.server && canPlay" size="xs" color="neutral" variant="soft" icon="i-pixelarticons-play" :label="t('platform.play')" @click="clicked(c); play({ serverId: c.server.id, campaignId: c.id, host: c.server.address, port: c.server.port })" />
+                <UButton v-if="c.server && canPlay" size="xs" color="neutral" variant="soft" icon="i-lucide-play" :label="t('platform.play')" @click="clicked(c); play({ serverId: c.server.id, campaignId: c.id, host: c.server.address, port: c.server.port })" />
               </div>
             </div>
           </article>

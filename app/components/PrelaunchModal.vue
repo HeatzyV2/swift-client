@@ -3,7 +3,7 @@
     <template #body>
       <ul class="space-y-2 text-sm">
         <li v-for="(w, i) in flow.pending.value?.warnings ?? []" :key="i" class="flex items-start gap-2.5 text-toned">
-          <UIcon name="i-pixelarticons-warning-diamond" class="mt-0.5 size-4 shrink-0 text-warning" />
+          <UIcon name="i-lucide-octagon-alert" class="mt-0.5 size-4 shrink-0 text-warning" />
           <span>{{ w }}</span>
         </li>
       </ul>

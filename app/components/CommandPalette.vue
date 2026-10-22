@@ -45,14 +45,14 @@ function run(fn: () => unknown): () => void {
 }
 
 const pages = [
-  { to: '/', icon: 'i-pixelarticons-home', label: 'nav.home' },
-  { to: '/instances', icon: 'i-pixelarticons-layout-glyph', label: 'nav.instances' },
-  { to: '/social', icon: 'i-pixelarticons-users', label: 'nav.social' },
-  { to: '/servers', icon: 'i-pixelarticons-server', label: 'nav.servers' },
-  { to: '/worlds', icon: 'i-pixelarticons-globe', label: 'nav.worlds' },
-  { to: '/screenshots', icon: 'i-pixelarticons-camera', label: 'nav.screenshots' },
-  { to: '/skins', icon: 'i-pixelarticons-human', label: 'nav.skins' },
-  { to: '/settings', icon: 'i-pixelarticons-sliders', label: 'nav.settings' },
+  { to: '/', icon: 'i-lucide-house', label: 'nav.home' },
+  { to: '/instances', icon: 'i-lucide-layout-grid', label: 'nav.instances' },
+  { to: '/social', icon: 'i-lucide-users', label: 'nav.social' },
+  { to: '/servers', icon: 'i-lucide-server', label: 'nav.servers' },
+  { to: '/worlds', icon: 'i-lucide-globe', label: 'nav.worlds' },
+  { to: '/screenshots', icon: 'i-lucide-camera', label: 'nav.screenshots' },
+  { to: '/skins', icon: 'i-lucide-user-round', label: 'nav.skins' },
+  { to: '/settings', icon: 'i-lucide-sliders-vertical', label: 'nav.settings' },
 ]
 
 const groups = computed<CommandPaletteGroup<CommandPaletteItem>[]>(() => [
@@ -62,7 +62,7 @@ const groups = computed<CommandPaletteGroup<CommandPaletteItem>[]>(() => [
     items: instances.instances.map(i => ({
       label: t('swiftx.palette.play', { name: i.name }),
       suffix: i.mc_version,
-      icon: 'i-pixelarticons-play',
+      icon: 'i-lucide-play',
       onSelect: run(() => launchFlow.play(i.id)),
     })),
   },
@@ -70,9 +70,9 @@ const groups = computed<CommandPaletteGroup<CommandPaletteItem>[]>(() => [
     id: 'actions',
     label: t('swiftx.palette.actions'),
     items: [
-      { label: t('nav.newInstance'), icon: 'i-pixelarticons-plus', onSelect: run(() => createModal.open()) },
-      { label: t('swiftx.palette.card'), icon: 'i-pixelarticons-trophy', onSelect: run(() => { cardOpen.value = true }) },
-      { label: t('account.signIn'), icon: 'i-pixelarticons-login', onSelect: run(() => router.push({ path: '/settings', query: { section: 'accounts' } })) },
+      { label: t('nav.newInstance'), icon: 'i-lucide-plus', onSelect: run(() => createModal.open()) },
+      { label: t('swiftx.palette.card'), icon: 'i-lucide-trophy', onSelect: run(() => { cardOpen.value = true }) },
+      { label: t('account.signIn'), icon: 'i-lucide-log-in', onSelect: run(() => router.push({ path: '/settings', query: { section: 'accounts' } })) },
     ],
   },
   {

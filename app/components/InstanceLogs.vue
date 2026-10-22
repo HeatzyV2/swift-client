@@ -3,7 +3,7 @@
     <div class="space-y-2">
       <div class="flex items-center justify-between">
         <p class="text-xs text-muted">{{ $t('content.count', { n: files.length }) }}</p>
-        <UButton icon="i-pixelarticons-reload" color="neutral" variant="ghost" size="xs" :loading="loading" square :title="$t('content.refresh')" @click="load" />
+        <UButton icon="i-lucide-refresh-cw" color="neutral" variant="ghost" size="xs" :loading="loading" square :title="$t('content.refresh')" @click="load" />
       </div>
       <div v-if="!files.length && !loading" class="py-8 text-center text-sm text-muted">{{ $t('logs.none') }}</div>
       <div v-else class="space-y-1">
@@ -26,12 +26,12 @@
     <div class="min-w-0">
       <div v-if="contentLoading" class="py-10 text-center text-sm text-muted">{{ $t('common.loading') }}</div>
       <div v-else-if="!selected" class="py-10 text-center text-sm text-muted">{{ $t('logs.selectHint') }}</div>
-      <div v-else class="rounded-xl border-2 border-[var(--sw-line-strong)] bg-black/30">
+      <div v-else class="rounded-xl border border-[var(--sw-line)] bg-black/30">
         <div class="flex items-center justify-between gap-2 border-b border-default px-3 py-1.5">
           <span class="truncate font-mono text-[11px] text-neutral-400">{{ selected }}</span>
           <div class="flex shrink-0 items-center gap-1">
             <UButton
-              icon="i-pixelarticons-share"
+              icon="i-lucide-share-2"
               color="primary"
               variant="ghost"
               size="xs"
@@ -40,7 +40,7 @@
               :title="$t('logs.shareHint')"
               @click="share"
             />
-            <UButton icon="i-pixelarticons-folder" color="neutral" variant="ghost" size="xs" :title="$t('content.openLocation')" square @click="reveal" />
+            <UButton icon="i-lucide-folder" color="neutral" variant="ghost" size="xs" :title="$t('content.openLocation')" square @click="reveal" />
           </div>
         </div>
         <pre class="max-h-[62vh] overflow-auto px-3 py-2 font-mono text-[11px] leading-relaxed whitespace-pre text-neutral-300">{{ content }}</pre>
@@ -66,7 +66,7 @@ const content = ref('')
 const contentLoading = ref(false)
 
 const kindIcon = (kind: LogFile['kind']) =>
-  kind === 'crash' ? 'i-pixelarticons-warning-diamond' : kind === 'archived' ? 'i-pixelarticons-file-multiple' : 'i-pixelarticons-script-text'
+  kind === 'crash' ? 'i-lucide-octagon-alert' : kind === 'archived' ? 'i-lucide-files' : 'i-lucide-scroll-text'
 
 async function load() {
   loading.value = true

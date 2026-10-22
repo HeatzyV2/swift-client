@@ -1,7 +1,7 @@
 <template>
-  <div v-if="findings.length || loaded" class="mb-3 rounded-xl border-2 border-[var(--sw-line-strong)] bg-[var(--sw-surface-2)] px-4 py-3">
+  <div v-if="findings.length || loaded" class="mb-3 rounded-xl border border-[var(--sw-line)] bg-[var(--sw-surface-2)] px-4 py-3">
     <p class="sw-eyebrow mb-2 flex items-center gap-2">
-      <UIcon name="i-pixelarticons-lightbulb-on" class="size-3.5 text-[var(--sw-accent)]" />
+      <UIcon name="i-lucide-lightbulb" class="size-3.5 text-[var(--sw-accent)]" />
       {{ $t('crash.diag.title') }}
     </p>
 
@@ -71,11 +71,11 @@ function describe(f: CrashFinding): string {
 
 function fixIcon(kind: CrashFix['kind']): string {
   return {
-    raise_memory: 'i-pixelarticons-zap',
-    lower_memory: 'i-pixelarticons-zap',
-    rollback_mod: 'i-pixelarticons-undo',
-    open_mods: 'i-pixelarticons-folder',
-    open_java: 'i-pixelarticons-sliders-horizontal',
+    raise_memory: 'i-lucide-zap',
+    lower_memory: 'i-lucide-zap',
+    rollback_mod: 'i-lucide-undo-2',
+    open_mods: 'i-lucide-folder',
+    open_java: 'i-lucide-sliders-horizontal',
   }[kind]
 }
 

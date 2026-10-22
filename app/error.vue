@@ -6,7 +6,7 @@
       <p class="mt-2 max-w-md text-sm text-muted">{{ $t('appError.text') }}</p>
       <p v-if="error?.message" class="mt-4 max-w-lg break-words font-mono text-xs text-dimmed">{{ error.message }}</p>
     </div>
-    <UButton icon="i-pixelarticons-reload" :label="$t('appError.reload')" @click="reload" />
+    <UButton icon="i-lucide-refresh-cw" :label="$t('appError.reload')" @click="reload" />
   </div>
 </template>
 

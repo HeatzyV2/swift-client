@@ -36,7 +36,7 @@
 
         <div>
           <p class="mb-2 text-sm font-medium">{{ $t('export.include') }}</p>
-          <div class="max-h-64 overflow-y-auto rounded-lg border-2 border-[var(--sw-line-strong)] p-1.5">
+          <div class="max-h-64 overflow-y-auto rounded-lg border border-[var(--sw-line)] p-1.5">
             <FileTree
               v-if="target"
               :key="target.id"
@@ -57,7 +57,7 @@
       <div class="flex w-full justify-end gap-2">
         <UButton variant="ghost" color="neutral" :label="$t('common.cancel')" @click="close" />
         <UButton
-          icon="i-pixelarticons-package"
+          icon="i-lucide-package"
           :label="$t('export.exportBtn')"
           :loading="exporting"
           @click="doExport"
@@ -94,9 +94,9 @@ const isModpack = computed(() => format.value !== 'backup')
 const DEFAULT_EXCLUDE = ['saves', 'screenshots', 'crash-reports', 'backups']
 
 const formats = computed<{ value: Format, label: string, desc: string, icon: string }[]>(() => {
-  const list = [{ value: 'mrpack' as Format, label: 'Modrinth (.mrpack)', desc: t('export.mrpackDesc'), icon: 'i-pixelarticons-package' }]
-  if (cfEnabled.value) list.push({ value: 'curseforge' as Format, label: 'CurseForge (.zip)', desc: t('export.cfDesc'), icon: 'i-pixelarticons-fire' })
-  list.push({ value: 'backup' as Format, label: t('export.backup'), desc: t('export.backupDesc'), icon: 'i-pixelarticons-archive' })
+  const list = [{ value: 'mrpack' as Format, label: 'Modrinth (.mrpack)', desc: t('export.mrpackDesc'), icon: 'i-lucide-package' }]
+  if (cfEnabled.value) list.push({ value: 'curseforge' as Format, label: 'CurseForge (.zip)', desc: t('export.cfDesc'), icon: 'i-lucide-flame' })
+  list.push({ value: 'backup' as Format, label: t('export.backup'), desc: t('export.backupDesc'), icon: 'i-lucide-archive' })
   return list
 })
 

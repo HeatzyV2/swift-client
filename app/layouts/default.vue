@@ -1,10 +1,10 @@
 <template>
   <div class="flex h-full w-full">
-    <main class="relative min-w-0 flex-1 overflow-hidden pb-[96px]">
+    <LayoutSidebar />
+
+    <main class="relative min-w-0 flex-1 overflow-hidden">
       <slot />
     </main>
-
-    <LayoutHotbar />
 
     <CreateInstanceModal />
     <ExportInstanceModal />
@@ -14,13 +14,12 @@
     <OnboardingModal />
     <CommandPalette />
     <PlayerCardModal />
-    <ZipCompanion />
     <RemoveInstanceModal />
 
     <Transition name="sw-fade">
       <div v-if="dragging" class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-black/75">
         <div class="flex flex-col items-center gap-3 sw-block border-dashed border-primary px-14 py-10">
-          <UIcon name="i-pixelarticons-download" class="size-8 text-primary" />
+          <UIcon name="i-lucide-download" class="size-8 text-primary" />
           <p class="font-display text-lg font-semibold text-highlighted">{{ $t('drop.title') }}</p>
           <p class="text-sm text-muted">{{ onInstance ? $t('drop.onInstance') : $t('drop.onHome') }}</p>
         </div>

@@ -360,6 +360,12 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
     let _ = instances::touch_last_played(id);
     let settings = load_settings()?;
     let account = refresh_active_account().await?;
+    // Offline accounts: the skin chosen in the launcher, shown on their own player by the mod
+    let offline_skin = if account.kind == AccountKind::Offline {
+        crate::commands::skins::offline_skin_args(&account.uuid)
+    } else {
+        Vec::new()
+    };
 
     let auth = match account.kind {
         AccountKind::Offline => AuthMethod::Offline {
@@ -377,11 +383,12 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
 
     let memory_mb = (if instance.override_memory { instance.memory_mb } else { None })
         .unwrap_or(settings.default_memory_mb) as u64;
-    let java_args = if instance.override_java_args {
+    let mut java_args = if instance.override_java_args {
         instance.java_args.clone()
     } else {
         settings.default_java_args.clone()
     };
+    java_args.extend(offline_skin);
     let (display_mode, width, height) = if instance.override_window {
         (instance.resolved_display_mode(), instance.width, instance.height)
     } else {

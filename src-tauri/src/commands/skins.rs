@@ -278,11 +278,47 @@ pub async fn set_active_cape(cape_id: Option<String>) -> AppResult<()> {
     Ok(())
 }
 
+/// Offline ("crack") accounts are unknown to Mojang: their skin stays on this computer, one PNG per
+/// account, and the game shows it on the player's own character only (see `offline_skin_args`).
+fn offline_skin_dir() -> PathBuf {
+    paths::skins_dir().join("offline")
+}
+
+/// JVM arguments that hand the offline skin of this account to the Swift Client mod (none if unset).
+pub fn offline_skin_args(account_uuid: &str) -> Vec<String> {
+    let png = offline_skin_dir().join(format!("{account_uuid}.png"));
+    if !png.is_file() {
+        return Vec::new();
+    }
+    let slim = std::fs::read_to_string(offline_skin_dir().join(format!("{account_uuid}.model")))
+        .map(|m| m.trim() == "slim")
+        .unwrap_or(false);
+    vec![
+        format!("-Dswiftclient.offlineSkin={}", png.display()),
+        format!("-Dswiftclient.offlineSkinSlim={slim}"),
+    ]
+}
+
+fn apply_offline_skin(account_uuid: &str, id: &str) -> AppResult<()> {
+    let skin = load_index()?
+        .into_iter()
+        .find(|s| s.id == id)
+        .ok_or_else(|| format!("skin '{id}' not found"))?;
+    let dir = offline_skin_dir();
+    std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    std::fs::copy(skin_png_file(id), dir.join(format!("{account_uuid}.png"))).map_err(|e| format!("copy skin: {e}"))?;
+    std::fs::write(dir.join(format!("{account_uuid}.model")), &skin.model).map_err(|e| e.to_string())?;
+    let mut index = load_index()?;
+    mark_active(&mut index, id);
+    save_index(&index)
+}
+
 #[tauri::command]
 pub async fn apply_skin(id: String) -> AppResult<()> {
     let account = refresh_active_account().await?;
     if account.kind != AccountKind::Microsoft {
-        return Err("only Microsoft accounts can change their skin".into());
+        let uuid = account.uuid.clone();
+        return crate::blocking(move || apply_offline_skin(&uuid, &id)).await;
     }
 
     let skin = load_index()?

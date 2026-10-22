@@ -15,7 +15,7 @@
           </div>
           <UButton
             block
-            icon="i-pixelarticons-reload"
+            icon="i-lucide-refresh-cw"
             color="neutral"
             variant="soft"
             :label="$t('iconEditor.randomize')"
@@ -37,7 +37,7 @@
                 :aria-label="`${$t('iconEditor.background')} ${i + 1}`"
                 @click="bg = i"
               >
-                <UIcon v-if="i === bg" name="i-pixelarticons-check" class="absolute top-1 right-1 size-3.5 text-white drop-shadow" />
+                <UIcon v-if="i === bg" name="i-lucide-check" class="absolute top-1 right-1 size-3.5 text-white drop-shadow" />
               </button>
             </div>
           </section>
@@ -53,7 +53,7 @@
                 :disabled="adding"
                 @click="addSymbol"
               >
-                <UIcon :name="adding ? 'i-pixelarticons-loader' : 'i-pixelarticons-plus'" class="size-5" :class="adding && 'animate-spin'" />
+                <UIcon :name="adding ? 'i-lucide-loader-circle' : 'i-lucide-plus'" class="size-5" :class="adding && 'animate-spin'" />
               </button>
               <div v-for="s in symbols" :key="s.id" class="group/sym relative">
                 <button
@@ -67,7 +67,7 @@
                 </button>
                 <UButton
                   v-if="s.path"
-                  icon="i-pixelarticons-close"
+                  icon="i-lucide-x"
                   color="error"
                   variant="solid"
                   size="xs"
@@ -86,8 +86,8 @@
       <div class="flex w-full items-center gap-3">
         <ModalHint>{{ $t('iconEditor.hint') }}</ModalHint>
         <div class="ml-auto flex shrink-0 gap-2">
-          <UButton icon="i-pixelarticons-close" variant="ghost" color="neutral" :label="$t('common.cancel')" @click="open = false" />
-          <UButton icon="i-pixelarticons-save" :loading="saving" :label="$t('iconEditor.save')" @click="save" />
+          <UButton icon="i-lucide-x" variant="ghost" color="neutral" :label="$t('common.cancel')" @click="open = false" />
+          <UButton icon="i-lucide-save" :loading="saving" :label="$t('iconEditor.save')" @click="save" />
         </div>
       </div>
     </template>

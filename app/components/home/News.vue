@@ -1,7 +1,7 @@
 <template>
   <section v-if="items.length">
     <div class="mb-4 flex items-baseline gap-2">
-      <h2 class="sw-sign-text text-[26px] font-semibold text-highlighted">{{ $t('home.news') }}</h2>
+      <h2 class="text-[22px] font-extrabold tracking-[-0.02em] text-highlighted">{{ $t('home.news') }}</h2>
       <span class="translate-y-[-2px] font-mono text-[12px] text-dimmed">{{ items.length }}</span>
     </div>
 
@@ -11,7 +11,7 @@
         v-for="(item, i) in items.slice(0, 3)"
         :key="item.id"
         type="button"
-        class="sw-rise-in group relative block overflow-hidden rounded-[6px] border-[3px] border-[var(--sw-ink)] text-left shadow-[0_0_0_2px_var(--sw-line-strong),0_6px_0_2px_var(--sw-block-side)] transition-[transform,box-shadow] duration-100 [transition-timing-function:steps(2)] hover:-translate-y-1 active:translate-y-1"
+        class="sw-rise-in group relative block overflow-hidden rounded-[18px] border border-[var(--sw-line)] text-left shadow-md transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-1 hover:border-[color-mix(in_srgb,var(--sw-accent)_40%,var(--sw-line))] hover:shadow-xl"
         :class="[i === 0 ? 'sw-news-featured' : 'sw-news-small', isDiscord(item)
           ? ''
           : '']"
@@ -25,7 +25,7 @@
           <div class="absolute inset-0 flex flex-col justify-between" :class="i === 0 ? 'p-6' : 'p-4'">
             <p class="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/70">{{ formatDate(item.date) }}</p>
             <div>
-              <div class="flex size-11 items-center justify-center rounded-[3px] bg-black/25" :class="i === 0 ? 'mb-3' : 'mb-2'">
+              <div class="flex size-11 items-center justify-center rounded-[12px] bg-black/25" :class="i === 0 ? 'mb-3' : 'mb-2'">
                 <UIcon name="i-simple-icons-discord" class="size-6 text-white" />
               </div>
               <p class="font-display text-[18px] font-semibold leading-snug text-white">{{ tr(item.title) }}</p>
@@ -41,12 +41,12 @@
             alt=""
             draggable="false"
             loading="lazy"
-            class="absolute inset-0 size-full object-cover transition-[scale] duration-300 ease-[var(--ease-swift)] group-hover:scale-[1.05] [image-rendering:pixelated]"
+            class="absolute inset-0 size-full object-cover transition-[scale] duration-300 ease-[var(--ease-swift)] group-hover:scale-[1.05]"
           >
           <div class="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/0.88)_0%,rgb(0_0_0/0.35)_45%,transparent_72%)]" />
           <div class="absolute inset-x-0 bottom-0" :class="i === 0 ? 'p-6' : 'p-4'">
             <p class="flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/65">
-              <span v-if="i === 0" class="sw-on-accent bg-primary px-2 py-0.5 text-[10px] tracking-[0.1em]">{{ $t('home.featured') }}</span>
+              <span v-if="i === 0" class="sw-on-accent rounded-[6px] bg-primary px-2 py-0.5 text-[10px] tracking-[0.1em]">{{ $t('home.featured') }}</span>
               {{ formatDate(item.date) }}
             </p>
             <p class="mt-1.5 font-display font-semibold leading-snug text-white" :class="i === 0 ? 'text-[26px] tracking-tight' : 'text-[16px]'">{{ tr(item.title) }}</p>
@@ -65,7 +65,7 @@
             <h3 class="font-display text-2xl font-semibold text-highlighted">{{ tr(open.title) }}</h3>
             <p class="text-sm leading-relaxed text-toned">{{ tr(open.body) }}</p>
             <div class="flex justify-end gap-2 pt-2">
-              <UButton v-if="open.url" color="neutral" variant="soft" trailing-icon="i-pixelarticons-corner-right-up" :label="$t('home.readMore')" @click="openExternal(open.url!)" />
+              <UButton v-if="open.url" color="neutral" variant="soft" trailing-icon="i-lucide-corner-right-up" :label="$t('home.readMore')" @click="openExternal(open.url!)" />
               <UButton :label="$t('common.close')" @click="open = null" />
             </div>
           </div>
