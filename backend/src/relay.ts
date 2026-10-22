@@ -307,6 +307,9 @@ export function startRelay() {
 }
 
 /** For /api/relay: where the game should connect, null when the relay is off. */
-export function relayInfo(): { port: number, domain: string | null } | null {
-  return env.relayPort && (rangeOn() || gatewayOn()) ? { port: env.relayPort, domain: gatewayOn() ? env.relayDomain : null } : null
+export function relayInfo(): { port: number, domain: string | null, host?: string } | null {
+  if (!env.relayPort || !(rangeOn() || gatewayOn())) return null
+  const info: { port: number, domain: string | null, host?: string } = { port: env.relayPort, domain: gatewayOn() ? env.relayDomain : null }
+  if (env.relayHost) info.host = env.relayHost
+  return info
 }
