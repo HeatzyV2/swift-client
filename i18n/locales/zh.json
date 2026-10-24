@@ -26,7 +26,7 @@
       "importTitle": "导入安装",
       "importDesc": "从 Prism、CurseForge、Modrinth 或 zip/mrpack 文件导入。",
       "swiftTitle": "Swift Client",
-      "swiftDesc": "Recommended: Minecraft 26.2 with Fabric, the Swift Client mod and Fabric API, ready to play."
+      "swiftDesc": "Choose your Minecraft version with Fabric, the Swift Client mod and Fabric API, ready to play."
     },
     "custom": {
       "name": "名称",
@@ -60,6 +60,8 @@
     },
     "done": "已创建“{name}”",
     "swift": {
+      "downloadHint": "The matching mod will be downloaded if needed, then installed with Fabric API.",
+      "installing": "Downloading and installing…",
       "created": "Swift Client instance created",
       "createdDesc": "The Swift Client mod and Fabric API are installed.",
       "failed": "Could not create the Swift Client instance"

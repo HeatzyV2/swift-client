@@ -254,6 +254,7 @@ pub fn run() {
             commands::client_mod::prelaunch_checks,
             commands::client_mod::import_client_mod_jar,
             commands::client_mod::create_swift_instance,
+            commands::client_mod::swift_minecraft_versions,
             commands::client_mod::mod_update_status,
             commands::client_mod::mod_update_check,
             commands::client_mod::mod_update_install,

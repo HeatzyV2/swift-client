@@ -452,7 +452,7 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
     link_shared_dirs(id);
     crate::commands::world_backups::auto_backup_in_background(app, id);
     if crate::commands::client_mod::is_swift_instance(id) {
-        crate::commands::client_mod::refresh_from_releases().await;
+        crate::commands::client_mod::refresh_from_releases(id).await;
     }
     if let Err(e) = crate::commands::client_mod::ensure_installed(id) {
         log::warn!("could not install Swift client mod into {id}: {e}");

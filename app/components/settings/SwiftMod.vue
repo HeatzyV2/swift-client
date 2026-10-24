@@ -1,5 +1,8 @@
 <template>
   <div>
+    <UFormField :label="t('create.custom.gameVersion')" class="mb-4">
+      <USelectMenu v-model="mod.mcVersion.value" :items="minecraftVersions" :disabled="mod.busy.value" class="w-full" />
+    </UFormField>
     <!-- Where the mod stands -->
     <section class="sw-settings-card mb-4">
       <div class="flex items-center gap-3">
@@ -96,6 +99,9 @@ const props = defineProps<{ settings: Settings }>()
 const { t } = useI18n()
 const toast = useToast()
 const mod = useSwiftMod()
+const minecraftVersions = ref<string[]>([])
+onMounted(async () => { minecraftVersions.value = await invoke<string[]>('swift_minecraft_versions') })
+watch(mod.mcVersion, () => { mod.status.value = null; mod.refresh() })
 
 onMounted(() => { mod.refresh() })
 
@@ -146,7 +152,7 @@ async function setAuto(value: boolean) {
 
 /** The pin lives in the launcher settings too: keep this copy in step so a later save does not undo it. */
 function syncPin() {
-  props.settings.mod_pinned = mod.status.value?.pinned ?? null
+  if (mod.mcVersion.value === '26.2') props.settings.mod_pinned = mod.status.value?.pinned ?? null
 }
 
 async function check() {

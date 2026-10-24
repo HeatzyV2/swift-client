@@ -75,8 +75,8 @@ export const useInstancesStore = defineStore('instances', {
     },
 
     /** Fabric on the Swift Client Minecraft version, with the Swift mod and Fabric API. */
-    async createSwift(name?: string | null) {
-      const instance = await invoke<Instance>('create_swift_instance', { name: name ?? null })
+    async createSwift(name?: string | null, mcVersion?: string) {
+      const instance = await invoke<Instance>('create_swift_instance', { name: name ?? null, mcVersion: mcVersion ?? null })
       this.instances.unshift(instance)
       this.select(instance.id)
       return instance

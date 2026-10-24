@@ -9,6 +9,7 @@ import type { ModUpdateStatus } from '~/types/launcher'
  * One shared state for the whole app; `attach()` (called once from app.vue) follows the background updater.
  */
 export const useSwiftMod = () => {
+  const mcVersion = useState('sw-mod-minecraft', () => '26.2')
   const status = useState<ModUpdateStatus | null>('sw-mod-status', () => null)
   const progress = useState<{ received: number, total: number, version: string } | null>('sw-mod-progress', () => null)
   const busy = useState('sw-mod-busy', () => false)
@@ -21,7 +22,9 @@ export const useSwiftMod = () => {
 
   async function refresh() {
     try {
-      status.value = await invoke<ModUpdateStatus>('mod_update_status')
+      const mc = mcVersion.value
+      const result = await invoke<ModUpdateStatus>('mod_update_status', { mcVersion: mc })
+      if (mc === mcVersion.value) status.value = result
     } catch (e) {
       error.value = errorText(e)
     }
@@ -31,7 +34,9 @@ export const useSwiftMod = () => {
     busy.value = true
     error.value = null
     try {
-      status.value = await invoke<ModUpdateStatus>(command, args)
+      const mc = mcVersion.value
+      const result = await invoke<ModUpdateStatus>(command, { ...args, mcVersion: mc })
+      if (mc === mcVersion.value) status.value = result
     } catch (e) {
       error.value = errorText(e)
       throw e
@@ -73,5 +78,5 @@ export const useSwiftMod = () => {
     unlisteners = []
   }
 
-  return { status, progress, percent, busy, error, refresh, check, install, useVersion, unpin, attach, detach }
+  return { mcVersion, status, progress, percent, busy, error, refresh, check, install, useVersion, unpin, attach, detach }
 }

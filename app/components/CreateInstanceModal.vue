@@ -22,6 +22,18 @@
           </button>
         </div>
 
+        <form v-else-if="step === 'swift'" key="swift" class="space-y-5" @submit.prevent="createSwift">
+          <UFormField :label="$t('create.custom.name')">
+            <UInput v-model="swiftName" :placeholder="`Swift Client ${swiftVersion}`" :disabled="creatingSwift" class="w-full" autofocus />
+          </UFormField>
+          <UFormField :label="$t('create.custom.gameVersion')">
+            <USelectMenu v-model="swiftVersion" :items="swiftVersions" :disabled="creatingSwift" class="w-full" />
+          </UFormField>
+          <p class="text-sm text-muted">{{ $t('create.swift.downloadHint') }}</p>
+          <p v-if="creatingSwift" role="status" class="text-sm text-primary">{{ $t('create.swift.installing') }}</p>
+          <p v-if="error" role="alert" class="text-sm text-error">{{ error }}</p>
+        </form>
+
         <form v-else-if="step === 'custom'" key="custom" class="space-y-5" @submit.prevent="submit">
           <div class="flex items-end gap-3">
             <UDropdownMenu :items="iconMenu">
@@ -202,7 +214,8 @@
 
     <template v-if="step !== 'choice'" #footer>
       <div class="flex w-full items-center justify-between gap-3">
-        <UButton variant="ghost" color="neutral" icon="i-pixelarticons-arrow-left" :label="$t('create.back')" @click="step = 'choice'" />
+        <UButton variant="ghost" color="neutral" icon="i-pixelarticons-arrow-left" :label="$t('create.back')" :disabled="creatingSwift" @click="step = 'choice'" />
+        <UButton v-if="step === 'swift'" icon="i-pixelarticons-download" :label="$t('create.create')" :loading="creatingSwift" :disabled="!swiftVersions.includes(swiftVersion)" @click="createSwift" />
         <div v-if="step === 'custom'" class="flex items-center gap-3">
           <span v-if="form.mcVersion" class="hidden truncate font-mono text-xs text-dimmed sm:block">{{ summary }}</span>
           <UButton icon="i-pixelarticons-plus" :label="$t('create.create')" :loading="submitting" :disabled="!canSubmit" @click="submit" />
@@ -250,24 +263,33 @@ const choices = [
 ]
 
 const creatingSwift = ref(false)
+const swiftName = ref('')
+const swiftVersion = ref('26.2')
+const swiftVersions = ref<string[]>([])
 
 async function createSwift() {
   if (creatingSwift.value) return
   creatingSwift.value = true
+  error.value = null
   try {
-    const instance = await instances.createSwift()
+    const instance = await instances.createSwift(swiftName.value, swiftVersion.value)
     toast.add({ title: t('create.swift.created'), description: t('create.swift.createdDesc'), color: 'success', icon: 'i-pixelarticons-zap' })
     await openCreated(instance)
   } catch (e) {
+    error.value = errorText(e)
     toast.add({ title: t('create.swift.failed'), description: errorText(e), color: 'error' })
   } finally {
     creatingSwift.value = false
   }
 }
 
-function selectChoice(key: Step) {
+async function selectChoice(key: Step) {
   if (key === 'swift') {
-    createSwift()
+    step.value = 'swift'
+    error.value = null
+    try {
+      swiftVersions.value = await invoke<string[]>('swift_minecraft_versions')
+    } catch (e) { error.value = errorText(e) }
   } else if (key === 'modpack') {
     browser.open({ kind: 'modpack', mode: 'createModpack' })
     close()

@@ -1,8 +1,8 @@
 // Copies the Swift Client mod jar into src-tauri/resources/ so the installer ships it
 // (the launcher installs it into Swift instances). Runs before every build.
 //
-// Looked up, in order: $SWIFT_MOD_JAR, ./swiftclient-mod/build/libs (CI checkout),
-// ../swiftclient-mod/build/libs (the mod repository next to this one).
+// Looked up, in order: $SWIFT_MOD_JAR, then versions/26.2/build/libs (or build/libs for older builds) of
+// ./swiftclient-mod (CI checkout) and ../swiftclient-mod (the mod repository next to this one).
 // Fails the build if no jar is found and none is bundled yet: a launcher without the mod
 // would create Swift instances that cannot start.
 import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync } from 'node:fs'
@@ -21,9 +21,14 @@ function newestJar(dir) {
   return jars[0] ?? null
 }
 
+// The Minecraft version Swift instances run (src-tauri/src/commands/client_mod.rs, SWIFT_MC_VERSION): the mod
+// builds one jar per Minecraft version, in versions/<mc>/build/libs.
+const SWIFT_MC_VERSION = '26.2'
+const repoLibs = repo => [join(repo, 'versions', SWIFT_MC_VERSION, 'build', 'libs'), join(repo, 'build', 'libs')]
+
 const source = process.env.SWIFT_MOD_JAR && existsSync(process.env.SWIFT_MOD_JAR)
   ? process.env.SWIFT_MOD_JAR
-  : newestJar(join(root, 'swiftclient-mod', 'build', 'libs')) ?? newestJar(join(root, '..', 'swiftclient-mod', 'build', 'libs'))
+  : [...repoLibs(join(root, 'swiftclient-mod')), ...repoLibs(join(root, '..', 'swiftclient-mod'))].map(newestJar).find(Boolean) ?? null
 
 mkdirSync(dirname(target), { recursive: true })
 if (source) {

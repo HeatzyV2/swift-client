@@ -8,7 +8,8 @@
 use std::cmp::Ordering;
 use std::path::{Path, PathBuf};
 
-use std::sync::atomic::{AtomicI64, Ordering as AtomicOrdering};
+use std::collections::HashMap;
+use std::sync::LazyLock;
 use std::sync::Mutex;
 use std::time::Duration;
 
@@ -21,6 +22,26 @@ use crate::paths;
 const MOD_FILE_NAME: &str = "swiftclient-mod.jar";
 /// What a Swift instance runs. Keep in sync with the mod (gradle.properties / fabric.mod.json).
 pub const SWIFT_MC_VERSION: &str = "26.2";
+pub const SWIFT_MC_VERSIONS: &[&str] = &["26.3", "26.2", "26.1.2", "1.21.11", "1.21.10", "1.21.9", "1.21.8", "1.21.7", "1.21.6", "1.21.5", "1.21.4"];
+
+fn supported_minecraft(mc: Option<String>) -> AppResult<String> {
+    let mc = mc.unwrap_or_else(|| SWIFT_MC_VERSION.into());
+    if !SWIFT_MC_VERSIONS.contains(&mc.as_str()) {
+        return Err(AppError::invalid(format!("Unsupported Swift Minecraft version: {mc}")));
+    }
+    Ok(mc)
+}
+
+#[tauri::command]
+pub fn swift_minecraft_versions() -> Vec<&'static str> {
+    SWIFT_MC_VERSIONS.to_vec()
+}
+
+fn instance_minecraft(id: &str) -> AppResult<String> {
+    let instance = crate::store::read_json::<crate::models::Instance>(&paths::instance_config_file(id))?
+        .ok_or_else(|| AppError::not_found("instance not found"))?;
+    supported_minecraft(Some(instance.mc_version))
+}
 pub const SWIFT_FABRIC_LOADER: &str = "0.19.5";
 /// Fabric API on Modrinth, required by the mod.
 const FABRIC_API_PROJECT: &str = "P7dR8mSH";
@@ -41,9 +62,10 @@ const LAUNCH_CHECK_EVERY_SECS: i64 = 30 * 60;
 /// The background updater looks again this often while the launcher stays open.
 const BACKGROUND_CHECK_EVERY: Duration = Duration::from_secs(3 * 60 * 60);
 
-static LAST_LAUNCH_CHECK: AtomicI64 = AtomicI64::new(0);
+static LAST_LAUNCH_CHECK: LazyLock<Mutex<HashMap<String, i64>>> = LazyLock::new(|| Mutex::new(HashMap::new()));
+static DOWNLOAD_LOCK: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
 /// What the last network check found, so the UI can show it without asking GitHub again.
-static LATEST_SEEN: Mutex<Option<ReleaseAsset>> = Mutex::new(None);
+static LATEST_SEEN: LazyLock<Mutex<HashMap<String, ReleaseAsset>>> = LazyLock::new(|| Mutex::new(HashMap::new()));
 
 /// One downloadable build of the mod, picked from the GitHub releases.
 #[derive(Debug, Clone, Serialize)]
@@ -74,8 +96,14 @@ struct Candidate {
     len: u64,
 }
 
-fn cache_path() -> PathBuf {
-    paths::data_root().join("client").join(MOD_FILE_NAME)
+fn cache_dir(mc: &str) -> PathBuf {
+    // Preserve the old default cache; all other Minecraft versions have their own directory.
+    let root = paths::data_root().join("client");
+    if mc == SWIFT_MC_VERSION { root } else { root.join(mc) }
+}
+
+fn cache_path(mc: &str) -> PathBuf {
+    cache_dir(mc).join(MOD_FILE_NAME)
 }
 
 fn mods_dir(instance_id: &str) -> PathBuf {
@@ -149,7 +177,7 @@ fn cmp_candidates(a: &Candidate, b: &Candidate) -> Ordering {
     }
 }
 
-fn newest_versioned_jar(dir: &Path) -> Option<Candidate> {
+fn newest_versioned_jar(dir: &Path, mc: &str) -> Option<Candidate> {
     let mut best: Option<Candidate> = None;
     let entries = std::fs::read_dir(dir).ok()?;
     for entry in entries.flatten() {
@@ -162,6 +190,7 @@ fn newest_versioned_jar(dir: &Path) -> Option<Candidate> {
         if !stem.starts_with("swiftclient-mod") {
             continue;
         }
+        if !targets_swift_minecraft(&path, mc) { continue; }
         let Some(c) = candidate_from(path) else { continue };
         if best.as_ref().map(|b| cmp_candidates(&c, b).is_gt()).unwrap_or(true) {
             best = Some(c);
@@ -197,11 +226,13 @@ pub fn is_newer_version(local: &str, remote: &str) -> bool {
     version_key(remote) > version_key(local)
 }
 
-/// "2.4.0-beta.1" out of `swiftclient-mod-2.4.0-beta.1.jar`.
+/// "2.4.0-beta.1" out of `swiftclient-mod-2.4.0-beta.1.jar` (and of `swiftclient-mod-2.4.0-beta.1+26.2.jar`,
+/// the Minecraft tag of multi-version builds).
 fn version_string_from_filename(path: &Path) -> Option<String> {
     let name = path.file_name()?.to_string_lossy();
     let stem = name.trim_end_matches(".jar");
     let v = stem.strip_prefix("swiftclient-mod-")?;
+    let v = v.split('+').next().unwrap_or(v);
     if v.chars().next().is_some_and(|c| c.is_ascii_digit()) {
         return Some(v.to_string());
     }
@@ -226,13 +257,17 @@ fn current_settings() -> crate::models::Settings {
     crate::commands::settings::load().unwrap_or_default()
 }
 
-fn pinned_version() -> Option<String> {
-    current_settings().mod_pinned.filter(|v| !v.trim().is_empty())
+fn pinned_version(mc: &str) -> Option<String> {
+    if mc == SWIFT_MC_VERSION {
+        current_settings().mod_pinned.filter(|v| !v.trim().is_empty())
+    } else {
+        crate::store::read_json::<Option<String>>(&cache_dir(mc).join("pin.json")).ok().flatten().flatten()
+    }
 }
 
 /// Every folder that can hold a copy of the mod: the launcher's own, the bundled resources and local builds
 /// of the `swiftclient-mod` repository found next to the launcher sources.
-fn candidate_dirs() -> Vec<PathBuf> {
+fn candidate_dirs(mc: &str) -> Vec<PathBuf> {
     let mut candidates: Vec<PathBuf> = vec![
         // Shipped with the launcher.
         RESOURCE_DIR.get().map(|d| d.join("resources")).unwrap_or_default(),
@@ -241,7 +276,7 @@ fn candidate_dirs() -> Vec<PathBuf> {
             .ok()
             .and_then(|e| e.parent().map(|p| p.join("mods")))
             .unwrap_or_default(),
-        paths::data_root().join("client"),
+        cache_dir(mc),
     ];
     // Local builds of the mod: explicit folder, then the repository found next to the launcher sources
     // (from the working directory and from the executable, whichever depth `tauri dev` or a packaged
@@ -252,9 +287,12 @@ fn candidate_dirs() -> Vec<PathBuf> {
     let starts = [std::env::current_dir().ok(), std::env::current_exe().ok().and_then(|e| e.parent().map(Path::to_path_buf))];
     for start in starts.into_iter().flatten() {
         for ancestor in start.ancestors().take(8) {
-            let libs = ancestor.join("swiftclient-mod").join("build").join("libs");
-            if libs.is_dir() && !candidates.contains(&libs) {
-                candidates.push(libs);
+            // The mod builds one jar per Minecraft version (versions/<mc>/build/libs); older builds used build/libs.
+            let repo = ancestor.join("swiftclient-mod");
+            for libs in [repo.join("versions").join(mc).join("build").join("libs"), repo.join("build").join("libs")] {
+                if libs.is_dir() && !candidates.contains(&libs) {
+                    candidates.push(libs);
+                }
             }
         }
     }
@@ -262,9 +300,9 @@ fn candidate_dirs() -> Vec<PathBuf> {
 }
 
 /// Every mod jar the launcher can see, with its version string.
-fn all_jars() -> Vec<(String, Candidate)> {
+fn all_jars(mc: &str) -> Vec<(String, Candidate)> {
     let mut out = Vec::new();
-    for dir in candidate_dirs() {
+    for dir in candidate_dirs(mc) {
         let Ok(entries) = std::fs::read_dir(&dir) else { continue };
         for entry in entries.flatten() {
             let name = entry.file_name().to_string_lossy().into_owned();
@@ -276,6 +314,7 @@ fn all_jars() -> Vec<(String, Candidate)> {
                 continue;
             }
             let path = entry.path();
+            if !targets_swift_minecraft(&path, mc) { continue; }
             if let (Some(version), Some(c)) = (jar_version_string(&path), candidate_from(path)) {
                 out.push((version, c));
             }
@@ -284,18 +323,18 @@ fn all_jars() -> Vec<(String, Candidate)> {
     out
 }
 
-fn find_version(version: &str) -> Option<Candidate> {
-    all_jars()
+fn find_version(version: &str, mc: &str) -> Option<Candidate> {
+    all_jars(mc)
         .into_iter()
         .filter(|(v, _)| v == version)
         .map(|(_, c)| c)
         .max_by(cmp_candidates)
 }
 
-fn discover_best_jar() -> Option<Candidate> {
+fn discover_best_jar(mc: &str) -> Option<Candidate> {
     if let Ok(custom) = std::env::var("SWIFT_CLIENT_MOD_JAR") {
         let p = PathBuf::from(custom.trim());
-        if let Some(c) = candidate_from(p) {
+        if let Some(c) = candidate_from(p).filter(|c| targets_swift_minecraft(&c.path, mc)) {
             // Explicit override always wins.
             return Some(c);
         }
@@ -303,25 +342,26 @@ fn discover_best_jar() -> Option<Candidate> {
 
     // A version the player rolled back to beats "newest". If its file is gone, fall back to the newest
     // rather than installing nothing.
-    if let Some(pin) = pinned_version() {
-        if let Some(c) = find_version(&pin) {
+    if let Some(pin) = pinned_version(mc) {
+        if let Some(c) = find_version(&pin, mc) {
             return Some(c);
         }
     }
 
     let mut best: Option<Candidate> = None;
     let mut consider = |c: Candidate| {
+        if !targets_swift_minecraft(&c.path, mc) { return; }
         if best.as_ref().map(|b| cmp_candidates(&c, b).is_gt()).unwrap_or(true) {
             best = Some(c);
         }
     };
 
-    if let Some(c) = candidate_from(cache_path()) {
+    if let Some(c) = candidate_from(cache_path(mc)) {
         consider(c);
     }
 
-    for dir in candidate_dirs() {
-        if let Some(c) = newest_versioned_jar(&dir) {
+    for dir in candidate_dirs(mc) {
+        if let Some(c) = newest_versioned_jar(&dir, mc) {
             consider(c);
         }
         // Unversioned swiftclient-mod.jar sitting in that folder.
@@ -335,7 +375,7 @@ fn discover_best_jar() -> Option<Candidate> {
 
 /// Does this jar target the Minecraft version Swift instances run? (A release for the next Minecraft
 /// version must not land in current instances.)
-fn targets_swift_minecraft(path: &Path) -> bool {
+fn targets_swift_minecraft(path: &Path, mc: &str) -> bool {
     let Ok(file) = std::fs::File::open(path) else { return false };
     let Ok(mut zip) = zip::ZipArchive::new(file) else { return false };
     let Ok(mut entry) = zip.by_name("fabric.mod.json") else { return false };
@@ -348,15 +388,51 @@ fn targets_swift_minecraft(path: &Path) -> bool {
         && v
             .pointer("/depends/minecraft")
             .and_then(|x| x.as_str())
-            .is_some_and(|range| range.contains(SWIFT_MC_VERSION))
+            .is_some_and(|range| minecraft_range_matches(range, mc))
+}
+
+// Accept only the predicates emitted by our builds; never use substring matching (1.21.1 vs 1.21.11).
+fn minecraft_range_matches(range: &str, mc: &str) -> bool {
+    if range == mc { return true; }
+    if let Some(base) = range.strip_prefix('~') { return mc == base || mc.starts_with(&format!("{base}.")); }
+    if range.starts_with(">=") {
+        return range.split_whitespace().all(|predicate| {
+            if let Some(v) = predicate.strip_prefix(">=") { parse_version_str(mc) >= parse_version_str(v) }
+            else if let Some(v) = predicate.strip_prefix('<') { parse_version_str(mc) < parse_version_str(v) }
+            else { false }
+        });
+    }
+    false
 }
 
 fn is_mod_jar_name(name: &str) -> bool {
     name.starts_with("swiftclient-mod-") && name.ends_with(".jar") && !name.contains("sources") && !name.contains("-dev")
 }
 
+/// The Minecraft version of a release jar: `swiftclient-mod-2.7.0+1.21.4.jar` is for 1.21.4. Jars without
+/// it (releases before the multi-version builds) were all for 26.2.
+fn asset_minecraft(name: &str) -> &str {
+    name.trim_end_matches(".jar").split_once('+').map(|(_, mc)| mc).unwrap_or("26.2")
+}
+
+/// The release jar for Minecraft `mc`: its own `+<mc>` build, or the untagged jar of an older release.
+fn release_jar<'a>(assets: &'a [serde_json::Value], mc: &str) -> Option<&'a serde_json::Value> {
+    let named = |a: &&serde_json::Value| a["name"].as_str().is_some_and(is_mod_jar_name);
+    let for_mc = |a: &&serde_json::Value| a["name"].as_str().is_some_and(|n| asset_minecraft(n) == mc);
+    assets
+        .iter()
+        .filter(named)
+        .find(|a| a["name"].as_str().is_some_and(|n| n.contains('+')) && for_mc(a))
+        .or_else(|| assets.iter().filter(named).find(|a| a["name"].as_str().is_some_and(|n| !n.contains('+')) && for_mc(a)))
+}
+
 /// The newest downloadable build for a channel: "stable" ignores pre-releases, "beta" takes them too.
+/// Releases carry one jar per Minecraft version; Swift instances run [`SWIFT_MC_VERSION`].
 pub fn pick_release(releases: &serde_json::Value, channel: &str) -> Option<ReleaseAsset> {
+    pick_release_for(releases, channel, SWIFT_MC_VERSION)
+}
+
+pub fn pick_release_for(releases: &serde_json::Value, channel: &str, mc: &str) -> Option<ReleaseAsset> {
     let mut best: Option<ReleaseAsset> = None;
     for rel in releases.as_array()? {
         if rel["draft"].as_bool().unwrap_or(false) {
@@ -366,16 +442,14 @@ pub fn pick_release(releases: &serde_json::Value, channel: &str) -> Option<Relea
         if prerelease && channel != "beta" {
             continue;
         }
-        let Some(asset) = rel["assets"]
-            .as_array()
-            .and_then(|assets| assets.iter().find(|a| a["name"].as_str().is_some_and(is_mod_jar_name)))
-        else {
+        let Some(asset) = rel["assets"].as_array().and_then(|assets| release_jar(assets, mc)) else {
             continue;
         };
         let (Some(name), Some(url)) = (asset["name"].as_str(), asset["browser_download_url"].as_str()) else { continue };
         let Some(version) = version_string_from_filename(Path::new(name)) else { continue };
+        // Locally the jar is kept under its plain name ("2.7.0+26.2" -> swiftclient-mod-2.7.0.jar), like before.
         let candidate = ReleaseAsset {
-            name: name.to_string(),
+            name: format!("swiftclient-mod-{version}.jar"),
             url: url.to_string(),
             version,
             prerelease,
@@ -403,7 +477,7 @@ fn launch_check_due(now: i64, last: i64) -> bool {
 }
 
 /// Asks GitHub for the newest build of `channel` and remembers it.
-async fn fetch_latest(channel: &str, timeout: Duration) -> Result<Option<ReleaseAsset>, String> {
+async fn fetch_latest(channel: &str, mc: &str, timeout: Duration) -> Result<Option<ReleaseAsset>, String> {
     let http = reqwest::Client::builder()
         .user_agent(concat!("SwiftClient/", env!("CARGO_PKG_VERSION")))
         .timeout(timeout)
@@ -420,9 +494,9 @@ async fn fetch_latest(channel: &str, timeout: Duration) -> Result<Option<Release
         .json()
         .await
         .map_err(|e| e.to_string())?;
-    let picked = pick_release(&releases, channel);
+    let picked = pick_release_for(&releases, channel, mc);
     if let Ok(mut seen) = LATEST_SEEN.lock() {
-        *seen = picked.clone();
+        if let Some(ref asset) = picked { seen.insert(mc.to_string(), asset.clone()); } else { seen.remove(mc); }
     }
     Ok(picked)
 }
@@ -430,9 +504,11 @@ async fn fetch_latest(channel: &str, timeout: Duration) -> Result<Option<Release
 /// Fetches the newest build of `channel` when it is newer than every jar the launcher already has, with
 /// progress events when `app` is given. The jar lands in the launcher data folder, where
 /// `discover_best_jar` picks it up. Returns the new file and its version.
-async fn download_newer(channel: &str, app: Option<&AppHandle>, timeout: Duration) -> Result<Option<(PathBuf, String)>, String> {
-    let Some(remote) = fetch_latest(channel, timeout).await? else { return Ok(None) };
-    let current = crate::blocking(|| Ok(discover_best_jar().and_then(|c| jar_version_string(&c.path))))
+async fn download_newer(channel: &str, mc: &str, app: Option<&AppHandle>, timeout: Duration) -> Result<Option<(PathBuf, String)>, String> {
+    let _guard = DOWNLOAD_LOCK.lock().await;
+    let Some(remote) = fetch_latest(channel, mc, timeout).await? else { return Ok(None) };
+    let mc_owned = mc.to_string();
+    let current = crate::blocking(move || Ok(discover_best_jar(&mc_owned).and_then(|c| jar_version_string(&c.path))))
         .await
         .map_err(|e| e.to_string())?;
     if current.as_deref().is_some_and(|v| !is_newer_version(v, &remote.version)) {
@@ -455,13 +531,13 @@ async fn download_newer(channel: &str, app: Option<&AppHandle>, timeout: Duratio
                 last_emit = std::time::Instant::now();
                 let _ = app.emit(
                     "mod-update-progress",
-                    serde_json::json!({ "received": bytes.len(), "total": total, "version": remote.version }),
+                    serde_json::json!({ "received": bytes.len(), "total": total, "version": remote.version, "minecraft": mc }),
                 );
             }
         }
     }
     if let Some(app) = app {
-        let _ = app.emit("mod-update-progress", serde_json::json!({ "received": bytes.len(), "total": bytes.len(), "version": remote.version }));
+        let _ = app.emit("mod-update-progress", serde_json::json!({ "received": bytes.len(), "total": bytes.len(), "version": remote.version, "minecraft": mc }));
     }
 
     if let Some(expected) = &remote.digest {
@@ -471,17 +547,17 @@ async fn download_newer(channel: &str, app: Option<&AppHandle>, timeout: Duratio
             return Err(format!("{}: checksum mismatch, download ignored", remote.name));
         }
     }
-    let dir = paths::data_root().join("client");
+    let dir = cache_dir(mc);
     std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     let part = dir.join(format!("{}.part", remote.name));
     std::fs::write(&part, &bytes).map_err(|e| e.to_string())?;
-    if !targets_swift_minecraft(&part) {
+    if !targets_swift_minecraft(&part, mc) {
         let _ = std::fs::remove_file(&part);
-        return Err(format!("{} is not a Swift Client mod for Minecraft {SWIFT_MC_VERSION}, ignored", remote.name));
+        return Err(format!("{} is not a Swift Client mod for Minecraft {mc}, ignored", remote.name));
     }
     let dest = dir.join(&remote.name);
     std::fs::rename(&part, &dest).map_err(|e| e.to_string())?;
-    prune_versions(&dir, KEEP_VERSIONS, pinned_version().as_deref());
+    prune_versions(&dir, KEEP_VERSIONS, pinned_version(mc).as_deref());
     Ok(Some((dest, remote.version)))
 }
 
@@ -515,20 +591,24 @@ fn prune_versions(dir: &Path, keep: usize, protect: Option<&str>) {
 
 /// Before a launch: fetch a newer mod only when it is due (every 30 minutes at most) and quickly, so a slow
 /// or missing network never holds the game back. Never fails the launch.
-pub async fn refresh_from_releases() {
+pub async fn refresh_from_releases(instance_id: &str) {
+    if !is_swift_instance(instance_id) { return; }
+    let Ok(mc) = instance_minecraft(instance_id) else { return; };
+    let mc = mc.as_str();
     if std::env::var("SWIFT_CLIENT_MOD_JAR").is_ok() {
         return;
     }
     let settings = current_settings();
-    if settings.mod_channel == "local" || settings.mod_pinned.is_some() || !settings.mod_auto_update {
+    if settings.mod_channel == "local" || pinned_version(mc).is_some() || !settings.mod_auto_update {
         return;
     }
     let now = unix_now();
-    if !launch_check_due(now, LAST_LAUNCH_CHECK.load(AtomicOrdering::Relaxed)) {
-        return;
+    {
+        let Ok(mut checks) = LAST_LAUNCH_CHECK.lock() else { return; };
+        if !launch_check_due(now, *checks.get(mc).unwrap_or(&0)) { return; }
+        checks.insert(mc.to_string(), now);
     }
-    LAST_LAUNCH_CHECK.store(now, AtomicOrdering::Relaxed);
-    match download_newer(&settings.mod_channel, None, Duration::from_secs(4)).await {
+    match download_newer(&settings.mod_channel, mc, None, Duration::from_secs(4)).await {
         Ok(Some((path, version))) => log::info!("downloaded Swift client mod {version} ({})", path.display()),
         Ok(None) => {}
         Err(e) => log::warn!("Swift client mod update check: {e}"),
@@ -543,7 +623,7 @@ pub fn spawn_background_update(app: AppHandle) {
         loop {
             let settings = current_settings();
             if settings.mod_auto_update && settings.mod_channel != "local" && settings.mod_pinned.is_none() && std::env::var("SWIFT_CLIENT_MOD_JAR").is_err() {
-                match download_newer(&settings.mod_channel, Some(&app), Duration::from_secs(10)).await {
+                match download_newer(&settings.mod_channel, SWIFT_MC_VERSION, Some(&app), Duration::from_secs(10)).await {
                     Ok(Some((_, version))) => {
                         log::info!("Swift client mod updated in the background to {version}");
                         let _ = app.emit("mod-update-done", serde_json::json!({ "version": version }));
@@ -594,9 +674,9 @@ fn classify_source(path: &Path) -> &'static str {
     }
 }
 
-fn list_versions(current: Option<&str>, pinned: Option<&str>) -> Vec<ModVersion> {
+fn list_versions(current: Option<&str>, pinned: Option<&str>, mc: &str) -> Vec<ModVersion> {
     let mut out: Vec<ModVersion> = Vec::new();
-    for (version, c) in all_jars() {
+    for (version, c) in all_jars(mc) {
         if let Some(existing) = out.iter_mut().find(|m| m.version == version) {
             // Same version in several places: the downloaded copy is the one worth naming.
             if classify_source(&c.path) == "cache" {
@@ -616,28 +696,31 @@ fn list_versions(current: Option<&str>, pinned: Option<&str>) -> Vec<ModVersion>
     out
 }
 
-fn build_status(offline: bool) -> ModUpdateStatus {
+fn build_status(offline: bool, mc: &str) -> ModUpdateStatus {
     let settings = current_settings();
-    let installed = discover_best_jar().and_then(|c| jar_version_string(&c.path));
-    let latest = LATEST_SEEN.lock().ok().and_then(|g| g.clone());
+    let installed = discover_best_jar(mc).and_then(|c| jar_version_string(&c.path));
+    let latest = LATEST_SEEN.lock().ok().and_then(|g| g.get(mc).cloned());
     let update_available = settings.mod_channel != "local"
         && latest
             .as_ref()
             .is_some_and(|l| installed.as_deref().map(|i| is_newer_version(i, &l.version)).unwrap_or(true));
     ModUpdateStatus {
-        versions: list_versions(installed.as_deref(), settings.mod_pinned.as_deref()),
+        versions: list_versions(installed.as_deref(), pinned_version(mc).as_deref(), mc),
         installed,
         latest: latest.as_ref().map(|l| l.version.clone()),
         latest_prerelease: latest.as_ref().is_some_and(|l| l.prerelease),
         update_available,
         channel: settings.mod_channel,
-        pinned: settings.mod_pinned,
+        pinned: pinned_version(mc),
         auto_update: settings.mod_auto_update,
         offline,
     }
 }
 
-fn save_pin(pin: Option<String>) -> AppResult<()> {
+fn save_pin(pin: Option<String>, mc: &str) -> AppResult<()> {
+    if mc != SWIFT_MC_VERSION {
+        return crate::store::write_json(&cache_dir(mc).join("pin.json"), &pin);
+    }
     let mut settings = current_settings();
     settings.mod_pinned = pin;
     crate::store::write_json(&paths::launcher_config_file(), &settings)
@@ -645,74 +728,60 @@ fn save_pin(pin: Option<String>) -> AppResult<()> {
 
 /// What the launcher knows right now, without the network (for other modules, e.g. the crash analyzer).
 pub fn current_status_snapshot() -> ModUpdateStatus {
-    build_status(false)
+    build_status(false, SWIFT_MC_VERSION)
 }
 
 /// What the launcher knows right now, with no network.
 #[tauri::command]
-pub async fn mod_update_status() -> AppResult<ModUpdateStatus> {
-    crate::blocking(|| Ok(build_status(false))).await
+pub async fn mod_update_status(mc_version: Option<String>) -> AppResult<ModUpdateStatus> {
+    let mc = supported_minecraft(mc_version)?;
+    crate::blocking(move || Ok(build_status(false, &mc))).await
 }
 
-/// Asks GitHub whether a newer mod exists on the player's channel.
 #[tauri::command]
-pub async fn mod_update_check() -> AppResult<ModUpdateStatus> {
+pub async fn mod_update_check(mc_version: Option<String>) -> AppResult<ModUpdateStatus> {
+    let mc = supported_minecraft(mc_version)?;
     let channel = current_settings().mod_channel;
-    let mut offline = false;
-    if channel != "local" {
-        offline = fetch_latest(&channel, Duration::from_secs(8)).await.is_err();
-    }
-    crate::blocking(move || Ok(build_status(offline))).await
+    let offline = channel != "local" && fetch_latest(&channel, &mc, Duration::from_secs(8)).await.is_err();
+    crate::blocking(move || Ok(build_status(offline, &mc))).await
 }
 
-/// Downloads and keeps the newest mod now, with progress events. Clears a pinned version: asking for the
-/// newest means leaving the old one.
 #[tauri::command]
-pub async fn mod_update_install(app: AppHandle) -> AppResult<ModUpdateStatus> {
+pub async fn mod_update_install(app: AppHandle, mc_version: Option<String>) -> AppResult<ModUpdateStatus> {
+    let mc = supported_minecraft(mc_version)?;
     let settings = current_settings();
-    if settings.mod_channel == "local" {
-        return Err(AppError::invalid("the local channel never downloads"));
-    }
-    if settings.mod_pinned.is_some() {
-        crate::blocking(|| save_pin(None)).await?;
-    }
-    if let Err(e) = download_newer(&settings.mod_channel, Some(&app), Duration::from_secs(10)).await {
-        return Err(AppError::network(e));
-    }
-    crate::blocking(|| Ok(build_status(false))).await
+    if settings.mod_channel == "local" { return Err(AppError::invalid("the local channel never downloads")); }
+    save_pin(None, &mc)?;
+    download_newer(&settings.mod_channel, &mc, Some(&app), Duration::from_secs(10)).await.map_err(AppError::network)?;
+    crate::blocking(move || Ok(build_status(false, &mc))).await
 }
 
-/// Rolls back (or forward) to a version that is on this computer, until the player unpins it.
 #[tauri::command]
-pub async fn mod_use_version(version: String) -> AppResult<ModUpdateStatus> {
+pub async fn mod_use_version(version: String, mc_version: Option<String>) -> AppResult<ModUpdateStatus> {
+    let mc = supported_minecraft(mc_version)?;
     crate::blocking(move || {
-        if find_version(&version).is_none() {
-            return Err(AppError::not_found(format!("mod version {version} is not on this computer")));
-        }
-        save_pin(Some(version))?;
-        Ok(build_status(false))
-    })
-    .await
+        if find_version(&version, &mc).is_none() { return Err(AppError::not_found(format!("mod {version} for Minecraft {mc} is not on this computer"))); }
+        save_pin(Some(version), &mc)?;
+        Ok(build_status(false, &mc))
+    }).await
 }
 
 #[tauri::command]
-pub async fn mod_unpin() -> AppResult<ModUpdateStatus> {
-    crate::blocking(|| {
-        save_pin(None)?;
-        Ok(build_status(false))
-    })
-    .await
+pub async fn mod_unpin(mc_version: Option<String>) -> AppResult<ModUpdateStatus> {
+    let mc = supported_minecraft(mc_version)?;
+    crate::blocking(move || { save_pin(None, &mc)?; Ok(build_status(false, &mc)) }).await
 }
 
-fn seed_cache_from(source: &Path) -> AppResult<PathBuf> {
-    let cache = cache_path();
+fn seed_cache_from(source: &Path, mc: &str) -> AppResult<PathBuf> {
+    if !targets_swift_minecraft(source, mc) { return Err(AppError::invalid(format!("mod jar does not target Minecraft {mc}"))); }
+    let cache = cache_path(mc);
     if let Some(parent) = cache.parent() {
         std::fs::create_dir_all(parent).map_err(|e| format!("client mod cache dir: {e}"))?;
     }
     if source.canonicalize().ok().as_ref() == cache.canonicalize().ok().as_ref() {
         return Ok(cache);
     }
-    let pinned = pinned_version().is_some();
+    let pinned = pinned_version(mc).is_some();
     let refresh = match (source.metadata(), cache.metadata()) {
         (Ok(src), Ok(dst)) => {
             let src_ver = candidate_from(source.to_path_buf()).map(|c| c.version);
@@ -778,7 +847,9 @@ pub fn ensure_installed(instance_id: &str) -> AppResult<ClientModStatus> {
         return Ok(status(instance_id));
     }
 
-    let Some(best) = discover_best_jar() else {
+    let mc = instance_minecraft(instance_id)?;
+    let mc = mc.as_str();
+    let Some(best) = discover_best_jar(mc) else {
         return Ok(ClientModStatus {
             installed: installed_path(instance_id).is_file(),
             path: installed_path(instance_id)
@@ -789,15 +860,15 @@ pub fn ensure_installed(instance_id: &str) -> AppResult<ClientModStatus> {
         });
     };
 
-    let cache = seed_cache_from(&best.path)?;
+    let cache = seed_cache_from(&best.path, mc)?;
 
     let mods = mods_dir(instance_id);
     std::fs::create_dir_all(&mods).map_err(|e| format!("mods dir: {e}"))?;
     purge_legacy(&mods);
 
     let dest = installed_path(instance_id);
-    let pinned = pinned_version().is_some();
-    let needs_copy = match (candidate_from(cache.clone()), candidate_from(dest.clone())) {
+    let pinned = pinned_version(mc).is_some();
+    let needs_copy = !targets_swift_minecraft(&dest, mc) || match (candidate_from(cache.clone()), candidate_from(dest.clone())) {
         (Some(src), Some(dst)) if pinned => src.version != dst.version || src.len != dst.len,
         (Some(src), Some(dst)) => cmp_candidates(&src, &dst).is_gt() || src.len != dst.len,
         (Some(_), None) => true,
@@ -824,14 +895,16 @@ pub fn ensure_installed(instance_id: &str) -> AppResult<ClientModStatus> {
 }
 
 pub fn status(instance_id: &str) -> ClientModStatus {
+    let mc = instance_minecraft(instance_id).unwrap_or_default();
+    let mc = mc.as_str();
     let dest = installed_path(instance_id);
-    let cache = cache_path();
+    let cache = cache_path(mc);
     ClientModStatus {
         installed: dest.is_file(),
         path: dest
             .is_file()
             .then(|| dest.to_string_lossy().into_owned()),
-        cache_ready: cache.is_file() || discover_best_jar().is_some(),
+        cache_ready: cache.is_file() || discover_best_jar(mc).is_some(),
         version_hint: jar_version_hint(if dest.is_file() { &dest } else { &cache }),
     }
 }
@@ -860,13 +933,15 @@ pub struct PrelaunchHint {
 }
 
 pub fn prelaunch_hints(instance_id: &str) -> Vec<PrelaunchHint> {
+    let mc = instance_minecraft(instance_id).unwrap_or_default();
+    let mc = mc.as_str();
     let mut out = Vec::new();
     if has_essential(instance_id) {
         out.push(PrelaunchHint {
             kind: "essential".into(),
         });
     }
-    if is_swift_instance(instance_id) && !has_client_mod(instance_id) && discover_best_jar().is_none() {
+    if is_swift_instance(instance_id) && !has_client_mod(instance_id) && discover_best_jar(mc).is_none() {
         out.push(PrelaunchHint {
             kind: "missing_swift_mod".into(),
         });
@@ -896,7 +971,7 @@ fn recent_crash(instance_id: &str) -> bool {
 
 #[tauri::command]
 pub async fn ensure_client_mod(instance_id: String) -> AppResult<ClientModStatus> {
-    refresh_from_releases().await;
+    refresh_from_releases(&instance_id).await;
     crate::blocking(move || ensure_installed(&instance_id)).await
 }
 
@@ -913,50 +988,47 @@ pub async fn prelaunch_checks(instance_id: String) -> AppResult<Vec<PrelaunchHin
 /// Creates a ready-to-play Swift Client instance: Fabric on the mod's Minecraft version, the Swift
 /// mod and Fabric API. Nothing is left behind if a step fails.
 #[tauri::command]
-pub async fn create_swift_instance(name: Option<String>) -> AppResult<crate::models::Instance> {
-    let name = name.map(|n| n.trim().to_string()).filter(|n| !n.is_empty()).unwrap_or_else(|| "Swift Client".into());
+pub async fn create_swift_instance(name: Option<String>, mc_version: Option<String>, app: AppHandle) -> AppResult<crate::models::Instance> {
+    let mc = supported_minecraft(mc_version)?;
+    let probe = mc.clone();
+    let available = crate::blocking(move || Ok(discover_best_jar(&probe).is_some())).await?;
+    if !available {
+        let settings = current_settings();
+        if settings.mod_channel == "local" { return Err(AppError::not_found(format!("No local Swift mod for Minecraft {mc}"))); }
+        download_newer(&settings.mod_channel, &mc, Some(&app), Duration::from_secs(15)).await.map_err(AppError::network)?;
+    }
+    let target = mc.clone();
+    let name = name.map(|n| n.trim().to_string()).filter(|n| !n.is_empty()).unwrap_or_else(|| format!("Swift Client {mc}"));
     let instance = crate::blocking(move || {
-        if discover_best_jar().is_none() {
-            return Err(AppError::invalid("Swift Client mod not found in this launcher installation"));
-        }
-        let mut instance = crate::commands::instances::make_instance(
-            name,
-            SWIFT_MC_VERSION.into(),
-            crate::models::Loader::Fabric(SWIFT_FABRIC_LOADER.into()),
-            None,
-            None,
-        )?;
+        if discover_best_jar(&target).is_none() { return Err(AppError::not_found(format!("No Swift release is available for Minecraft {target}"))); }
+        let mut instance = crate::commands::instances::make_instance(name, target, crate::models::Loader::Fabric(SWIFT_FABRIC_LOADER.into()), None, None)?;
         instance.swift = true;
-        crate::store::write_json(&paths::instance_config_file(&instance.id), &instance)?;
-        if let Err(e) = ensure_installed(&instance.id) {
+        let result = crate::store::write_json(&paths::instance_config_file(&instance.id), &instance)
+            .and_then(|_| ensure_installed(&instance.id));
+        if let Err(e) = result {
             let _ = std::fs::remove_dir_all(paths::instance_dir(&instance.id));
             return Err(e);
         }
         Ok(instance)
-    })
-    .await?;
-
-    match crate::commands::modrinth::install_latest(&instance.id, FABRIC_API_PROJECT, SWIFT_MC_VERSION, "fabric").await {
+    }).await?;
+    match crate::commands::modrinth::install_latest(&instance.id, FABRIC_API_PROJECT, &mc, "fabric").await {
         Ok(added) if !added.is_empty() => Ok(instance),
-        Ok(_) => {
+        result => {
             let _ = std::fs::remove_dir_all(paths::instance_dir(&instance.id));
-            Err(AppError::network(format!("no Fabric API release for Minecraft {SWIFT_MC_VERSION} on Modrinth")))
-        }
-        Err(e) => {
-            let _ = std::fs::remove_dir_all(paths::instance_dir(&instance.id));
-            Err(e)
+            match result { Err(e) => Err(e), _ => Err(AppError::network(format!("No Fabric API release for Minecraft {mc}"))) }
         }
     }
 }
 
 #[tauri::command]
-pub async fn import_client_mod_jar(path: String) -> AppResult<ClientModStatus> {
+pub async fn import_client_mod_jar(path: String, mc_version: Option<String>) -> AppResult<ClientModStatus> {
+    let mc = supported_minecraft(mc_version)?;
     crate::blocking(move || {
         let src = PathBuf::from(path);
         if !src.is_file() {
             return Err(AppError::invalid("mod jar not found"));
         }
-        let cache = seed_cache_from(&src)?;
+        let cache = seed_cache_from(&src, &mc)?;
         Ok(ClientModStatus {
             installed: false,
             path: None,
@@ -970,10 +1042,50 @@ pub async fn import_client_mod_jar(path: String) -> AppResult<ClientModStatus> {
 #[cfg(test)]
 mod tests {
     use super::{
-        cmp_candidates, is_newer_version, launch_check_due, parse_version_str, pick_release, version_key, versions_to_prune,
-        Candidate, LAUNCH_CHECK_EVERY_SECS,
+        cmp_candidates, is_newer_version, launch_check_due, parse_version_str, pick_release, pick_release_for, version_key,
+        versions_to_prune, Candidate, LAUNCH_CHECK_EVERY_SECS,
     };
     use std::path::PathBuf;
+
+    #[test]
+    fn minecraft_predicates_do_not_confuse_similar_versions() {
+        use super::minecraft_range_matches as matches;
+        assert!(matches("1.21.11", "1.21.11"));
+        assert!(!matches("1.21.11", "1.21.1"));
+        assert!(matches(">=26.1.2 <26.2", "26.1.2"));
+        assert!(!matches(">=26.1.2 <26.2", "26.2"));
+        assert!(matches("~26.2", "26.2"));
+        assert!(!matches("~26.2", "26.3"));
+        assert!(!matches("~26.2", "26.20"));
+    }
+
+    #[test]
+    fn minecraft_caches_are_isolated_and_legacy_path_survives() {
+        assert_eq!(super::cache_path("26.2"), crate::paths::data_root().join("client/swiftclient-mod.jar"));
+        for a in super::SWIFT_MC_VERSIONS {
+            for b in super::SWIFT_MC_VERSIONS {
+                assert_eq!(super::cache_path(a) == super::cache_path(b), a == b);
+            }
+        }
+        assert!(super::supported_minecraft(Some("../26.2".into())).is_err());
+        assert!(super::supported_minecraft(Some("1.20.1".into())).is_err());
+    }
+
+    #[test]
+    fn discovery_checks_metadata_even_when_filename_claims_another_version() {
+        use std::io::Write;
+        let dir = std::env::temp_dir().join(format!("swift-mod-test-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("swiftclient-mod-99.0.0+26.3.jar");
+        let mut zip = zip::ZipWriter::new(std::fs::File::create(&path).unwrap());
+        zip.start_file("fabric.mod.json", zip::write::SimpleFileOptions::default()).unwrap();
+        zip.write_all(br#"{"id":"swiftclient","version":"99.0.0","depends":{"minecraft":"1.21.4"}}"#).unwrap();
+        zip.finish().unwrap();
+        assert!(super::newest_versioned_jar(&dir, "26.3").is_none());
+        assert!(super::newest_versioned_jar(&dir, "1.21.4").is_some());
+        assert!(super::seed_cache_from(&path, "26.3").is_err());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
 
     #[test]
     fn newer_semver_wins() {
@@ -1036,6 +1148,29 @@ mod tests {
     fn nothing_to_pick_gives_none() {
         assert!(pick_release(&serde_json::json!([]), "stable").is_none());
         assert!(pick_release(&serde_json::json!({}), "stable").is_none());
+    }
+
+    fn multi_version_releases() -> serde_json::Value {
+        serde_json::json!([
+            { "draft": false, "prerelease": false, "assets": [
+                { "name": "swiftclient-mod-2.7.0.jar", "browser_download_url": "https://x/legacy", "size": 2 },
+                { "name": "swiftclient-mod-2.7.0+1.21.4.jar", "browser_download_url": "https://x/1214", "size": 3 },
+                { "name": "swiftclient-mod-2.7.0+26.2.jar", "browser_download_url": "https://x/262", "size": 4 },
+                { "name": "swiftclient-mod-2.7.0+26.3.jar", "browser_download_url": "https://x/263", "size": 5 }
+            ] },
+            { "draft": false, "prerelease": false, "assets": [{ "name": "swiftclient-mod-2.6.7.jar", "browser_download_url": "https://x/267", "size": 7 }] }
+        ])
+    }
+
+    #[test]
+    fn the_jar_of_the_instance_minecraft_version_is_picked() {
+        let r = pick_release_for(&multi_version_releases(), "stable", "26.2").expect("a 26.2 jar");
+        assert_eq!((r.url.as_str(), r.version.as_str(), r.name.as_str()), ("https://x/262", "2.7.0", "swiftclient-mod-2.7.0.jar"));
+        let r = pick_release_for(&multi_version_releases(), "stable", "1.21.4").expect("a 1.21.4 jar");
+        assert_eq!(r.url, "https://x/1214");
+        // Older releases only had the untagged 26.2 jar: nothing newer for 1.21.5.
+        assert!(pick_release_for(&multi_version_releases(), "stable", "1.21.5").is_none());
+        assert_eq!(pick_release(&multi_version_releases(), "stable").map(|r| r.url), Some("https://x/262".to_string()));
     }
 
     #[test]

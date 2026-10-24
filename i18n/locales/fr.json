@@ -26,7 +26,7 @@
       "importTitle": "Importer une installation",
       "importDesc": "Importe depuis Lunar, Dawn, Spectra, Prism, MultiMC, Modrinth App ou un fichier zip/mrpack.",
       "swiftTitle": "Swift Client",
-      "swiftDesc": "Recommandé : Minecraft 26.2 avec Fabric, le mod Swift Client et Fabric API, prêt à jouer."
+      "swiftDesc": "Choisis ta version de Minecraft avec Fabric, le mod Swift Client et Fabric API, prêts à jouer."
     },
     "custom": {
       "name": "Nom",
@@ -60,6 +60,8 @@
     },
     "done": "« {name} » créée",
     "swift": {
+      "downloadHint": "Le mod correspondant à cette version sera téléchargé si nécessaire, puis installé avec Fabric API.",
+      "installing": "Téléchargement et installation en cours…",
       "created": "Instance Swift Client créée",
       "createdDesc": "Le mod Swift Client et Fabric API sont installés.",
       "failed": "Impossible de créer l'instance Swift Client"
