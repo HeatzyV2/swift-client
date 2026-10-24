@@ -165,7 +165,7 @@ jobs:
       - name: Build the Swift Client mod (bundled in the installer)
         shell: bash
         working-directory: swiftclient-mod
-        run: ./gradlew jar --no-daemon
+        run: ./gradlew buildAll --no-daemon
 
       # Installed launchers only accept updates signed with the key matching `plugins.updater.pubkey`.
       # A release built without it would ship no latest.json, and every player would stay on the old

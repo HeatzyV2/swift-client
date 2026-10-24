@@ -782,7 +782,7 @@ fn seed_cache_from(source: &Path, mc: &str) -> AppResult<PathBuf> {
         return Ok(cache);
     }
     let pinned = pinned_version(mc).is_some();
-    let refresh = match (source.metadata(), cache.metadata()) {
+    let refresh = !targets_swift_minecraft(&cache, mc) || match (source.metadata(), cache.metadata()) {
         (Ok(src), Ok(dst)) => {
             let src_ver = candidate_from(source.to_path_buf()).map(|c| c.version);
             let dst_ver = candidate_from(cache.clone()).map(|c| c.version);
@@ -850,14 +850,8 @@ pub fn ensure_installed(instance_id: &str) -> AppResult<ClientModStatus> {
     let mc = instance_minecraft(instance_id)?;
     let mc = mc.as_str();
     let Some(best) = discover_best_jar(mc) else {
-        return Ok(ClientModStatus {
-            installed: installed_path(instance_id).is_file(),
-            path: installed_path(instance_id)
-                .is_file()
-                .then(|| installed_path(instance_id).to_string_lossy().into_owned()),
-            cache_ready: false,
-            version_hint: None,
-        });
+        if targets_swift_minecraft(&installed_path(instance_id), mc) { return Ok(status(instance_id)); }
+        return Err(AppError::not_found(format!("No compatible Swift Client mod for Minecraft {mc}. Download it from the Swift Client settings.")));
     };
 
     let cache = seed_cache_from(&best.path, mc)?;
@@ -900,11 +894,11 @@ pub fn status(instance_id: &str) -> ClientModStatus {
     let dest = installed_path(instance_id);
     let cache = cache_path(mc);
     ClientModStatus {
-        installed: dest.is_file(),
+        installed: targets_swift_minecraft(&dest, mc),
         path: dest
             .is_file()
             .then(|| dest.to_string_lossy().into_owned()),
-        cache_ready: cache.is_file() || discover_best_jar(mc).is_some(),
+        cache_ready: targets_swift_minecraft(&cache, mc) || discover_best_jar(mc).is_some(),
         version_hint: jar_version_hint(if dest.is_file() { &dest } else { &cache }),
     }
 }

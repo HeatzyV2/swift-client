@@ -461,9 +461,7 @@ async fn launch_inner(app: &AppHandle, id: &str, quick_play: Option<QuickPlay>) 
     if crate::commands::client_mod::is_swift_instance(id) {
         crate::commands::client_mod::refresh_from_releases(id).await;
     }
-    if let Err(e) = crate::commands::client_mod::ensure_installed(id) {
-        log::warn!("could not install Swift client mod into {id}: {e}");
-    }
+    crate::commands::client_mod::ensure_installed(id)?;
     if let Err(e) = crate::commands::sync::pull(id, &instance.mc_version) {
         log::warn!("could not apply synced options to {id}: {e}");
     }

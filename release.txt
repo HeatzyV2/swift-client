@@ -1,3 +1,11 @@
+## Changes (v1.7.0)
+
+### 🧩 Swift instances for every supported Minecraft version
+- Choose the Minecraft version when creating a Swift instance (1.21.4 through 1.21.11 and 26.1.2, 26.2, 26.3).
+- The launcher downloads and installs the matching Swift Client mod JAR on request, with a separate cache and update channel per Minecraft version.
+- Updating the mod checks compatibility with the selected Minecraft version and keeps its rollback history isolated.
+- New launcher builds compile the complete mod version matrix before packaging.
+
 ## Changes (v1.5.0)
 
 ### 🧩 The Swift Client mod stays up to date by itself
@@ -37,3 +45,10 @@
 ### Also
 - The Home avatar floats smoothly.
 - Backend: the Swift Platform admin panel (French or English), versioned API, roles, audit log, webhooks and more.
+## Changes (v1.7.0)
+
+### 🧩 Swift instances for every supported Minecraft version
+- Choose the Minecraft version when creating a Swift instance (1.21.4 through 1.21.11 and 26.1.2, 26.2, 26.3).
+- The launcher downloads and installs the matching Swift Client mod JAR on request, with a separate cache and update channel per Minecraft version.
+- Updating the mod checks compatibility with the selected Minecraft version and keeps its rollback history isolated.
+- New launcher builds compile the complete mod version matrix before packaging.
