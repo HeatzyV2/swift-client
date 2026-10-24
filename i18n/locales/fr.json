@@ -715,7 +715,10 @@
     "defaultsEmpty": "Les skins par défaut apparaîtront une fois une version de Minecraft installée.",
     "demoTitle": "Vous parcourez en mode démo",
     "demoDesc": "Regardez et prévisualisez n'importe quel skin. Connectez-vous avec Microsoft pour l'appliquer à votre compte.",
-    "signIn": "Se connecter avec Microsoft"
+    "signIn": "Se connecter avec Microsoft",
+    "offlineTitle": "Ton skin, visible uniquement par toi",
+    "offlineDesc": "Compte hors ligne : Mojang ne le connaît pas, donc le skin que tu appliques s'affiche sur ton propre joueur en jeu (troisième personne, inventaire, tab). Les autres joueurs voient toujours le skin par défaut.",
+    "appliedOffline": "Skin appliqué, visible uniquement par toi en jeu"
   },
   "instSettings": {
     "tabs": {

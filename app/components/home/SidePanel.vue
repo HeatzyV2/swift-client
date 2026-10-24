@@ -1,19 +1,19 @@
 <template>
-  <aside class="grid min-w-0 content-start gap-3.5 md:grid-cols-3">
+  <aside class="grid min-w-0 content-start gap-4">
     <!-- Live server status -->
     <section v-if="server" class="sw-block p-4">
       <div class="flex items-center justify-between gap-3">
         <span class="sw-eyebrow">{{ $t('home.server.title') }}</span>
         <span class="flex items-center gap-1.5 text-[11.5px] font-medium" :class="statusClass">
-          <span class="size-2 bg-current" />
+          <span class="size-2 rounded-full bg-current" />
           {{ statusLabel }}
         </span>
       </div>
 
       <div class="mt-3 flex items-center gap-3">
-        <img v-if="ping?.favicon" :src="ping.favicon" alt="" class="size-10 shrink-0 rounded-[2px] border-2 border-[var(--sw-ink)] [image-rendering:pixelated]">
-        <div v-else class="flex size-10 shrink-0 items-center justify-center rounded-[2px] border-2 border-[var(--sw-ink)] bg-[var(--sw-surface-3)]">
-          <UIcon name="i-pixelarticons-server" class="size-5 text-dimmed" />
+        <img v-if="ping?.favicon" :src="ping.favicon" alt="" class="size-10 shrink-0 rounded-[10px] [image-rendering:pixelated]">
+        <div v-else class="flex size-10 shrink-0 items-center justify-center rounded-[10px] bg-[var(--sw-surface-3)]">
+          <UIcon name="i-lucide-server" class="size-5 text-dimmed" />
         </div>
         <div class="min-w-0">
           <p class="truncate font-display text-[15px] font-semibold text-highlighted">{{ server.name || server.address }}</p>
@@ -59,7 +59,7 @@
       <NuxtLink
         v-if="lastInstance"
         :to="`/instance/${lastInstance.id}`"
-        class="group mt-3 flex items-center gap-3 rounded-[3px] p-1.5 -m-1.5 transition-colors duration-100 hover:bg-[var(--sw-surface-2)]"
+        class="group mt-3 flex items-center gap-3 rounded-[10px] p-1.5 -m-1.5 transition-colors duration-100 hover:bg-[var(--sw-surface-2)]"
       >
         <InstanceIcon :instance="lastInstance" class="size-10 rounded-lg text-sm" />
         <span class="min-w-0 flex-1">
@@ -69,7 +69,7 @@
             <template v-if="lastInstance.playtime_seconds"> · {{ $t('home.lastSession.total', { time: formatPlaytime(lastInstance.playtime_seconds, locale) }) }}</template>
           </span>
         </span>
-        <UIcon name="i-pixelarticons-arrow-right" class="size-4 shrink-0 text-dimmed transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-toned" />
+        <UIcon name="i-lucide-arrow-right" class="size-4 shrink-0 text-dimmed transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-toned" />
       </NuxtLink>
       <p v-else class="mt-2 text-[12.5px] leading-relaxed text-muted">{{ $t('home.lastSession.never') }}</p>
     </section>

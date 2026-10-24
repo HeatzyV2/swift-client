@@ -12,7 +12,7 @@ export type ThemeMode =
 
 /** Picker order. `swatch` = surface colour, `accent` = primary accent (keep in sync with main.css). */
 export const THEME_META: Record<ThemeMode, { swatch: string, accent: string }> = {
-  swift: { swatch: '#111317', accent: '#2e7cff' },
+  swift: { swatch: '#0b0f16', accent: '#2e7cff' },
   oled: { swatch: '#000000', accent: '#2e7cff' },
   nether: { swatch: '#2b120e', accent: '#e8590c' },
   end: { swatch: '#1c1329', accent: '#b983ff' },

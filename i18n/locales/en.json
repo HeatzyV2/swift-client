@@ -715,7 +715,10 @@
     "defaultsEmpty": "Default skins appear once you have installed a Minecraft version.",
     "demoTitle": "You are browsing in demo mode",
     "demoDesc": "Look around and preview any skin. Sign in with Microsoft to apply one to your account.",
-    "signIn": "Sign in with Microsoft"
+    "signIn": "Sign in with Microsoft",
+    "offlineTitle": "Your skin, visible only to you",
+    "offlineDesc": "Offline account: Mojang does not know it, so the skin you apply shows on your own player in game (third person, inventory, tab list). Other players still see the default skin.",
+    "appliedOffline": "Skin applied, visible only to you in game"
   },
   "instSettings": {
     "tabs": {

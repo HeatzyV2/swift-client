@@ -10,7 +10,9 @@
  */
 @theme static {
 	--font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-	--font-display: 'Pixelify Sans', 'Inter', system-ui, sans-serif;
+	/* Headings: Inter, heavy. Pixelify stays for the brand mark only (`font-pixel`). */
+	--font-display: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--font-pixel: 'Pixelify Sans', 'Inter', system-ui, sans-serif;
 	--font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
 
 	--color-swift-50: #eef5ff;
@@ -37,24 +39,24 @@
 	--color-neutral-900: #16181c;
 	--color-neutral-950: #0e0f12;
 
-	/* Square-ish everywhere: every rounded-* utility (ours and Nuxt UI's) lands on tiny radii */
-	--radius-xs: 1px;
-	--radius-sm: 2px;
-	--radius-md: 3px;
-	--radius-lg: 4px;
-	--radius-xl: 4px;
-	--radius-2xl: 6px;
-	--radius-3xl: 6px;
-	--radius-4xl: 8px;
+	/* Soft, rounded surfaces */
+	--radius-xs: 4px;
+	--radius-sm: 6px;
+	--radius-md: 8px;
+	--radius-lg: 10px;
+	--radius-xl: 12px;
+	--radius-2xl: 16px;
+	--radius-3xl: 20px;
+	--radius-4xl: 24px;
 
-	/* No soft shadows: every shadow-* utility becomes a hard, solid "side" */
-	--shadow-2xs: 0 1px 0 0 rgb(0 0 0 / 0.6);
-	--shadow-xs: 0 2px 0 0 rgb(0 0 0 / 0.6);
-	--shadow-sm: 0 3px 0 0 rgb(0 0 0 / 0.6);
-	--shadow-md: 0 4px 0 0 rgb(0 0 0 / 0.6);
-	--shadow-lg: 0 5px 0 0 rgb(0 0 0 / 0.6);
-	--shadow-xl: 0 6px 0 0 rgb(0 0 0 / 0.6);
-	--shadow-2xl: 0 8px 0 0 rgb(0 0 0 / 0.6);
+	/* Diffuse shadows: depth without hard edges */
+	--shadow-2xs: 0 1px 2px rgb(0 0 0 / 0.35);
+	--shadow-xs: 0 1px 3px rgb(0 0 0 / 0.4);
+	--shadow-sm: 0 2px 8px rgb(0 0 0 / 0.35);
+	--shadow-md: 0 6px 18px rgb(0 0 0 / 0.38);
+	--shadow-lg: 0 10px 30px rgb(0 0 0 / 0.42);
+	--shadow-xl: 0 16px 44px rgb(0 0 0 / 0.46);
+	--shadow-2xl: 0 24px 64px rgb(0 0 0 / 0.5);
 
 	--ease-swift: cubic-bezier(0.2, 0.8, 0.2, 1);
 	/* Slight overshoot, for the one or two moments that deserve it */
@@ -88,11 +90,11 @@
 	--sw-success: #3ecf8e;
 	--sw-warning: #f5b544;
 	--sw-danger: #f2555a;
-	--sw-radius-panel: 6px;
+	--sw-radius-panel: 16px;
 
-	/* Block language: hard outline + a solid "side" under every raised thing */
-	--sw-ink: #000000;
-	--sw-block-side: color-mix(in srgb, var(--sw-accent) 38%, #000000);
+	/* Kept for components that still read them: now a soft edge, not a hard "side" */
+	--sw-ink: rgb(255 255 255 / 0.06);
+	--sw-block-side: rgb(0 0 0 / 0.35);
 
 	/*
 	 * Accent effects. Derived from --sw-accent so every theme (ember, aurora…)
@@ -129,21 +131,21 @@
 	--ui-text-highlighted: #f3f4f6;
 	--ui-text-inverted: var(--color-neutral-950);
 	--ui-primary: var(--sw-accent);
-	--ui-radius: 0.25rem;
+	--ui-radius: 0.625rem;
 }
 
 /* OLED keeps the base tokens above; the class is kept for the legacy `.oled` hook. */
 
-/* Swift — the brand theme: cool charcoal with Swift blue (formerly "Dark") */
+/* Swift — the brand theme: deep navy-black with Swift blue */
 html.theme-swift {
-	--sw-canvas: #0a0b0d;
-	--sw-stage: #0d0e11;
-	--sw-surface: #111317;
-	--sw-surface-2: #15171b;
-	--sw-surface-3: #1c1f24;
-	--sw-line: #1f2228;
-	--sw-line-soft: #17191e;
-	--sw-line-strong: #2b2f36;
+	--sw-canvas: #05070b;
+	--sw-stage: #070a10;
+	--sw-surface: #0b0f16;
+	--sw-surface-2: #10151e;
+	--sw-surface-3: #161c27;
+	--sw-line: rgb(255 255 255 / 0.07);
+	--sw-line-soft: rgb(255 255 255 / 0.045);
+	--sw-line-strong: rgb(255 255 255 / 0.11);
 }
 
 /*
@@ -234,15 +236,6 @@ body {
 	background: var(--sw-canvas);
 }
 
-/* Circles become blocks: dots, avatars, badges, switches */
-.rounded-full:not(.sw-keep-round) {
-	border-radius: 3px;
-}
-/* Nothing in the launcher blurs what is behind it */
-[class*='backdrop-blur'] {
-	-webkit-backdrop-filter: none !important;
-	backdrop-filter: none !important;
-}
 
 body {
 	margin: 0;
@@ -257,7 +250,14 @@ body {
 
 .font-display {
 	font-family: var(--font-display);
-	letter-spacing: 0.01em;
+	font-weight: 700;
+	letter-spacing: -0.015em;
+}
+
+/* Brand mark only: the pixel wordmark */
+.font-pixel {
+	font-family: var(--font-pixel);
+	letter-spacing: 0.02em;
 }
 
 ::selection {
@@ -277,113 +277,95 @@ textarea::placeholder {
 /* ---------- primitives ---------- */
 
 /*
- * Swift blocks. The launcher is built from chunky, square, cartoon blocks:
- * a hard outline, a flat colour, a bevel and a solid side instead of a soft
- * shadow. Nothing here blurs, glows or fades; things press, pop and bob.
+ * Swift surfaces: soft, rounded panels with a hairline border and a diffuse
+ * shadow. Raised things lift a little and catch the accent on hover.
  */
 .sw-block {
 	background: var(--sw-surface);
-	border: 2px solid var(--sw-line-strong);
-	border-radius: var(--sw-radius-panel, 6px);
-	box-shadow:
-		inset 0 2px 0 rgb(255 255 255 / 0.05),
-		0 4px 0 0 var(--sw-block-side);
+	border: 1px solid var(--sw-line);
+	border-radius: var(--sw-radius-panel, 16px);
+	box-shadow: var(--shadow-sm);
 }
 .sw-block-flat {
 	background: var(--sw-surface-2);
-	border: 2px solid var(--sw-line-strong);
-	border-radius: var(--sw-radius-panel, 6px);
+	border: 1px solid var(--sw-line);
+	border-radius: var(--sw-radius-panel, 16px);
 }
 .sw-block-interactive {
-	transition: transform 90ms steps(2), box-shadow 90ms steps(2), background-color 90ms steps(2);
+	transition: transform 180ms var(--ease-swift), box-shadow 180ms var(--ease-swift), background-color 180ms var(--ease-swift),
+		border-color 180ms var(--ease-swift);
 }
 .sw-block-interactive:hover {
 	background: var(--sw-surface-2);
+	border-color: color-mix(in srgb, var(--sw-accent) 35%, var(--sw-line));
 	transform: translateY(-2px);
-	box-shadow:
-		inset 0 2px 0 rgb(255 255 255 / 0.07),
-		0 6px 0 0 var(--sw-block-side);
+	box-shadow: var(--shadow-md);
 }
 .sw-block-interactive:active {
-	transform: translateY(3px);
-	box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.05), 0 1px 0 0 var(--sw-block-side);
+	transform: translateY(0);
+	box-shadow: var(--shadow-sm);
 }
 
-/* Page title: pixel sign text with a speed streak under it */
+/* Page title: large, tight Inter with a short accent bar under it */
 .sw-page-title {
 	font-family: var(--font-display);
-	font-size: 32px;
-	font-weight: 600;
-	line-height: 1;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
+	font-size: 30px;
+	font-weight: 800;
+	line-height: 1.1;
+	letter-spacing: -0.025em;
 	color: var(--ui-text-highlighted);
-	text-shadow: 2px 2px 0 var(--sw-ink);
 }
 .sw-page-title::after {
 	content: '';
 	display: block;
-	width: 100px;
-	height: 6px;
-	margin-top: 10px;
-	background: linear-gradient(
-		90deg,
-		var(--sw-accent) 0 56px,
-		transparent 56px 62px,
-		color-mix(in srgb, var(--sw-accent) 60%, transparent) 62px 86px,
-		transparent 86px 92px,
-		color-mix(in srgb, var(--sw-accent) 30%, transparent) 92px 100px
-	);
+	width: 36px;
+	height: 4px;
+	margin-top: 12px;
+	border-radius: 2px;
+	background: var(--sw-accent);
+	box-shadow: 0 0 14px color-mix(in srgb, var(--sw-accent) 70%, transparent);
 }
 
-/* Pixel nametag / sign text: flat shadow in place of a glow */
+/* Emphasised name text (nametags, player card) */
 .sw-sign-text {
 	font-family: var(--font-display);
-	text-shadow: 2px 2px 0 var(--sw-ink);
+	font-weight: 700;
 }
 
-/* Chunky button: bevelled top, dark bottom edge, black outline, solid side. Presses down. */
+/* Primary call to action: solid accent, rounded, with a soft accent glow */
 .sw-chunk {
 	--chunk-bg: var(--sw-accent);
 	--chunk-fg: var(--sw-accent-fg);
-	--chunk-side: var(--sw-block-side);
-	--chunk-lift: 7px;
 	position: relative;
 	background: var(--chunk-bg);
 	color: var(--chunk-fg);
-	border-radius: 4px;
-	box-shadow:
-		inset 0 4px 0 rgb(255 255 255 / 0.32),
-		inset 0 -5px 0 rgb(0 0 0 / 0.26),
-		0 0 0 3px var(--sw-ink),
-		0 var(--chunk-lift) 0 3px var(--sw-ink),
-		0 calc(var(--chunk-lift) + 3px) 0 0 var(--chunk-side);
+	border-radius: 14px;
+	box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08) inset, 0 10px 32px -6px color-mix(in srgb, var(--chunk-bg) 65%, transparent);
 	transform: translateY(0);
-	transition: transform 80ms steps(2), box-shadow 80ms steps(2), filter 80ms steps(2);
+	transition: transform 160ms var(--ease-swift), box-shadow 160ms var(--ease-swift), filter 160ms var(--ease-swift);
 }
 .sw-chunk:not(:disabled):hover {
-	filter: brightness(1.12);
-	transform: translateY(-2px);
+	filter: brightness(1.1);
+	transform: translateY(-1px);
+	box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12) inset, 0 14px 40px -6px color-mix(in srgb, var(--chunk-bg) 80%, transparent);
 }
 .sw-chunk:not(:disabled):active {
-	--chunk-lift: 2px;
-	transform: translateY(5px);
+	transform: translateY(1px) scale(0.99);
 }
 
-/* Entrances and idle motion are stepped, like frames of a sprite */
+/* Entrances and idle motion */
 @keyframes sw-pop {
-	0% { opacity: 0; transform: translateY(8px) scale(0.92); }
-	60% { opacity: 1; transform: translateY(-3px) scale(1.03); }
-	100% { opacity: 1; transform: translateY(0) scale(1); }
+	from { opacity: 0; transform: translateY(8px) scale(0.97); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .sw-pop-in {
-	animation: sw-pop 260ms steps(6, end) both;
+	animation: sw-pop 260ms var(--ease-swift) both;
 }
 @keyframes sw-bob {
 	50% { transform: translateY(-4px); }
 }
 .sw-bob {
-	animation: sw-bob 1.6s steps(4, end) infinite;
+	animation: sw-bob 2.4s ease-in-out infinite;
 }
 @keyframes sw-blink {
 	50% { opacity: 0; }
@@ -391,20 +373,20 @@ textarea::placeholder {
 
 /* Small uppercase section label */
 .sw-eyebrow {
-	font-family: var(--font-display);
-	font-size: 13px;
-	font-weight: 600;
+	font-family: var(--font-sans);
+	font-size: 11px;
+	font-weight: 700;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	color: var(--ui-text-dimmed);
 }
 
-/* Flat panel: the only "card" style in the app */
+/* Panel: the default card */
 .sw-panel {
 	background: var(--sw-surface);
-	border: 2px solid var(--sw-line-strong);
-	box-shadow: 0 4px 0 0 var(--sw-block-side);
-	border-radius: var(--sw-radius-panel, 6px);
+	border: 1px solid var(--sw-line);
+	box-shadow: var(--shadow-sm);
+	border-radius: var(--sw-radius-panel, 16px);
 }
 
 /* Text or icon on a solid accent background */
@@ -412,18 +394,20 @@ textarea::placeholder {
 	color: var(--sw-accent-fg);
 }
 
-/* Panel over the canvas or imagery: opaque, outlined (kept under its old name) */
+/* Frosted panel laid over imagery or the scene */
 .sw-glass {
-	background: var(--sw-surface-2);
-	border: 2px solid var(--sw-line-strong);
+	background: color-mix(in srgb, var(--sw-surface) 72%, transparent);
+	border: 1px solid var(--sw-line-strong);
+	-webkit-backdrop-filter: blur(var(--sw-glass-blur));
+	backdrop-filter: blur(var(--sw-glass-blur));
 }
 
 /* Settings card — padded section container */
 .sw-settings-card {
 	background: var(--sw-surface);
-	border: 2px solid var(--sw-line-strong);
-	box-shadow: 0 4px 0 0 var(--sw-block-side);
-	border-radius: var(--sw-radius-panel, 6px);
+	border: 1px solid var(--sw-line);
+	box-shadow: var(--shadow-sm);
+	border-radius: var(--sw-radius-panel, 16px);
 	padding: 1.25rem 1.35rem;
 }
 
@@ -432,25 +416,25 @@ textarea::placeholder {
 	display: flex;
 	align-items: center;
 	gap: 0.75rem;
-	border-radius: 10px;
-	border: 2px solid var(--sw-line-strong);
+	border-radius: 12px;
+	border: 1px solid var(--sw-line);
 	background: var(--sw-surface-2);
 	padding: 0.7rem 0.9rem;
 	text-align: left;
-	transition: transform 80ms steps(2), background-color 80ms steps(2);
+	transition: background-color 160ms var(--ease-swift), border-color 160ms var(--ease-swift), box-shadow 160ms var(--ease-swift);
 }
 .sw-choice:hover {
 	background: var(--sw-surface-3);
 	border-color: var(--sw-line-strong);
 }
 .sw-choice.is-active {
-	border-color: #ffffff;
-	box-shadow: 0 0 0 2px var(--sw-ink);
+	border-color: var(--sw-accent);
+	box-shadow: 0 0 0 3px var(--sw-accent-soft);
 	background: var(--sw-surface-3);
 }
 
 .sw-panel-interactive {
-	transition: border-color 120ms var(--ease-swift), background-color 120ms var(--ease-swift);
+	transition: border-color 160ms var(--ease-swift), background-color 160ms var(--ease-swift);
 }
 .sw-panel-interactive:hover {
 	background: var(--sw-surface-2);
@@ -460,19 +444,34 @@ textarea::placeholder {
 /* Skeleton block */
 .sw-skeleton {
 	background: var(--sw-surface-3);
-	border-radius: 4px;
-	animation: sw-pulse 1s steps(2, end) infinite;
+	border-radius: 8px;
+	animation: sw-pulse 1.4s ease-in-out infinite;
 }
 
 @keyframes sw-pulse {
 	50% { opacity: 0.45; }
 }
 
+/* Home / hero scene: navy depth, Swift glow, faint block grid */
+.sw-scene {
+	background:
+		radial-gradient(90% 70% at 72% 28%, color-mix(in srgb, var(--sw-accent) 30%, transparent) 0%, transparent 60%),
+		radial-gradient(60% 50% at 12% 88%, rgb(168 85 247 / 0.14) 0%, transparent 60%),
+		linear-gradient(180deg, color-mix(in srgb, var(--sw-surface) 70%, #0b1220) 0%, var(--sw-canvas) 100%);
+}
+.sw-scene-grid {
+	background:
+		repeating-linear-gradient(90deg, color-mix(in srgb, var(--sw-accent) 9%, transparent) 0 1px, transparent 1px 56px),
+		repeating-linear-gradient(0deg, color-mix(in srgb, var(--sw-accent) 9%, transparent) 0 1px, transparent 1px 56px);
+	-webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 100%);
+	mask-image: linear-gradient(180deg, transparent 0%, #000 100%);
+}
+
 /* ---------- motion ---------- */
 
 .page-enter-active,
 .page-leave-active {
-	transition: opacity 120ms steps(3), transform 120ms steps(3);
+	transition: opacity 180ms var(--ease-swift), transform 180ms var(--ease-swift);
 }
 .page-enter-from {
 	opacity: 0;
@@ -562,10 +561,10 @@ textarea::placeholder {
 	height: 10px;
 }
 *::-webkit-scrollbar-thumb {
-	background: rgb(255 255 255 / 0.14);
-	border: 2px solid transparent;
+	background: rgb(255 255 255 / 0.12);
+	border: 3px solid transparent;
 	background-clip: padding-box;
-	border-radius: 0;
+	border-radius: 999px;
 }
 *::-webkit-scrollbar-thumb:hover {
 	background-color: rgb(255 255 255 / 0.16);

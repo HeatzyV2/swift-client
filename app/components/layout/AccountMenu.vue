@@ -8,7 +8,7 @@
       <span class="max-w-36 truncate text-[13px] font-semibold text-highlighted">
         {{ accounts.activeAccount?.username ?? $t('account.signIn') }}
       </span>
-      <UIcon name="i-pixelarticons-chevron-down" class="size-3.5 text-dimmed" />
+      <UIcon name="i-lucide-chevron-down" class="size-3.5 text-dimmed" />
     </button>
   </UDropdownMenu>
 </template>
@@ -33,7 +33,7 @@ watch([skin, isDefault], async ([s, fallback]) => {
 async function signInMicrosoft() {
   try {
     await accounts.login()
-    toast.add({ title: t('account.added'), color: 'success', icon: 'i-pixelarticons-check' })
+    toast.add({ title: t('account.added'), color: 'success', icon: 'i-lucide-check' })
   } catch (e) {
     toast.add({ title: errorText(e), color: 'error' })
   }
@@ -43,12 +43,12 @@ const items = computed<DropdownMenuItem[][]>(() => [
   accounts.accounts.map(acc => ({
     label: acc.username,
     description: t(`account.kind.${acc.kind}`),
-    icon: acc.uuid === accounts.activeUuid ? 'i-pixelarticons-checkbox-on' : 'i-pixelarticons-circle',
+    icon: acc.uuid === accounts.activeUuid ? 'i-lucide-circle-check' : 'i-lucide-circle',
     onSelect: () => accounts.setActive(acc.uuid),
   })),
   [
-    { label: t('settings.accounts.microsoft'), icon: 'i-pixelarticons-login', onSelect: signInMicrosoft },
-    { label: t('account.manage'), icon: 'i-pixelarticons-users', onSelect: () => router.push({ path: '/settings', query: { section: 'accounts' } }) },
+    { label: t('settings.accounts.microsoft'), icon: 'i-lucide-log-in', onSelect: signInMicrosoft },
+    { label: t('account.manage'), icon: 'i-lucide-users', onSelect: () => router.push({ path: '/settings', query: { section: 'accounts' } }) },
   ],
 ].filter(group => group.length))
 </script>

@@ -715,7 +715,10 @@
     "defaultsEmpty": "安装任意 Minecraft 版本后即可看到默认皮肤。",
     "demoTitle": "你正在以演示模式浏览",
     "demoDesc": "可以自由查看和预览任意皮肤。使用 Microsoft 登录后即可应用到账户。",
-    "signIn": "使用 Microsoft 登录"
+    "signIn": "使用 Microsoft 登录",
+    "offlineTitle": "你的皮肤，仅你可见",
+    "offlineDesc": "离线账户：Mojang 无法识别该账户，因此你应用的皮肤只会显示在你自己的游戏角色上（第三人称、物品栏、玩家列表）。其他玩家仍会看到默认皮肤。",
+    "appliedOffline": "皮肤已应用，仅在游戏中对你可见"
   },
   "instSettings": {
     "tabs": {

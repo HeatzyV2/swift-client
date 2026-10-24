@@ -18,12 +18,12 @@
             />
             <span class="min-w-0 flex-1 text-[13px] font-medium text-highlighted">{{ opt.label }}</span>
             <span
-              class="size-3.5 shrink-0 rounded-full border-2 border-white/15"
+              class="size-3.5 shrink-0 rounded-full border border-white/15"
               :style="{ background: opt.swatch }"
             />
             <UIcon
               v-if="theme.mode === opt.value"
-              name="i-pixelarticons-check"
+              name="i-lucide-check"
               class="size-4 shrink-0 text-highlighted"
             />
           </button>
@@ -31,7 +31,7 @@
 
         <!-- Live mini preview -->
         <div
-          class="relative hidden w-[220px] shrink-0 overflow-hidden rounded-xl border-2 border-[var(--sw-line-strong)] sm:block"
+          class="relative hidden w-[220px] shrink-0 overflow-hidden rounded-xl border border-[var(--sw-line)] sm:block"
           :style="{ background: previewTokens.canvas }"
         >
           <div class="flex h-[168px]">
@@ -88,7 +88,7 @@
           </span>
           <UIcon
             v-if="locale === loc.code"
-            name="i-pixelarticons-check"
+            name="i-lucide-check"
             class="size-4 shrink-0 text-highlighted"
           />
         </button>

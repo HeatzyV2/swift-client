@@ -13,7 +13,7 @@
             class="flex size-4 shrink-0 items-center justify-center text-neutral-500 hover:text-neutral-300"
             @click="toggleExpand(child.name)"
           >
-            <UIcon :name="expanded[child.name] ? 'i-pixelarticons-chevron-down' : 'i-pixelarticons-chevron-right'" class="size-3.5" />
+            <UIcon :name="expanded[child.name] ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="size-3.5" />
           </button>
           <span v-else class="size-4 shrink-0" />
 
@@ -23,11 +23,11 @@
             :class="checkboxClass(child)"
             @click="toggle(childPath(child.name), child.is_dir)"
           >
-            <UIcon v-if="state(child) === 'checked'" name="i-pixelarticons-check" class="size-3 text-white" />
-            <UIcon v-else-if="state(child) === 'indeterminate'" name="i-pixelarticons-minus" class="size-3 text-white" />
+            <UIcon v-if="state(child) === 'checked'" name="i-lucide-check" class="size-3 text-white" />
+            <UIcon v-else-if="state(child) === 'indeterminate'" name="i-lucide-minus" class="size-3 text-white" />
           </button>
 
-          <UIcon :name="child.is_dir ? 'i-pixelarticons-folder' : 'i-pixelarticons-file'" class="size-4 shrink-0 text-neutral-500" />
+          <UIcon :name="child.is_dir ? 'i-lucide-folder' : 'i-lucide-file'" class="size-4 shrink-0 text-neutral-500" />
           <span class="min-w-0 flex-1 truncate text-sm" :class="{ 'text-neutral-500 line-through': state(child) === 'unchecked' }">{{ child.name }}</span>
           <span v-if="!child.is_dir" class="shrink-0 font-mono text-[11px] text-muted">{{ fmtSize(child.size) }}</span>
         </div>

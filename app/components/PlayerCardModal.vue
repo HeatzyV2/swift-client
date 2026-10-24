@@ -5,8 +5,8 @@
     </template>
     <template #footer>
       <div class="flex w-full justify-end gap-2">
-        <UButton color="neutral" variant="soft" icon="i-pixelarticons-copy" :label="$t('swiftx.stats.copy')" @click="copyImage" />
-        <UButton icon="i-pixelarticons-download" :label="$t('swiftx.stats.save')" @click="saveImage" />
+        <UButton color="neutral" variant="soft" icon="i-lucide-copy" :label="$t('swiftx.stats.copy')" @click="copyImage" />
+        <UButton icon="i-lucide-download" :label="$t('swiftx.stats.save')" @click="saveImage" />
       </div>
     </template>
   </UModal>
@@ -190,7 +190,7 @@ async function copyImage() {
     const blob = await toBlob()
     if (!blob) return
     await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-    toast.add({ title: t('swiftx.stats.copied'), icon: 'i-pixelarticons-check', color: 'success' })
+    toast.add({ title: t('swiftx.stats.copied'), icon: 'i-lucide-check', color: 'success' })
   } catch (e) {
     toast.add({ title: errorText(e), color: 'error' })
   }
@@ -202,7 +202,7 @@ async function saveImage() {
     if (!path || !canvas.value) return
     const data = canvas.value.toDataURL('image/png').split(',')[1] ?? ''
     await invoke('save_png', { path, dataBase64: data })
-    toast.add({ title: t('swiftx.stats.saved'), icon: 'i-pixelarticons-check', color: 'success' })
+    toast.add({ title: t('swiftx.stats.saved'), icon: 'i-lucide-check', color: 'success' })
   } catch (e) {
     toast.add({ title: errorText(e), color: 'error' })
   }

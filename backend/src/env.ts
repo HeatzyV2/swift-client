@@ -82,6 +82,11 @@ export const env = {
   tlsCert: str('TLS_CERT', existsSync(resolve(dataDir, 'tls', 'api.crt')) ? resolve(dataDir, 'tls', 'api.crt') : ''),
   tlsKey: str('TLS_KEY', existsSync(resolve(dataDir, 'tls', 'api.key')) ? resolve(dataDir, 'tls', 'api.key') : ''),
   relayDomain: str('RELAY_DOMAIN', 'swiftclient.fr').toLowerCase().replace(/^\.|\.$/g, ''),
+  /**
+   * Host the game opens the relay control connection to. Must reach this server directly (not through
+   * an HTTP proxy such as Cloudflare). Empty: the game uses relay.<RELAY_DOMAIN>.
+   */
+  relayHost: str('RELAY_HOST', '').trim(),
   /** Partner servers shown in the game's server list (JSON file, see README). */
   partnersFile: resolve(dataDir, 'partners.json'),
 

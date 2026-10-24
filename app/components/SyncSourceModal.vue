@@ -6,7 +6,7 @@
 
         <UInput
           v-model="filter"
-          icon="i-pixelarticons-search"
+          icon="i-lucide-search"
           variant="soft"
           :placeholder="$t('sync.sourceSearch')"
           class="w-full"
@@ -23,12 +23,12 @@
               : 'border-transparent hover:bg-white/5'"
             @click="picked = s.id"
           >
-            <UIcon name="i-pixelarticons-box" class="size-4 shrink-0 text-neutral-500" />
+            <UIcon name="i-lucide-box" class="size-4 shrink-0 text-neutral-500" />
             <span class="min-w-0 flex-1 truncate text-sm font-medium">{{ s.name }}</span>
             <span class="shrink-0 font-mono text-[11px] text-neutral-500">{{ s.mc_version }}</span>
             <UIcon
               v-if="picked === s.id"
-              name="i-pixelarticons-checkbox-on"
+              name="i-lucide-circle-check"
               class="size-4 shrink-0 text-primary-400"
             />
           </button>
@@ -43,7 +43,7 @@
       <div class="flex w-full justify-end gap-2">
         <UButton color="neutral" variant="ghost" :label="$t('common.cancel')" @click="cancel" />
         <UButton
-          icon="i-pixelarticons-reload"
+          icon="i-lucide-refresh-cw"
           :disabled="!picked"
           :label="$t('sync.sourceConfirm')"
           @click="confirm"

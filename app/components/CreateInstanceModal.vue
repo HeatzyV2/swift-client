@@ -10,15 +10,15 @@
             class="sw-panel sw-panel-interactive group flex items-center gap-4 p-4 text-left"
             @click="selectChoice(c.key)"
           >
-            <span class="flex size-10 shrink-0 items-center justify-center rounded-lg border-2 border-[var(--sw-line-strong)] bg-[var(--sw-canvas)] transition-colors group-hover:border-primary/40">
+            <span class="flex size-10 shrink-0 items-center justify-center rounded-lg border border-[var(--sw-line)] bg-[var(--sw-canvas)] transition-colors group-hover:border-primary/40">
               <UIcon :name="c.icon" class="size-5 text-toned transition-colors group-hover:text-primary" />
             </span>
             <span class="min-w-0 flex-1">
               <span class="block text-sm font-medium text-highlighted">{{ $t(c.title) }}</span>
               <span class="mt-0.5 block text-xs text-muted">{{ $t(c.desc) }}</span>
             </span>
-            <UIcon v-if="c.key === 'swift' && creatingSwift" name="i-pixelarticons-loader" class="size-4 animate-spin text-primary" />
-            <UIcon v-else name="i-pixelarticons-chevron-right" class="size-4 text-dimmed transition-transform group-hover:translate-x-0.5" />
+            <UIcon v-if="c.key === 'swift' && creatingSwift" name="i-lucide-loader-circle" class="size-4 animate-spin text-primary" />
+            <UIcon v-else name="i-lucide-chevron-right" class="size-4 text-dimmed transition-transform group-hover:translate-x-0.5" />
           </button>
         </div>
 
@@ -39,11 +39,11 @@
             <UDropdownMenu :items="iconMenu">
               <button
                 type="button"
-                class="flex size-[52px] shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-[var(--sw-line-strong)] bg-[var(--sw-canvas)] transition-colors hover:border-[var(--sw-line-strong)]"
+                class="flex size-[52px] shrink-0 items-center justify-center overflow-hidden rounded-lg border border-[var(--sw-line)] bg-[var(--sw-canvas)] transition-colors hover:border-[var(--sw-line-strong)]"
                 :title="$t('create.custom.chooseIcon')"
               >
                 <img v-if="form.iconPreview" :src="form.iconPreview" alt="" class="size-full object-cover">
-                <UIcon v-else name="i-pixelarticons-image-plus" class="size-5 text-dimmed" />
+                <UIcon v-else name="i-lucide-image-plus" class="size-5 text-dimmed" />
               </button>
             </UDropdownMenu>
             <UFormField :label="$t('create.custom.name')" class="flex-1">
@@ -66,7 +66,7 @@
           </UFormField>
 
           <UFormField :label="$t('create.custom.loader')">
-            <div class="grid grid-cols-5 gap-1 rounded-lg border-2 border-[var(--sw-line-strong)] bg-[var(--sw-canvas)] p-1">
+            <div class="grid grid-cols-5 gap-1 rounded-lg border border-[var(--sw-line)] bg-[var(--sw-canvas)] p-1">
               <button
                 v-for="l in loaderItems"
                 :key="l"
@@ -86,7 +86,7 @@
               class="flex items-center gap-1.5 text-xs font-medium text-muted transition-colors hover:text-highlighted"
               @click="showAdvanced = !showAdvanced"
             >
-              <UIcon name="i-pixelarticons-chevron-right" class="size-3.5 transition-transform duration-150" :class="showAdvanced ? 'rotate-90' : ''" />
+              <UIcon name="i-lucide-chevron-right" class="size-3.5 transition-transform duration-150" :class="showAdvanced ? 'rotate-90' : ''" />
               {{ $t('create.custom.advanced') }}
             </button>
             <div v-if="showAdvanced" class="mt-4 space-y-3">
@@ -108,7 +108,7 @@
           </div>
 
           <p v-if="error" class="flex items-start gap-2 text-sm text-error">
-            <UIcon name="i-pixelarticons-alert" class="mt-0.5 size-4 shrink-0" />{{ error }}
+            <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-4 shrink-0" />{{ error }}
           </p>
         </form>
 
@@ -125,7 +125,7 @@
                 @keydown.enter="redeemCode"
               />
               <UButton
-                icon="i-pixelarticons-arrow-right"
+                icon="i-lucide-arrow-right"
                 :label="$t('create.import.useCode')"
                 :loading="redeeming"
                 :disabled="shareCode.trim().length < 6"
@@ -139,7 +139,7 @@
               <p class="text-sm font-medium text-highlighted">{{ $t('create.import.fromFile') }}</p>
               <p class="text-xs text-muted">{{ $t('create.import.fromFileDesc') }}</p>
             </div>
-            <UButton color="neutral" variant="soft" icon="i-pixelarticons-file-multiple" :label="$t('create.import.chooseFile')" :loading="importingFile" @click="importFile" />
+            <UButton color="neutral" variant="soft" icon="i-lucide-files" :label="$t('create.import.chooseFile')" :loading="importingFile" @click="importFile" />
           </section>
 
           <section>
@@ -148,7 +148,7 @@
                 <p class="text-sm font-medium text-highlighted">{{ $t('create.import.fromLauncher') }}</p>
                 <p class="text-xs text-muted">{{ $t('create.import.fromLauncherDesc') }}</p>
               </div>
-              <UButton size="xs" color="neutral" variant="ghost" icon="i-pixelarticons-reload" :loading="scanning" square :aria-label="$t('content.refresh')" @click="scanExternal" />
+              <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-refresh-cw" :loading="scanning" square :aria-label="$t('content.refresh')" @click="scanExternal" />
             </div>
 
             <div class="mb-3 flex flex-wrap gap-1.5">
@@ -206,7 +206,7 @@
           </section>
 
           <p v-if="error" class="flex items-start gap-2 text-sm text-error">
-            <UIcon name="i-pixelarticons-alert" class="mt-0.5 size-4 shrink-0" />{{ error }}
+            <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-4 shrink-0" />{{ error }}
           </p>
         </div>
       </Transition>
@@ -214,11 +214,11 @@
 
     <template v-if="step !== 'choice'" #footer>
       <div class="flex w-full items-center justify-between gap-3">
-        <UButton variant="ghost" color="neutral" icon="i-pixelarticons-arrow-left" :label="$t('create.back')" :disabled="creatingSwift" @click="step = 'choice'" />
-        <UButton v-if="step === 'swift'" icon="i-pixelarticons-download" :label="$t('create.create')" :loading="creatingSwift" :disabled="!swiftVersions.includes(swiftVersion)" @click="createSwift" />
+        <UButton variant="ghost" color="neutral" icon="i-lucide-arrow-left" :label="$t('create.back')" :disabled="creatingSwift" @click="step = 'choice'" />
+        <UButton v-if="step === 'swift'" icon="i-lucide-download" :label="$t('create.create')" :loading="creatingSwift" :disabled="!swiftVersions.includes(swiftVersion)" @click="createSwift" />
         <div v-if="step === 'custom'" class="flex items-center gap-3">
           <span v-if="form.mcVersion" class="hidden truncate font-mono text-xs text-dimmed sm:block">{{ summary }}</span>
-          <UButton icon="i-pixelarticons-plus" :label="$t('create.create')" :loading="submitting" :disabled="!canSubmit" @click="submit" />
+          <UButton icon="i-lucide-plus" :label="$t('create.create')" :loading="submitting" :disabled="!canSubmit" @click="submit" />
         </div>
       </div>
     </template>
@@ -256,10 +256,10 @@ const title = computed(() => ({
 }[step.value]))
 
 const choices = [
-  { key: 'swift' as Step, icon: 'i-pixelarticons-zap', title: 'create.choice.swiftTitle', desc: 'create.choice.swiftDesc' },
-  { key: 'custom' as Step, icon: 'i-pixelarticons-box', title: 'create.choice.customTitle', desc: 'create.choice.customDesc' },
-  { key: 'modpack' as Step, icon: 'i-pixelarticons-package', title: 'create.choice.modpackTitle', desc: 'create.choice.modpackDesc' },
-  { key: 'import' as Step, icon: 'i-pixelarticons-download', title: 'create.choice.importTitle', desc: 'create.choice.importDesc' },
+  { key: 'swift' as Step, icon: 'i-lucide-zap', title: 'create.choice.swiftTitle', desc: 'create.choice.swiftDesc' },
+  { key: 'custom' as Step, icon: 'i-lucide-box', title: 'create.choice.customTitle', desc: 'create.choice.customDesc' },
+  { key: 'modpack' as Step, icon: 'i-lucide-package', title: 'create.choice.modpackTitle', desc: 'create.choice.modpackDesc' },
+  { key: 'import' as Step, icon: 'i-lucide-download', title: 'create.choice.importTitle', desc: 'create.choice.importDesc' },
 ]
 
 const creatingSwift = ref(false)
@@ -273,7 +273,7 @@ async function createSwift() {
   error.value = null
   try {
     const instance = await instances.createSwift(swiftName.value, swiftVersion.value)
-    toast.add({ title: t('create.swift.created'), description: t('create.swift.createdDesc'), color: 'success', icon: 'i-pixelarticons-zap' })
+    toast.add({ title: t('create.swift.created'), description: t('create.swift.createdDesc'), color: 'success', icon: 'i-lucide-zap' })
     await openCreated(instance)
   } catch (e) {
     error.value = errorText(e)
@@ -481,9 +481,9 @@ const canSubmit = computed(() => {
 const iconEditorOpen = ref(false)
 
 const iconMenu = computed<DropdownMenuItem[][]>(() => [[
-  { label: t('iconEditor.create'), icon: 'i-pixelarticons-colors-swatch', onSelect: () => { iconEditorOpen.value = true } },
-  { label: t('create.custom.chooseIcon'), icon: 'i-pixelarticons-upload', onSelect: chooseIcon },
-  ...(form.iconPreview ? [{ label: t('create.custom.removeIcon'), icon: 'i-pixelarticons-close', onSelect: clearIcon }] : []),
+  { label: t('iconEditor.create'), icon: 'i-lucide-palette', onSelect: () => { iconEditorOpen.value = true } },
+  { label: t('create.custom.chooseIcon'), icon: 'i-lucide-upload', onSelect: chooseIcon },
+  ...(form.iconPreview ? [{ label: t('create.custom.removeIcon'), icon: 'i-lucide-x', onSelect: clearIcon }] : []),
 ]])
 
 function useDrawnIcon(dataUrl: string) {
@@ -612,7 +612,7 @@ async function submit() {
       invalidateInstanceIcon(created.id)
     }
     close()
-    toast.add({ title: t('create.done', { name: created.name }), color: 'success', icon: 'i-pixelarticons-check' })
+    toast.add({ title: t('create.done', { name: created.name }), color: 'success', icon: 'i-lucide-check' })
     router.push(`/instance/${created.id}`)
   } catch (e) {
     error.value = errorText(e)

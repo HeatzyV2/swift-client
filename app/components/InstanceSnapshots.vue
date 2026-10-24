@@ -141,14 +141,14 @@ onMounted(load)
       {{ error }}
     </p>
 
-    <div class="rounded-xl border-2 border-[var(--sw-line-strong)] p-4">
+    <div class="rounded-xl border border-[var(--sw-line)] p-4">
       <div class="flex flex-wrap items-start gap-3">
         <div class="min-w-[220px] flex-1">
           <h3 class="text-sm font-semibold">{{ $t('snapshots.title') }}</h3>
           <p class="mt-1 text-sm text-muted">{{ $t('snapshots.intro') }}</p>
         </div>
         <UButton
-          icon="i-pixelarticons-camera"
+          icon="i-lucide-camera"
           :label="$t('snapshots.create')"
           :loading="busy === 'create'"
           @click="create"
@@ -176,8 +176,8 @@ onMounted(load)
       </div>
     </div>
 
-    <div v-if="loading" class="flex items-center gap-2 rounded-xl border-2 border-[var(--sw-line-strong)] px-3 py-4 text-sm text-muted">
-      <UIcon name="i-pixelarticons-loader" class="size-4 animate-spin text-primary-400" />
+    <div v-if="loading" class="flex items-center gap-2 rounded-xl border border-[var(--sw-line)] px-3 py-4 text-sm text-muted">
+      <UIcon name="i-lucide-loader-circle" class="size-4 animate-spin text-primary-400" />
       {{ $t('common.loading') }}
     </div>
 
@@ -185,10 +185,10 @@ onMounted(load)
       <li
         v-for="s in snapshots"
         :key="s.file"
-        class="flex flex-wrap items-center gap-3 rounded-xl border-2 border-[var(--sw-line-strong)] px-3 py-2.5"
+        class="flex flex-wrap items-center gap-3 rounded-xl border border-[var(--sw-line)] px-3 py-2.5"
       >
         <UIcon
-          :name="s.auto ? 'i-pixelarticons-clock' : 'i-pixelarticons-camera'"
+          :name="s.auto ? 'i-lucide-clock' : 'i-lucide-camera'"
           class="size-4 shrink-0 text-neutral-500"
         />
         <div class="min-w-[180px] flex-1">
@@ -207,7 +207,7 @@ onMounted(load)
           size="sm"
           :color="confirming === s.file ? 'error' : 'neutral'"
           :variant="confirming === s.file ? 'solid' : 'soft'"
-          :icon="confirming === s.file ? 'i-pixelarticons-warning-diamond' : 'i-pixelarticons-undo'"
+          :icon="confirming === s.file ? 'i-lucide-octagon-alert' : 'i-lucide-undo-2'"
           :label="confirming === s.file ? $t('snapshots.confirmRestore') : $t('snapshots.restore')"
           :loading="busy === `restore-${s.file}`"
           @click="askRestore(s)"
@@ -216,7 +216,7 @@ onMounted(load)
           size="sm"
           color="neutral"
           variant="ghost"
-          icon="i-pixelarticons-trash"
+          icon="i-lucide-trash-2"
           :loading="busy === `delete-${s.file}`"
           :title="$t('common.remove')"
           @click="remove(s)"
@@ -225,14 +225,14 @@ onMounted(load)
     </ul>
 
     <div v-else class="rounded-xl border border-dashed border-default px-4 py-8 text-center">
-      <UIcon name="i-pixelarticons-clock" class="mx-auto size-7 text-neutral-600" />
+      <UIcon name="i-lucide-clock" class="mx-auto size-7 text-neutral-600" />
       <p class="mt-2 text-sm text-muted">{{ $t('snapshots.empty') }}</p>
     </div>
 
     <p v-if="confirming" class="text-xs text-amber-300">{{ $t('snapshots.restoreWarning') }}</p>
 
     <!-- Worlds: zipped before launching when they changed -->
-    <div class="rounded-xl border-2 border-[var(--sw-line-strong)] p-4">
+    <div class="rounded-xl border border-[var(--sw-line)] p-4">
       <h3 class="text-sm font-semibold">{{ $t('worldBackups.title') }}</h3>
       <p class="mt-1 text-sm text-muted">{{ $t('worldBackups.intro') }}</p>
 
@@ -264,7 +264,7 @@ onMounted(load)
           class="min-w-[200px] flex-1"
         />
         <UButton
-          icon="i-pixelarticons-archive"
+          icon="i-lucide-archive"
           :label="$t('worldBackups.backNow')"
           :disabled="!chosenWorld"
           :loading="busy === 'world-create'"
@@ -278,9 +278,9 @@ onMounted(load)
       <li
         v-for="b in worldBackups"
         :key="b.file"
-        class="flex flex-wrap items-center gap-3 rounded-xl border-2 border-[var(--sw-line-strong)] px-3 py-2.5"
+        class="flex flex-wrap items-center gap-3 rounded-xl border border-[var(--sw-line)] px-3 py-2.5"
       >
-        <UIcon :name="b.auto ? 'i-pixelarticons-clock' : 'i-pixelarticons-archive'" class="size-4 shrink-0 text-neutral-500" />
+        <UIcon :name="b.auto ? 'i-lucide-clock' : 'i-lucide-archive'" class="size-4 shrink-0 text-neutral-500" />
         <div class="min-w-[180px] flex-1">
           <p class="text-sm">
             {{ b.world }}
@@ -294,7 +294,7 @@ onMounted(load)
           size="sm"
           :color="confirmingWorld === b.file ? 'error' : 'neutral'"
           :variant="confirmingWorld === b.file ? 'solid' : 'soft'"
-          :icon="confirmingWorld === b.file ? 'i-pixelarticons-warning-diamond' : 'i-pixelarticons-undo'"
+          :icon="confirmingWorld === b.file ? 'i-lucide-octagon-alert' : 'i-lucide-undo-2'"
           :label="confirmingWorld === b.file ? $t('snapshots.confirmRestore') : $t('snapshots.restore')"
           :loading="busy === `world-restore-${b.file}`"
           @click="askRestoreWorld(b)"
@@ -303,7 +303,7 @@ onMounted(load)
           size="sm"
           color="neutral"
           variant="ghost"
-          icon="i-pixelarticons-trash"
+          icon="i-lucide-trash-2"
           :loading="busy === `world-delete-${b.file}`"
           :title="$t('common.remove')"
           @click="removeWorldBackup(b)"

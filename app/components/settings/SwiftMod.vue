@@ -19,7 +19,7 @@
             size="sm"
             color="primary"
             variant="soft"
-            icon="i-pixelarticons-download"
+            icon="i-lucide-download"
             :loading="mod.busy.value"
             :label="t('swiftMod.install')"
             @click="install"
@@ -59,7 +59,7 @@
     <SettingsGroup :title="t('swiftMod.versionsTitle')">
       <p class="pb-3 text-xs leading-relaxed text-muted">{{ t('swiftMod.versionsDesc') }}</p>
       <p v-if="mod.status.value?.pinned" class="mb-3 flex items-start gap-2 rounded-lg bg-[var(--sw-warning)]/10 px-3 py-2 text-xs text-[var(--sw-warning)]">
-        <UIcon name="i-pixelarticons-pin" class="mt-px size-3.5 shrink-0" />
+        <UIcon name="i-lucide-pin" class="mt-px size-3.5 shrink-0" />
         <span class="flex-1">{{ t('swiftMod.pinNote', { version: mod.status.value.pinned }) }}</span>
         <UButton size="xs" color="neutral" variant="soft" :label="t('swiftMod.unpin')" :loading="mod.busy.value" @click="unpin" />
       </p>
@@ -117,17 +117,17 @@ const fmtMb = (bytes: number) => (bytes / 1024 / 1024).toFixed(1)
 
 const headline = computed(() => {
   const s = mod.status.value
-  if (!s) return { icon: 'i-pixelarticons-loader', title: t('swiftMod.status.loading'), desc: '' }
+  if (!s) return { icon: 'i-lucide-loader-circle', title: t('swiftMod.status.loading'), desc: '' }
   if (s.channel === 'local') {
-    return { icon: 'i-pixelarticons-folder', title: t('swiftMod.status.local'), desc: s.installed ? t('swiftMod.desc.installed', { version: s.installed }) : t('swiftMod.noVersions') }
+    return { icon: 'i-lucide-folder', title: t('swiftMod.status.local'), desc: s.installed ? t('swiftMod.desc.installed', { version: s.installed }) : t('swiftMod.noVersions') }
   }
   if (s.update_available && s.latest) {
-    return { icon: 'i-pixelarticons-download', title: t('swiftMod.status.available', { version: s.latest }), desc: t('swiftMod.desc.installed', { version: s.installed ?? '—' }) }
+    return { icon: 'i-lucide-download', title: t('swiftMod.status.available', { version: s.latest }), desc: t('swiftMod.desc.installed', { version: s.installed ?? '—' }) }
   }
   if (s.offline) {
-    return { icon: 'i-pixelarticons-alert', title: t('swiftMod.status.offline'), desc: t('swiftMod.desc.installed', { version: s.installed ?? '—' }) }
+    return { icon: 'i-lucide-triangle-alert', title: t('swiftMod.status.offline'), desc: t('swiftMod.desc.installed', { version: s.installed ?? '—' }) }
   }
-  return { icon: 'i-pixelarticons-checkbox-on', title: t('swiftMod.status.upToDate', { version: s.installed ?? '—' }), desc: s.pinned ? t('swiftMod.status.pinned', { version: s.pinned }) : t('swiftMod.desc.upToDate') }
+  return { icon: 'i-lucide-circle-check', title: t('swiftMod.status.upToDate', { version: s.installed ?? '—' }), desc: s.pinned ? t('swiftMod.status.pinned', { version: s.pinned }) : t('swiftMod.desc.upToDate') }
 })
 
 async function persist() {

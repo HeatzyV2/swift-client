@@ -9,7 +9,7 @@
           </p>
         </div>
         <UButton
-          icon="i-pixelarticons-reload"
+          icon="i-lucide-refresh-cw"
           color="neutral"
           variant="ghost"
           size="xs"
@@ -79,10 +79,10 @@
               <span class="ml-2 text-xs text-neutral-500">· {{ lightbox.instance.name }}</span>
             </span>
             <div class="flex items-center gap-1.5">
-              <UButton icon="i-pixelarticons-download" size="xs" color="neutral" variant="soft" :label="$t('content.download')" @click="downloadShot(lightbox.shot)" />
-              <UButton icon="i-pixelarticons-folder" size="xs" color="neutral" variant="soft" :label="$t('content.openLocation')" @click="revealShot(lightbox.shot)" />
-              <UButton icon="i-pixelarticons-trash" size="xs" color="error" variant="soft" :label="$t('common.remove')" @click="deleteShot(lightbox.instance.id, lightbox.shot)" />
-              <UButton icon="i-pixelarticons-close" size="xs" color="neutral" variant="ghost" square @click="lightboxIndex = null" />
+              <UButton icon="i-lucide-download" size="xs" color="neutral" variant="soft" :label="$t('content.download')" @click="downloadShot(lightbox.shot)" />
+              <UButton icon="i-lucide-folder" size="xs" color="neutral" variant="soft" :label="$t('content.openLocation')" @click="revealShot(lightbox.shot)" />
+              <UButton icon="i-lucide-trash-2" size="xs" color="error" variant="soft" :label="$t('common.remove')" @click="deleteShot(lightbox.instance.id, lightbox.shot)" />
+              <UButton icon="i-lucide-x" size="xs" color="neutral" variant="ghost" square @click="lightboxIndex = null" />
             </div>
           </div>
 
@@ -90,14 +90,14 @@
             <img :src="assetUrl(lightbox.shot.path)" class="max-h-[78vh] w-full object-contain" :alt="lightbox.shot.name" >
             <UButton
               v-if="flatShots.length > 1"
-              icon="i-pixelarticons-chevron-left"
+              icon="i-lucide-chevron-left"
               color="neutral"
               class="absolute top-1/2 left-2 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100"
               @click="step(-1)"
             />
             <UButton
               v-if="flatShots.length > 1"
-              icon="i-pixelarticons-chevron-right"
+              icon="i-lucide-chevron-right"
               color="neutral"
               class="absolute top-1/2 right-2 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100"
               @click="step(1)"

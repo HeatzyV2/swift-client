@@ -9,7 +9,7 @@
           </p>
         </div>
         <UButton
-          icon="i-pixelarticons-reload"
+          icon="i-lucide-refresh-cw"
           color="neutral"
           variant="ghost"
           size="xs"
@@ -69,7 +69,7 @@
                 :alt="w.name"
               >
               <div v-else class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white/5">
-                <UIcon name="i-pixelarticons-globe" class="size-5 text-neutral-500" />
+                <UIcon name="i-lucide-globe" class="size-5 text-neutral-500" />
               </div>
               <div class="min-w-0 flex-1">
                 <div class="truncate font-medium">{{ w.name }}</div>
@@ -81,7 +81,7 @@
               </div>
               <UButton
                 v-if="supportsQuickPlay(group.instance.mc_version)"
-                icon="i-pixelarticons-play"
+                icon="i-lucide-play"
                 size="xs"
                 color="primary"
                 variant="ghost"
@@ -91,7 +91,7 @@
                 @click="playWorld(group.instance.id, w.folder)"
               />
               <UButton
-                icon="i-pixelarticons-archive"
+                icon="i-lucide-archive"
                 size="xs"
                 color="neutral"
                 variant="ghost"
@@ -101,7 +101,7 @@
                 @click="backupWorld(group.instance.id, w)"
               />
               <UButton
-                icon="i-pixelarticons-trash"
+                icon="i-lucide-trash-2"
                 size="xs"
                 color="error"
                 variant="ghost"

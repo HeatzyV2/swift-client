@@ -138,7 +138,7 @@ export const useSwiftPlatform = () => {
         id: 'telemetry-consent',
         title: t('platform.ask.title'),
         description: t('platform.ask.desc'),
-        icon: 'i-pixelarticons-shield',
+        icon: 'i-lucide-shield',
         color: 'primary',
         duration: 0,
         actions: [

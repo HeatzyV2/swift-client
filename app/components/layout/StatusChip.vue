@@ -8,7 +8,7 @@
     @click="onClick"
   >
     <template v-if="view.kind === 'install' || view.kind === 'task'">
-      <UIcon name="i-pixelarticons-loader" class="size-3.5 shrink-0 animate-spin text-primary" />
+      <UIcon name="i-lucide-loader-circle" class="size-3.5 shrink-0 animate-spin text-primary" />
       <span class="max-w-56 truncate text-toned">{{ view.label }}</span>
       <template v-if="view.percent !== null">
         <span class="font-mono text-[11px] tabular-nums text-muted">{{ view.percent }}%</span>

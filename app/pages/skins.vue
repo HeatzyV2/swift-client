@@ -8,12 +8,12 @@
           <p class="mb-5 text-sm text-muted">{{ $t('skins.subtitle') }}</p>
 
           <div class="sw-settings-card flex flex-col items-center gap-4 !p-5">
-            <div class="relative overflow-hidden rounded-2xl border-2 border-[var(--sw-line-strong)] bg-[radial-gradient(ellipse_at_50%_20%,var(--sw-surface-3)_0%,var(--sw-canvas)_70%)]">
+            <div class="relative overflow-hidden rounded-2xl border border-[var(--sw-line)] bg-[radial-gradient(ellipse_at_50%_20%,var(--sw-surface-3)_0%,var(--sw-canvas)_70%)]">
               <div
                 v-if="nickname"
                 class="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center"
               >
-                <span class="rounded-lg border-2 border-white/15 bg-black/75 px-3.5 py-1 font-mono text-[13px] font-medium tracking-wide text-white shadow-[0_4px_20px_rgb(0_0_0/0.45)] backdrop-blur-sm">
+                <span class="rounded-lg border border-white/15 bg-black/75 px-3.5 py-1 font-mono text-[13px] font-medium tracking-wide text-white shadow-[0_4px_20px_rgb(0_0_0/0.45)] backdrop-blur-sm">
                   {{ nickname }}
                 </span>
               </div>
@@ -38,9 +38,9 @@
             <div class="flex w-full flex-wrap items-center justify-center gap-2">
               <UButton
                 v-if="canApply"
-                icon="i-pixelarticons-check"
+                icon="i-lucide-check"
                 :loading="applying"
-                :disabled="!isMicrosoft"
+                :disabled="!account.activeAccount"
                 :label="$t('skins.apply')"
                 @click="applySelected"
               />
@@ -48,12 +48,12 @@
                 v-else-if="selectedSavedActive"
                 color="success"
                 variant="subtle"
-                icon="i-pixelarticons-checkbox-on"
+                icon="i-lucide-circle-check"
                 :label="$t('skins.inUse')"
               />
 
               <UButton
-                icon="i-pixelarticons-shirt"
+                icon="i-lucide-shirt"
                 color="neutral"
                 variant="outline"
                 :label="$t('skins.capesButton')"
@@ -75,21 +75,21 @@
             <div class="flex flex-wrap gap-3">
               <button
                 type="button"
-                class="flex h-[186px] w-[108px] flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed p-3 text-center transition duration-200"
+                class="flex h-[186px] w-[108px] flex-col items-center justify-center gap-2.5 rounded-2xl border border-dashed p-3 text-center transition duration-200"
                 :class="dragOver
                   ? 'border-[var(--sw-accent)] bg-[var(--sw-accent-soft)] text-highlighted'
                   : 'border-[var(--sw-line)] text-muted hover:border-[var(--sw-line-strong)] hover:bg-[var(--sw-surface)] hover:text-toned'"
                 @click="pickFile"
               >
                 <span class="flex size-10 items-center justify-center rounded-xl bg-[var(--sw-surface-2)]">
-                  <UIcon name="i-pixelarticons-plus" class="size-5" />
+                  <UIcon name="i-lucide-plus" class="size-5" />
                 </span>
                 <span class="text-[11px] leading-snug">{{ $t('skins.addHint') }}</span>
               </button>
 
               <template v-if="savedLoading">
-                <div v-for="n in 4" :key="`sk-${n}`" class="h-[186px] w-[108px] overflow-hidden rounded-2xl border-2 border-[var(--sw-line-strong)]">
-                  <div class="h-[148px] sw-skeleton rounded-none" />
+                <div v-for="n in 4" :key="`sk-${n}`" class="h-[186px] w-[108px] overflow-hidden rounded-2xl border border-[var(--sw-line)]">
+                  <div class="h-[148px] sw-skeleton" />
                   <div class="h-9 border-t border-[var(--sw-line-soft)] bg-[var(--sw-surface)]" />
                 </div>
               </template>
@@ -135,10 +135,10 @@
     <div v-if="!isMicrosoft" class="shrink-0 border-t border-default bg-white/[0.02] px-6 py-4 lg:px-8">
       <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
         <div class="flex min-w-0 items-start gap-3">
-          <UIcon name="i-pixelarticons-info-box" class="mt-0.5 size-5 shrink-0 text-[var(--sw-accent)]" />
+          <UIcon :name="isOffline ? 'i-lucide-eye' : 'i-lucide-info'" class="mt-0.5 size-5 shrink-0 text-[var(--sw-accent)]" />
           <div class="min-w-0">
-            <p class="text-sm font-semibold text-highlighted">{{ $t('skins.demoTitle') }}</p>
-            <p class="text-sm text-muted">{{ $t('skins.demoDesc') }}</p>
+            <p class="text-sm font-semibold text-highlighted">{{ isOffline ? $t('skins.offlineTitle') : $t('skins.demoTitle') }}</p>
+            <p class="text-sm text-muted">{{ isOffline ? $t('skins.offlineDesc') : $t('skins.demoDesc') }}</p>
           </div>
         </div>
         <UButton
@@ -167,7 +167,7 @@
             @click="chooseCape(null)"
           >
             <div class="flex h-32 w-full items-center justify-center rounded-lg bg-white/5">
-              <UIcon name="i-pixelarticons-cancel" class="size-5 text-neutral-500" />
+              <UIcon name="i-lucide-ban" class="size-5 text-neutral-500" />
             </div>
             <span class="text-[11px] text-neutral-300">{{ $t('skins.noCape') }}</span>
           </button>
@@ -204,6 +204,8 @@ const toast = useToast()
 const { t } = useI18n()
 
 const isMicrosoft = computed(() => account.activeAccount?.kind === 'microsoft')
+/** Offline accounts can apply a skin too: it stays local and only they see it in game. */
+const isOffline = computed(() => !!account.activeAccount && account.activeAccount.kind !== 'microsoft')
 const nickname = computed(() => account.activeAccount?.username ?? 'Player')
 
 interface Cape { id: string, url: string, alias: string, active: boolean }
@@ -392,7 +394,7 @@ async function loadDefaults() {
 }
 
 async function applySelected() {
-  if (!isMicrosoft.value) {
+  if (!account.activeAccount) {
     toast.add({ title: t('skins.loginHint'), color: 'error' })
     return
   }
@@ -400,7 +402,7 @@ async function applySelected() {
   applying.value = true
   try {
     await invoke('apply_skin', { id: selected.value.id })
-    toast.add({ title: t('skins.applied'), color: 'success' })
+    toast.add({ title: isOffline.value ? t('skins.appliedOffline') : t('skins.applied'), color: 'success' })
     await loadSaved()
   } catch (e) {
     toast.add({ title: errorText(e), color: 'error' })

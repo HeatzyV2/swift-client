@@ -6,7 +6,7 @@
     </div>
 
     <div v-if="instances.instances.length > 6" class="px-3 pb-2">
-      <UInput v-model="query" icon="i-pixelarticons-search" size="sm" :placeholder="$t('library.search')" class="w-full" autofocus />
+      <UInput v-model="query" icon="i-lucide-search" size="sm" :placeholder="$t('library.search')" class="w-full" autofocus />
     </div>
 
     <ul class="max-h-[340px] overflow-y-auto px-1.5 pb-1.5">
@@ -27,10 +27,10 @@
           <span class="flex shrink-0 flex-col items-end text-[11px] text-dimmed">
             <span>{{ formatRelative(inst.last_played, locale) ?? '—' }}</span>
             <span v-if="inst.playtime_seconds" class="inline-flex items-center gap-1" :title="$t('instance.playtime')">
-              <UIcon name="i-pixelarticons-hourglass" class="size-3" />{{ formatPlaytime(inst.playtime_seconds, locale) }}
+              <UIcon name="i-lucide-hourglass" class="size-3" />{{ formatPlaytime(inst.playtime_seconds, locale) }}
             </span>
           </span>
-          <UIcon v-if="inst.id === instances.selectedId" name="i-pixelarticons-check" class="size-4 shrink-0 text-primary" />
+          <UIcon v-if="inst.id === instances.selectedId" name="i-lucide-check" class="size-4 shrink-0 text-primary" />
         </button>
       </li>
       <li v-if="!list.length" class="px-3 py-6 text-center text-xs text-dimmed">{{ instances.instances.length ? $t('library.noResults') : $t('home.noInstances') }}</li>
@@ -38,10 +38,10 @@
 
     <div class="grid grid-cols-2 gap-1 border-t border-[var(--sw-line)] p-1.5">
       <button type="button" class="sw-switcher-action" @click="create">
-        <UIcon name="i-pixelarticons-plus" class="size-4" />{{ $t('nav.newInstance') }}
+        <UIcon name="i-lucide-plus" class="size-4" />{{ $t('nav.newInstance') }}
       </button>
       <NuxtLink to="/instances" class="sw-switcher-action" @click="emit('done')">
-        <UIcon name="i-pixelarticons-blocks" class="size-4" />{{ $t('home.manageInstances') }}
+        <UIcon name="i-lucide-blocks" class="size-4" />{{ $t('home.manageInstances') }}
       </NuxtLink>
     </div>
   </div>

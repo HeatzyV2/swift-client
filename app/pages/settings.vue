@@ -59,17 +59,17 @@
                   </div>
                   <UBadge v-if="acc.uuid === accounts.activeUuid" color="primary" variant="subtle" :label="t('settings.accounts.active')" />
                   <UButton v-else size="xs" color="neutral" variant="soft" :label="t('settings.accounts.setActive')" @click="accounts.setActive(acc.uuid)" />
-                  <UButton icon="i-pixelarticons-trash" size="xs" color="neutral" variant="ghost" :aria-label="t('common.remove')" @click="accounts.remove(acc.uuid)" />
+                  <UButton icon="i-lucide-trash-2" size="xs" color="neutral" variant="ghost" :aria-label="t('common.remove')" @click="accounts.remove(acc.uuid)" />
                 </li>
               </ul>
             </div>
             <SettingsRow :label="t('account.microsoftTitle')" :description="t('account.microsoftDesc')">
-              <UButton icon="i-pixelarticons-login" :label="t('settings.accounts.microsoft')" :loading="accounts.loading" @click="onMicrosoftLogin" />
+              <UButton icon="i-lucide-log-in" :label="t('settings.accounts.microsoft')" :loading="accounts.loading" @click="onMicrosoftLogin" />
             </SettingsRow>
             <SettingsRow :label="t('settings.accounts.offline')" :description="t('settings.accounts.offlineHint')" stacked>
               <form class="flex gap-2" @submit.prevent="onOfflineLogin">
                 <UInput v-model="offlineName" :placeholder="t('settings.accounts.offlineUsername')" class="flex-1" />
-                <UButton type="submit" color="neutral" variant="soft" icon="i-pixelarticons-user-plus" :label="t('common.add')" :disabled="offlineName.trim().length < 3" />
+                <UButton type="submit" color="neutral" variant="soft" icon="i-lucide-user-plus" :label="t('common.add')" :disabled="offlineName.trim().length < 3" />
               </form>
             </SettingsRow>
             <p v-if="accounts.error" class="py-2 text-xs text-error">{{ accounts.error }}</p>
@@ -127,7 +127,7 @@
                 <p v-if="sysMem.totalMb.value" class="text-xs text-muted">
                   {{ t('settings.minecraft.memoryUsage', { total: (sysMem.totalMb.value / 1024).toFixed(0) }) }}
                 </p>
-                <UButton size="xs" color="neutral" variant="soft" icon="i-pixelarticons-zap" :label="t('settings.minecraft.autoMemory')" :loading="autoMemoryBusy" @click="autoMemory" />
+                <UButton size="xs" color="neutral" variant="soft" icon="i-lucide-zap" :label="t('settings.minecraft.autoMemory')" :loading="autoMemoryBusy" @click="autoMemory" />
               </div>
             </div>
             <USlider
@@ -145,11 +145,11 @@
               v-if="memoryWarn"
               class="mb-2 flex items-start gap-2 text-xs text-[var(--sw-warning)]"
             >
-              <UIcon name="i-pixelarticons-warning-diamond" class="mt-px size-3.5 shrink-0" />
+              <UIcon name="i-lucide-octagon-alert" class="mt-px size-3.5 shrink-0" />
               {{ t('settings.minecraft.memoryWarn') }}
             </p>
             <p v-if="autoMemoryNote" class="mb-2 flex items-start gap-2 text-xs text-[var(--sw-accent)]">
-              <UIcon name="i-pixelarticons-zap" class="mt-px size-3.5 shrink-0" />
+              <UIcon name="i-lucide-zap" class="mt-px size-3.5 shrink-0" />
               {{ autoMemoryNote }}
             </p>
             <p class="text-xs text-muted">{{ t('settings.minecraft.memoryHint') }}</p>
@@ -176,7 +176,7 @@
                   size="xs"
                   color="neutral"
                   variant="ghost"
-                  icon="i-pixelarticons-undo"
+                  icon="i-lucide-undo-2"
                   :label="t('settings.minecraft.resetResolution')"
                   :disabled="displayMode === 'fullscreen'"
                   @click="resetResolution"
@@ -189,12 +189,12 @@
             <SettingsRow :label="t('settings.java.defaultPath')" :description="t('settings.java.defaultPathHint')" stacked>
               <div class="flex gap-2">
                 <UInput v-model="settings.default_java_path" :placeholder="t('settings.java.managed')" class="flex-1 font-mono text-xs" />
-                <UButton icon="i-pixelarticons-folder" color="neutral" variant="soft" square :aria-label="t('settings.java.browse')" @click="browseDefaultJava" />
-                <UButton v-if="settings.default_java_path" icon="i-pixelarticons-close" color="neutral" variant="ghost" square :aria-label="t('common.remove')" @click="settings.default_java_path = undefined" />
+                <UButton icon="i-lucide-folder" color="neutral" variant="soft" square :aria-label="t('settings.java.browse')" @click="browseDefaultJava" />
+                <UButton v-if="settings.default_java_path" icon="i-lucide-x" color="neutral" variant="ghost" square :aria-label="t('common.remove')" @click="settings.default_java_path = undefined" />
               </div>
             </SettingsRow>
             <SettingsRow :label="t('settings.java.detected')" :description="t('settings.java.detectedDesc')">
-              <UButton icon="i-pixelarticons-radio-signal" size="sm" color="neutral" variant="outline" :loading="java.scanning.value" :label="t('settings.java.autoDetect')" @click="java.scan()" />
+              <UButton icon="i-lucide-radio" size="sm" color="neutral" variant="outline" :loading="java.scanning.value" :label="t('settings.java.autoDetect')" @click="java.scan()" />
             </SettingsRow>
             <div class="pb-1 pt-2">
               <p v-if="!java.installations.value.length && !java.scanning.value" class="rounded-xl border border-dashed border-[var(--sw-line)] px-4 py-5 text-center text-sm text-muted">
@@ -202,7 +202,7 @@
               </p>
               <ul v-else class="divide-y divide-[var(--sw-line-soft)] overflow-hidden sw-block-flat">
                 <li v-for="inst in java.installations.value" :key="inst.path" class="flex items-center gap-3 px-4 py-2.5">
-                  <UIcon name="i-pixelarticons-coffee" class="size-4 shrink-0 text-dimmed" />
+                  <UIcon name="i-lucide-coffee" class="size-4 shrink-0 text-dimmed" />
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2 text-[13px]">
                       <span class="font-medium text-highlighted">Java {{ inst.major ?? '?' }}</span>
@@ -243,7 +243,7 @@
             </SettingsRow>
           </SettingsGroup>
           <p class="flex items-start gap-2.5 px-1 text-xs leading-relaxed text-muted">
-            <UIcon name="i-pixelarticons-shield" class="mt-px size-4 shrink-0 text-[var(--sw-accent)]" />
+            <UIcon name="i-lucide-shield" class="mt-px size-4 shrink-0 text-[var(--sw-accent)]" />
             {{ t('settings.privacy.noTelemetry') }}
           </p>
         </template>
@@ -256,7 +256,7 @@
                 size="sm"
                 color="neutral"
                 variant="outline"
-                icon="i-pixelarticons-folder"
+                icon="i-lucide-folder"
                 :label="t('settings.advanced.openFolder')"
                 :disabled="!folder.path"
                 @click="reveal(folder.path)"
@@ -266,7 +266,7 @@
 
           <SettingsGroup :title="t('diagnostics.title')">
             <SettingsRow :label="t('diagnostics.export')" :description="t('diagnostics.exportDesc')">
-              <UButton icon="i-pixelarticons-archive" color="neutral" variant="soft" :label="t('diagnostics.exportButton')" :loading="diagBusy" @click="exportDiagnostics" />
+              <UButton icon="i-lucide-archive" color="neutral" variant="soft" :label="t('diagnostics.exportButton')" :loading="diagBusy" @click="exportDiagnostics" />
             </SettingsRow>
           </SettingsGroup>
 
@@ -279,9 +279,9 @@
                 <div v-for="(e, i) in settings.default_env_vars" :key="i" class="flex gap-2">
                   <UInput v-model="e.key" placeholder="KEY" class="flex-1 font-mono text-xs" />
                   <UInput v-model="e.value" placeholder="value" class="flex-1 font-mono text-xs" />
-                  <UButton icon="i-pixelarticons-close" color="neutral" variant="ghost" square :aria-label="t('common.remove')" @click="settings.default_env_vars.splice(i, 1)" />
+                  <UButton icon="i-lucide-x" color="neutral" variant="ghost" square :aria-label="t('common.remove')" @click="settings.default_env_vars.splice(i, 1)" />
                 </div>
-                <UButton icon="i-pixelarticons-plus" size="xs" color="neutral" variant="soft" :label="t('instSettings.addEnv')" @click="settings.default_env_vars.push({ key: '', value: '' })" />
+                <UButton icon="i-lucide-plus" size="xs" color="neutral" variant="soft" :label="t('instSettings.addEnv')" @click="settings.default_env_vars.push({ key: '', value: '' })" />
               </div>
             </SettingsRow>
           </SettingsGroup>
@@ -302,7 +302,7 @@
         <!-- About / updates -->
         <template v-else-if="section === 'about'">
           <div class="sw-settings-card mb-4 flex items-center gap-4">
-            <div class="flex size-14 items-center justify-center rounded-2xl border-2 border-[var(--sw-line-strong)] bg-[var(--sw-canvas)]">
+            <div class="flex size-14 items-center justify-center rounded-2xl border border-[var(--sw-line)] bg-[var(--sw-canvas)]">
               <BrandMark class="size-8 text-[var(--sw-accent)]" />
             </div>
             <div>
@@ -383,23 +383,23 @@ type Section = 'appearance' | 'accounts' | 'minecraft' | 'swiftmod' | 'sync' | '
 const navGroups: { id: string, items: { key: Section, icon: string }[] }[] = [
   {
     id: 'display',
-    items: [{ key: 'appearance', icon: 'i-pixelarticons-colors-swatch' }],
+    items: [{ key: 'appearance', icon: 'i-lucide-palette' }],
   },
   {
     id: 'game',
     items: [
-      { key: 'minecraft', icon: 'i-pixelarticons-box' },
-      { key: 'swiftmod', icon: 'i-pixelarticons-zap' },
+      { key: 'minecraft', icon: 'i-lucide-box' },
+      { key: 'swiftmod', icon: 'i-lucide-zap' },
     ],
   },
   {
     id: 'launcher',
     items: [
-      { key: 'accounts', icon: 'i-pixelarticons-users' },
-      { key: 'sync', icon: 'i-pixelarticons-reload' },
-      { key: 'privacy', icon: 'i-pixelarticons-sliders-horizontal' },
-      { key: 'advanced', icon: 'i-pixelarticons-folder' },
-      { key: 'about', icon: 'i-pixelarticons-info-box' },
+      { key: 'accounts', icon: 'i-lucide-users' },
+      { key: 'sync', icon: 'i-lucide-refresh-cw' },
+      { key: 'privacy', icon: 'i-lucide-sliders-horizontal' },
+      { key: 'advanced', icon: 'i-lucide-folder' },
+      { key: 'about', icon: 'i-lucide-info' },
     ],
   },
 ]
@@ -427,9 +427,9 @@ const updater = useUpdater()
 const { available: updateAvailable, version: updateVersion, error: updateError, busy: updateBusy } = updater
 
 const updateIcon = computed(() => {
-  if (updateError.value) return 'i-pixelarticons-alert'
-  if (updateAvailable.value) return 'i-pixelarticons-download'
-  return 'i-pixelarticons-checkbox-on'
+  if (updateError.value) return 'i-lucide-triangle-alert'
+  if (updateAvailable.value) return 'i-lucide-download'
+  return 'i-lucide-circle-check'
 })
 const updateTitle = computed(() => {
   if (updateAvailable.value && updateVersion.value) {
@@ -443,7 +443,7 @@ const updateDesc = computed(() => updateError.value ?? t('settings.about.updates
 async function checkUpdate() {
   try {
     if (!(await updater.checkForUpdate())) {
-      toast.add({ title: t('settings.about.upToDate'), color: 'success', icon: 'i-pixelarticons-checkbox-on' })
+      toast.add({ title: t('settings.about.upToDate'), color: 'success', icon: 'i-lucide-circle-check' })
     }
   } catch (e) {
     toast.add({ title: t('settings.about.noEndpoint'), description: errorText(e), color: 'neutral' })
@@ -452,7 +452,7 @@ async function checkUpdate() {
 
 async function installUpdate() {
   if (updater.blocked.value) {
-    toast.add({ title: t('settings.about.updateBlocked'), color: 'warning', icon: 'i-pixelarticons-gamepad' })
+    toast.add({ title: t('settings.about.updateBlocked'), color: 'warning', icon: 'i-lucide-gamepad-2' })
     return
   }
   try {
