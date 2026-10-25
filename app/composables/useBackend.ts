@@ -57,10 +57,23 @@ export const useBackend = () => {
     status.value = { ...status.value, accounts: false }
   }
 
+  /** The server refused the saved session; the launcher already forgot it, the interface follows. */
+  function forgetIfExpired(e: unknown) {
+    if (errorCode(e) !== 'session_expired') return false
+    session.value = null
+    status.value = { ...status.value, accounts: false }
+    return true
+  }
+
   async function linkMinecraft() {
-    const s = await invoke<SwiftSession>('swift_link_minecraft')
-    session.value = s
-    return s
+    try {
+      const s = await invoke<SwiftSession>('swift_link_minecraft')
+      session.value = s
+      return s
+    } catch (e) {
+      forgetIfExpired(e)
+      throw e
+    }
   }
 
   return {
@@ -74,5 +87,6 @@ export const useBackend = () => {
     login,
     logout,
     linkMinecraft,
+    forgetIfExpired,
   }
 }

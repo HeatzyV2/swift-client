@@ -839,7 +839,8 @@
     "panic": "Erreur interne",
     "permission": "Permission refusée",
     "unknown": "Erreur",
-    "backend_unavailable": "Pas encore disponible"
+    "backend_unavailable": "Pas encore disponible",
+    "session_expired": "Ta session Swift Client a expiré. Reconnecte-toi dans Paramètres → Comptes."
   },
   "sync": {
     "title": "Synchroniser les instances",

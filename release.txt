@@ -1,3 +1,9 @@
+## Changes (v1.8.1)
+
+### 🔑 Swift Client account
+- An expired Swift Client session no longer shows "Connected" with errors everywhere: the launcher signs you out cleanly and asks you to sign in again in Settings → Accounts.
+- Friends and chat fall back to local mode until you sign in again.
+
 ## Changes (v1.8.0)
 
 ### 🏠 A new Home

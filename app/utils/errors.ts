@@ -2,7 +2,7 @@ export interface AppError { code: string, message: string }
 
 const CODES = new Set([
   'network', 'http', 'not_found', 'permission', 'disk_full',
-  'io', 'invalid', 'auth', 'busy', 'panic', 'backend_unavailable', 'unknown',
+  'io', 'invalid', 'auth', 'busy', 'panic', 'backend_unavailable', 'session_expired', 'unknown',
 ])
 
 export function errorCode(e: unknown): string {
@@ -26,7 +26,8 @@ export function errorText(e: unknown): string {
     const t = useNuxtApp().$i18n?.t
     if (typeof t === 'function') {
       const label = t(`errors.${code}`)
-      if (label && label !== `errors.${code}`) return `${label} — ${detail}`
+      // An expired session needs no technical detail: the label says what to do
+      if (label && label !== `errors.${code}`) return code === 'session_expired' ? label : `${label} — ${detail}`
     }
   } catch {
   }

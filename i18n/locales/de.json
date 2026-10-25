@@ -839,7 +839,8 @@
     "panic": "Interner Fehler",
     "permission": "Keine Berechtigung",
     "unknown": "Fehler",
-    "backend_unavailable": "Noch nicht verfügbar"
+    "backend_unavailable": "Noch nicht verfügbar",
+    "session_expired": "Deine Swift-Client-Sitzung ist abgelaufen. Melde dich unter Einstellungen → Konten erneut an."
   },
   "sync": {
     "title": "Instanzen synchronisieren",

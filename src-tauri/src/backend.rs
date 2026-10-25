@@ -78,6 +78,15 @@ pub fn session_token() -> Option<String> {
     load_session().map(|s| s.token)
 }
 
+/// The server refused the saved session (expired, or its signing secret changed): forget it so the
+/// launcher falls back to signed-out, and tell the player to sign in again.
+pub fn session_rejected() -> AppError {
+    if let Err(e) = clear_session() {
+        log::warn!("could not clear the rejected Swift session: {}", e.message);
+    }
+    AppError::new("session_expired", "your Swift Client session expired, sign in again")
+}
+
 #[derive(Serialize)]
 pub struct BackendStatus {
     pub configured: bool,
@@ -134,9 +143,27 @@ pub async fn swift_players_online() -> Option<u64> {
     resp.json::<Online>().await.ok().map(|o| o.online)
 }
 
+/// The saved session, checked with the server: a session it refuses is forgotten (`None`). When the
+/// server cannot be reached the saved session is kept, so being offline never signs anyone out.
 #[tauri::command]
-pub fn swift_session() -> Option<SwiftSession> {
-    load_session()
+pub async fn swift_session() -> Option<SwiftSession> {
+    let session = load_session()?;
+    let Ok(url) = endpoint("/api/me") else {
+        return Some(session);
+    };
+    let checked = http()
+        .get(&url)
+        .bearer_auth(&session.token)
+        .timeout(std::time::Duration::from_secs(5))
+        .send()
+        .await;
+    match checked {
+        Ok(resp) if resp.status() == reqwest::StatusCode::UNAUTHORIZED => {
+            let _ = session_rejected();
+            None
+        }
+        _ => Some(session),
+    }
 }
 
 #[derive(Deserialize)]
@@ -258,6 +285,9 @@ pub async fn swift_link_minecraft() -> AppResult<SwiftSession> {
         .send()
         .await
         .map_err(|e| e.to_string())?;
+    if resp.status() == reqwest::StatusCode::UNAUTHORIZED {
+        return Err(session_rejected());
+    }
     if !resp.status().is_success() {
         let detail = resp.text().await.unwrap_or_default();
         return Err(AppError::auth(detail));

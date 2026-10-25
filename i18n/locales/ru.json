@@ -839,7 +839,8 @@
     "panic": "Внутренняя ошибка",
     "permission": "Нет прав доступа",
     "unknown": "Ошибка",
-    "backend_unavailable": "Пока недоступно"
+    "backend_unavailable": "Пока недоступно",
+    "session_expired": "Сессия Swift Client истекла. Войдите снова в Настройки → Аккаунты."
   },
   "sync": {
     "title": "Синхронизация сборок",

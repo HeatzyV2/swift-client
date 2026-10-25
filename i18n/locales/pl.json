@@ -839,7 +839,8 @@
     "panic": "Błąd wewnętrzny",
     "permission": "Brak uprawnień",
     "unknown": "Błąd",
-    "backend_unavailable": "Jeszcze niedostępne"
+    "backend_unavailable": "Jeszcze niedostępne",
+    "session_expired": "Twoja sesja Swift Client wygasła. Zaloguj się ponownie w Ustawienia → Konta."
   },
   "sync": {
     "title": "Synchronizacja instancji",

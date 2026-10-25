@@ -839,7 +839,8 @@
     "panic": "Error interno",
     "permission": "Sin permisos",
     "unknown": "Error",
-    "backend_unavailable": "Aún no disponible"
+    "backend_unavailable": "Aún no disponible",
+    "session_expired": "Tu sesión de Swift Client caducó. Vuelve a iniciar sesión en Ajustes → Cuentas."
   },
   "sync": {
     "title": "Sincronizar instancias",

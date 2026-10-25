@@ -278,6 +278,9 @@ async fn upload_to_storage(
             .send()
             .await
             .map_err(|e| format!("upload failed: {e}"))?;
+        if resp.status() == reqwest::StatusCode::UNAUTHORIZED {
+            return Err(crate::backend::session_rejected());
+        }
         if !resp.status().is_success() {
             let status = resp.status();
             let detail = resp.text().await.unwrap_or_default();
@@ -319,6 +322,9 @@ async fn upload_to_storage(
         .send()
         .await
         .map_err(|e| format!("could not finish the share: {e}"))?;
+    if done.status() == reqwest::StatusCode::UNAUTHORIZED {
+        return Err(crate::backend::session_rejected());
+    }
     if !done.status().is_success() {
         let status = done.status();
         let detail = done.text().await.unwrap_or_default();

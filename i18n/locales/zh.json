@@ -839,7 +839,8 @@
     "panic": "内部错误",
     "permission": "没有权限",
     "unknown": "错误",
-    "backend_unavailable": "暂不可用"
+    "backend_unavailable": "暂不可用",
+    "session_expired": "你的 Swift Client 会话已过期。请在 设置 → 账号 中重新登录。"
   },
   "sync": {
     "title": "跨实例同步",

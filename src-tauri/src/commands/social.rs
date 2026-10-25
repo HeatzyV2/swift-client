@@ -100,6 +100,9 @@ async fn remote_get<T: for<'de> Deserialize<'de>>(path: &str) -> AppResult<T> {
         req = req.bearer_auth(token);
     }
     let res = req.send().await.map_err(|e| e.to_string())?;
+    if res.status() == reqwest::StatusCode::UNAUTHORIZED {
+        return Err(backend::session_rejected());
+    }
     if !res.status().is_success() {
         return Err(format!("social api {}: {}", res.status(), res.text().await.unwrap_or_default()).into());
     }
@@ -113,6 +116,9 @@ async fn remote_post<B: Serialize, T: for<'de> Deserialize<'de>>(path: &str, bod
         req = req.bearer_auth(token);
     }
     let res = req.send().await.map_err(|e| e.to_string())?;
+    if res.status() == reqwest::StatusCode::UNAUTHORIZED {
+        return Err(backend::session_rejected());
+    }
     if !res.status().is_success() {
         return Err(format!("social api {}: {}", res.status(), res.text().await.unwrap_or_default()).into());
     }
