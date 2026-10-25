@@ -56,7 +56,7 @@
     "category": "Game",
     "publisher": "Swift Client",
     "shortDescription": "Swift Client — Minecraft launcher",
-    "copyright": "Swift Client contributors. Based on Spectra Launcher by MakotoPD. GPL-3.0.",
+    "copyright": "Copyright (c) 2026 Swift Client. All rights reserved.",
     "createUpdaterArtifacts": true,
     "resources": ["resources/swiftclient-mod.jar"],
     "targets": "all",

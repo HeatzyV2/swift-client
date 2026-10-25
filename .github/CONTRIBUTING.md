@@ -58,4 +58,4 @@ locale file. When adding a language, register it in the i18n configuration in `n
 4. Fill in the pull request template, including how you tested the change.
 5. Changes players will notice get a short entry in `release.txt`, written for players rather than developers.
 
-By contributing you agree that your contributions are licensed under the [GNU General Public License v3.0](../LICENCE).
+By contributing, you agree that your contributions may be used and distributed as part of Swift Client under the [Swift Client Proprietary License](../LICENCE). You retain ownership of your contributions.

@@ -96,6 +96,6 @@ Everything lives in `%APPDATA%\SwiftClient` on Windows (the OS data directory el
 
 ## License
 
-Swift Client is free software under the **GNU General Public License v3.0** — see [LICENCE](LICENCE).
+Swift Client is proprietary software for Swift Client and people expressly authorized by its maintainers. No public license to copy, modify, or redistribute the project is granted. See [LICENCE](LICENCE).
 
-It is based on [Spectra Launcher](https://github.com/MakotoPD/Spectra-Launcher) by MakotoPD, also GPL-3.0. Swift Client is not affiliated with Mojang, Microsoft or the Spectra Launcher project.
+Previously published versions remain subject to the license supplied with each version. Swift Client is not affiliated with Mojang or Microsoft.
