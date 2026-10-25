@@ -1,73 +1,64 @@
 <template>
-  <div class="flex w-full flex-col gap-2.5">
-    <!-- The dock: selected instance on the left, live state in the middle, Play on the right -->
-    <div class="sw-dock sw-glass" :data-state="state">
-      <InstanceIcon v-if="instance" :instance="instance" class="size-12 shrink-0 rounded-[12px] text-base" />
-      <div v-else class="flex size-12 shrink-0 items-center justify-center rounded-[12px] bg-[var(--sw-surface-3)]">
-        <UIcon name="i-lucide-sparkles" class="size-5 text-primary" />
+  <div class="flex w-full max-w-[400px] flex-col gap-2.5">
+    <div class="relative">
+      <!-- Zip sprints along the button while the game downloads -->
+      <div
+        v-if="state === 'installing' || state === 'launching'"
+        class="pointer-events-none absolute -top-[40px] h-[36px] transition-[left] duration-300 ease-linear"
+        :style="{ left: `calc(${state === 'launching' ? 100 : (percent ?? 0)}% - 30px)` }"
+      >
+        <BrandMascot pose="run" class="h-[36px] w-auto" />
       </div>
 
-      <div class="min-w-0 max-w-[280px]">
-        <p class="truncate text-[15px] font-bold text-highlighted">{{ instance?.name ?? $t('home.quickStart.title') }}</p>
-        <p class="truncate text-[12.5px] text-muted">{{ subtitle }}</p>
-      </div>
+      <div class="sw-play" :data-state="state">
+        <!-- Progress fills the button from the left -->
+        <span
+          v-if="state === 'installing' || state === 'launching'"
+          class="pointer-events-none absolute inset-y-0 left-0 bg-white/14 transition-[width] duration-300 ease-out"
+          :class="state === 'launching' ? 'w-full animate-pulse' : ''"
+          :style="state === 'installing' ? { width: `${percent ?? 0}%` } : undefined"
+        />
 
-      <UPopover v-if="state !== 'running'" v-model:open="switcherOpen" :content="{ side: 'top', align: 'start', sideOffset: 12 }">
-        <button type="button" class="sw-dock-icon" :aria-label="$t('home.switchInstance')" :disabled="state === 'launching' || state === 'installing'">
-          <UIcon name="i-lucide-chevrons-up-down" class="size-4" />
+        <button
+          type="button"
+          class="sw-play-main"
+          :disabled="state === 'launching' || state === 'installing' || stopping"
+          @click="onPrimary"
+        >
+          <UIcon v-if="state === 'launching' || state === 'installing' || (state === 'running' && stopping)" name="i-lucide-loader-circle" class="size-6 shrink-0 animate-spin" />
+          <UIcon v-else-if="state === 'running'" name="i-lucide-square" class="size-5 shrink-0" />
+          <UIcon v-else-if="state === 'error'" name="i-lucide-refresh-cw" class="size-6 shrink-0" />
+          <UIcon v-else name="i-lucide-play" class="size-7 shrink-0" />
+          <span class="min-w-0 text-left">
+            <span class="font-headline block truncate text-[21px] font-extrabold! uppercase leading-none tracking-[0.03em]">{{ title }}</span>
+            <span class="block truncate text-[12.5px] font-medium leading-tight opacity-85">{{ subtitle }}</span>
+          </span>
+          <span v-if="percent !== null && state === 'installing'" class="ml-auto pl-2 font-mono text-[12px] tabular-nums opacity-85">{{ percent }}%</span>
         </button>
-        <template #content>
-          <HomeInstanceSwitcher @done="switcherOpen = false" />
-        </template>
-      </UPopover>
-      <button
-        v-else
-        type="button"
-        class="sw-dock-icon"
-        :title="$t('activity.openLogs')"
-        :aria-label="$t('activity.openLogs')"
-        @click="instance && activity.openLiveLogs(instance.id)"
-      >
-        <UIcon name="i-lucide-terminal" class="size-4" />
-      </button>
 
-      <div class="flex-1" />
-
-      <!-- Download progress, with Zip sprinting along it -->
-      <div v-if="state === 'installing' || state === 'launching'" class="relative hidden w-[240px] flex-col gap-1.5 md:flex">
-        <div class="pointer-events-none absolute -top-[46px] h-[40px] transition-[left] duration-300 ease-linear" :style="{ left: `calc(${state === 'launching' ? 100 : (percent ?? 0)}% - 34px)` }">
-          <BrandMascot pose="run" class="h-[40px] w-auto" />
-        </div>
-        <div class="flex items-baseline justify-between gap-3 text-[12px]">
-          <span class="truncate text-toned">{{ title }}</span>
-          <span v-if="percent !== null && state === 'installing'" class="font-mono tabular-nums text-muted">{{ percent }}%</span>
-        </div>
-        <div class="h-1.5 overflow-hidden rounded-full bg-white/8">
-          <div
-            class="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
-            :class="state === 'launching' ? 'w-full animate-pulse' : ''"
-            :style="state === 'installing' ? { width: `${percent ?? 0}%` } : undefined"
-          />
-        </div>
+        <UPopover v-if="state !== 'running'" v-model:open="switcherOpen" :content="{ side: 'bottom', align: 'end', sideOffset: 10 }">
+          <button type="button" class="sw-play-more" :aria-label="$t('home.switchInstance')" :disabled="state === 'launching' || state === 'installing'">
+            <UIcon name="i-lucide-chevron-down" class="size-5" />
+          </button>
+          <template #content>
+            <HomeInstanceSwitcher @done="switcherOpen = false" />
+          </template>
+        </UPopover>
+        <button
+          v-else
+          type="button"
+          class="sw-play-more"
+          :title="$t('activity.openLogs')"
+          :aria-label="$t('activity.openLogs')"
+          @click="instance && activity.openLiveLogs(instance.id)"
+        >
+          <UIcon name="i-lucide-terminal" class="size-4" />
+        </button>
       </div>
-
-      <button
-        type="button"
-        class="sw-dock-play sw-chunk"
-        :data-state="state"
-        :disabled="state === 'launching' || state === 'installing' || stopping"
-        @click="onPrimary"
-      >
-        <UIcon v-if="state === 'launching' || state === 'installing' || (state === 'running' && stopping)" name="i-lucide-loader-circle" class="size-5 animate-spin" />
-        <UIcon v-else-if="state === 'running'" name="i-lucide-square" class="size-4" />
-        <UIcon v-else-if="state === 'error'" name="i-lucide-refresh-cw" class="size-5" />
-        <UIcon v-else name="i-lucide-play" class="size-5" />
-        <span class="truncate">{{ state === 'installing' || state === 'launching' ? $t('play.launching') : title }}</span>
-      </button>
     </div>
 
     <Transition name="sw-rise">
-      <p v-if="notice" class="sw-glass flex max-w-full items-center gap-2 self-start rounded-[10px] px-3 py-1.5 text-[13px]" :class="notice.class">
+      <p v-if="notice" class="flex max-w-full items-center gap-2 text-[13px]" :class="notice.class">
         <UIcon :name="notice.icon" class="size-4 shrink-0" />
         <span class="truncate" :title="notice.text">{{ notice.text }}</span>
         <NuxtLink v-if="notice.link" :to="notice.link" class="shrink-0 font-semibold text-white underline-offset-4 hover:underline">
@@ -120,20 +111,19 @@ const title = computed(() => {
     case 'installing': return t(`play.step.${STEP_KEYS[mc.progress.value.step ?? ''] ?? 'files'}`)
     case 'running': return forceNext.value ? t('play.forceStop') : stopping.value ? t('play.stopping') : t('play.stop')
     case 'error': return t('play.retry')
-    default: return t('instance.play')
+    default: return `${t('instance.play')} ${props.instance?.mc_version ?? ''}`.trim()
   }
 })
 
 const subtitle = computed(() => {
   const i = props.instance
   if (!i) return quickStart.busy.value ? t('home.quickStart.creating') : t('home.quickStart.hint')
-  const label = `${loaderLabel(i.loader.type)} ${i.mc_version}`
   if (state.value === 'installing') {
     const { current, total } = mc.progress.value
     return total ? t('play.installingFiles', { version: i.mc_version, current, total }) : t('play.installing', { version: i.mc_version })
   }
-  if (state.value === 'running') return forceNext.value ? t('play.forceStopHint') : label
-  return label
+  if (state.value === 'running' && forceNext.value) return t('play.forceStopHint')
+  return i.name
 })
 
 const notice = computed(() => {
@@ -192,58 +182,57 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.sw-dock {
+.sw-play {
+  position: relative;
   display: flex;
-  min-height: 80px;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 14px 14px 16px;
-  border-radius: 18px;
-}
-.sw-dock-icon {
-  display: flex;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
+  height: 58px;
+  overflow: hidden;
   border-radius: 10px;
-  border: 1px solid var(--sw-line-strong);
-  color: var(--ui-text-muted);
-  transition: color 160ms var(--ease-swift), border-color 160ms var(--ease-swift), background-color 160ms var(--ease-swift);
+  background: var(--sw-accent);
+  color: var(--sw-accent-fg);
+  box-shadow: 0 10px 28px -12px color-mix(in srgb, var(--sw-accent) 80%, transparent);
+  transition: background-color 160ms var(--ease-swift), box-shadow 160ms var(--ease-swift);
 }
-.sw-dock-icon:not(:disabled):hover {
-  color: var(--ui-text-highlighted);
-  border-color: color-mix(in srgb, var(--sw-accent) 45%, var(--sw-line-strong));
-  background: var(--sw-surface-2);
+.sw-play:hover {
+  background: var(--sw-accent-hover);
 }
-.sw-dock-icon:disabled {
-  opacity: 0.5;
+.sw-play[data-state='launching'],
+.sw-play[data-state='installing'] {
+  background: color-mix(in srgb, var(--sw-accent) 70%, var(--sw-surface-3));
 }
-.sw-dock-play {
+.sw-play[data-state='running'] {
+  background: #e5484d;
+  color: #ffffff;
+  box-shadow: 0 10px 28px -12px rgb(229 72 77 / 0.8);
+}
+.sw-play-main {
+  position: relative;
   display: flex;
-  height: 56px;
-  min-width: 190px;
-  max-width: 280px;
-  flex-shrink: 0;
+  min-width: 0;
+  flex: 1;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 0 34px;
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  gap: 16px;
+  padding: 0 18px 0 22px;
 }
-.sw-dock-play:disabled {
+.sw-play-main:disabled {
   cursor: default;
 }
-.sw-dock-play[data-state='launching'],
-.sw-dock-play[data-state='installing'] {
-  --chunk-bg: color-mix(in srgb, var(--sw-accent) 45%, var(--sw-surface-3));
+.sw-play-more {
+  position: relative;
+  display: flex;
+  width: 44px;
+  margin: 7px 7px 7px 0;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: rgb(0 0 0 / 0.18);
+  transition: background-color 160ms var(--ease-swift);
 }
-.sw-dock-play[data-state='running'] {
-  --chunk-bg: #e5484d;
-  --chunk-fg: #ffffff;
+.sw-play-more:not(:disabled):hover {
+  background: rgb(0 0 0 / 0.3);
+}
+.sw-play-more:disabled {
+  opacity: 0.5;
 }
 </style>

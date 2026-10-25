@@ -285,6 +285,43 @@ pub async fn social_remove_friend(id: String) -> AppResult<()> {
     .await
 }
 
+/// Accepts an incoming friend request.
+#[tauri::command]
+pub async fn social_accept_friend(id: String) -> AppResult<()> {
+    if use_remote() {
+        let _: serde_json::Value = remote_post(&format!("/friends/{id}/accept"), &serde_json::json!({})).await?;
+        return Ok(());
+    }
+    crate::blocking(move || {
+        let mut file = load()?;
+        let friend = file
+            .friends
+            .iter_mut()
+            .find(|f| f.id == id)
+            .ok_or_else(|| AppError::from("friend request not found"))?;
+        friend.status = FriendStatus::Accepted;
+        if !file.conversations.iter().any(|c| c.friend_id == id) {
+            file.conversations.push(Conversation {
+                id: Uuid::new_v4().to_string(),
+                friend_id: id.clone(),
+                updated_at: Utc::now().to_rfc3339(),
+            });
+        }
+        save(&file)
+    })
+    .await
+}
+
+/// Declines an incoming friend request.
+#[tauri::command]
+pub async fn social_decline_friend(id: String) -> AppResult<()> {
+    if use_remote() {
+        let _: serde_json::Value = remote_post(&format!("/friends/{id}/decline"), &serde_json::json!({})).await?;
+        return Ok(());
+    }
+    social_remove_friend(id).await
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct ConversationView {
     pub id: String,

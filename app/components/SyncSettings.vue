@@ -1,8 +1,13 @@
 <template>
   <div class="space-y-6">
-    <div>
-      <p class="text-sm font-medium">{{ $t('sync.title') }}</p>
-      <p class="mt-1 text-xs text-muted">{{ $t('sync.desc') }}</p>
+    <div class="flex items-center gap-3">
+      <span class="sw-settings-icon">
+        <UIcon name="i-lucide-refresh-cw" class="size-[18px]" />
+      </span>
+      <div class="min-w-0">
+        <p class="text-[15px] font-semibold text-highlighted">{{ $t('sync.title') }}</p>
+        <p class="mt-0.5 text-[12.5px] leading-relaxed text-muted">{{ $t('sync.desc') }}</p>
+      </div>
     </div>
 
     <div class="space-y-1">

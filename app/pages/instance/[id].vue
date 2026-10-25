@@ -1,12 +1,16 @@
 <template>
   <div v-if="instance" class="h-full overflow-y-auto">
-    <div class="px-8 pb-8 pt-6">
-      <NuxtLink to="/instances" class="mb-5 inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-highlighted">
+    <div class="sw-page pt-6!">
+      <NuxtLink to="/instances" class="mb-4 inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-highlighted">
         <UIcon name="i-lucide-arrow-left" class="size-3.5" /> {{ $t('instance.back') }}
       </NuxtLink>
 
-      <header class="flex flex-wrap items-center gap-5">
-        <InstanceIcon :key="iconKey" :instance="instance" class="size-16 rounded-xl text-2xl shadow-[0_6px_20px_rgba(0,0,0,0.4)]" />
+      <!-- The instance on a scene, like the Home hero -->
+      <header class="relative isolate flex flex-wrap items-center gap-5 overflow-hidden rounded-[16px] border border-[var(--sw-line)] bg-[var(--sw-canvas)] p-6 shadow-xl">
+        <img :src="heroBg.src" alt="" draggable="false" class="pointer-events-none absolute inset-0 -z-10 size-full object-cover opacity-65" :style="{ objectPosition: heroBg.position ?? '50% 50%' }">
+        <div class="sw-scene pointer-events-none absolute inset-0 -z-10 opacity-70" />
+        <div class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgb(5_7_11/0.85)_0%,rgb(5_7_11/0.55)_60%,rgb(5_7_11/0.35)_100%)]" />
+        <InstanceIcon :key="iconKey" :instance="instance" class="size-[72px] rounded-[16px] text-2xl shadow-[0_10px_28px_rgba(0,0,0,0.5)]" />
 
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2.5">
@@ -23,7 +27,7 @@
               />
             </UTooltip>
           </div>
-          <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted">
+          <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[#c3cad6]">
             <span class="font-mono">Minecraft {{ instance.mc_version }}</span>
             <span class="text-dimmed">·</span>
             <span>
@@ -70,8 +74,8 @@
           </template>
 
           <UButton
-            size="lg"
-            class="min-w-[140px] justify-center font-display font-bold uppercase tracking-[0.1em]"
+            size="xl"
+            class="font-headline h-12 min-w-[160px] justify-center text-[19px] font-extrabold! uppercase tracking-[0.04em] shadow-[0_10px_28px_-12px_var(--sw-accent)]"
             :icon="isBusy ? 'i-lucide-loader-circle' : 'i-lucide-play'"
             :ui="{ leadingIcon: isBusy && mc.stage.value !== 'running' ? 'animate-spin' : '' }"
             :disabled="isBusy"
@@ -115,15 +119,15 @@
         <div v-if="showChangelog && changelogHtml" class="mk-md mt-3 max-h-64 overflow-y-auto border-t border-primary/20 pt-3 text-sm" v-html="changelogHtml" />
       </div>
 
-      <nav class="mt-7 flex gap-1 border-b border-default">
+      <nav class="mt-6 flex w-fit max-w-full gap-1 overflow-x-auto rounded-[12px] border border-[var(--sw-line)] bg-[var(--sw-surface)] p-1">
         <button
           v-for="tab in tabs"
           :key="tab.key"
           type="button"
-          class="relative -mb-px flex items-center gap-2 border-b-2 px-3 pb-2.5 pt-1 text-[13px] font-medium transition-colors"
+          class="flex h-9 shrink-0 items-center gap-2 rounded-[9px] px-3.5 text-[13px] font-semibold transition-colors"
           :class="activeTab === tab.key
-            ? 'border-primary text-highlighted'
-            : 'border-transparent text-muted hover:text-toned'"
+            ? 'bg-[var(--sw-surface-3)] text-highlighted [&_.iconify]:text-primary'
+            : 'text-muted hover:bg-[var(--sw-surface-2)] hover:text-toned'"
           @click="activeTab = tab.key"
         >
           <UIcon :name="tab.icon" class="size-4" />
@@ -165,6 +169,9 @@
 import { invoke } from '@tauri-apps/api/core'
 import type { ModpackUpdate } from '~/types/modrinth'
 import type { QuickPlay } from '~/types/launcher'
+import { HERO_BACKGROUNDS, HERO_FALLBACK } from '~/content/media'
+
+const heroBg = HERO_BACKGROUNDS[0] ?? HERO_FALLBACK
 
 const route = useRoute()
 const router = useRouter()

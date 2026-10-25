@@ -13,6 +13,8 @@
 	/* Headings: Inter, heavy. Pixelify stays for the brand mark only (`font-pixel`). */
 	--font-display: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 	--font-pixel: 'Pixelify Sans', 'Inter', system-ui, sans-serif;
+	/* Big uppercase headlines on the Home (player name, Play, news titles): condensed and heavy */
+	--font-headline: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
 	--font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
 
 	--color-swift-50: #eef5ff;
@@ -254,6 +256,12 @@ body {
 	letter-spacing: -0.015em;
 }
 
+.font-headline {
+	font-family: var(--font-headline);
+	font-weight: 700;
+	letter-spacing: 0.01em;
+}
+
 /* Brand mark only: the pixel wordmark */
 .font-pixel {
 	font-family: var(--font-pixel);
@@ -306,24 +314,36 @@ textarea::placeholder {
 	box-shadow: var(--shadow-sm);
 }
 
-/* Page title: large, tight Inter with a short accent bar under it */
+/* Page title: the condensed uppercase headline of the Home and Settings */
 .sw-page-title {
-	font-family: var(--font-display);
-	font-size: 30px;
+	font-family: var(--font-headline);
+	font-size: 36px;
 	font-weight: 800;
-	line-height: 1.1;
-	letter-spacing: -0.025em;
+	line-height: 1;
+	letter-spacing: 0.01em;
+	text-transform: uppercase;
 	color: var(--ui-text-highlighted);
 }
-.sw-page-title::after {
+
+/* Page body: the same width and gutters as the Home */
+.sw-page {
+	margin-inline: auto;
+	max-width: 1320px;
+	padding: clamp(24px, 5vh, 48px) clamp(24px, 4.5vw, 72px) 56px;
+}
+
+/* A label above a group of cards (instance group, worlds of an instance…) */
+.sw-section-head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 14px;
+}
+.sw-section-head::after {
 	content: '';
-	display: block;
-	width: 36px;
-	height: 4px;
-	margin-top: 12px;
-	border-radius: 2px;
-	background: var(--sw-accent);
-	box-shadow: 0 0 14px color-mix(in srgb, var(--sw-accent) 70%, transparent);
+	height: 1px;
+	flex: 1;
+	background: var(--sw-line);
 }
 
 /* Emphasised name text (nametags, player card) */
@@ -381,6 +401,35 @@ textarea::placeholder {
 	color: var(--ui-text-dimmed);
 }
 
+/* Home: "View all" style links next to a section label */
+.sw-home-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 11.5px;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: color-mix(in srgb, var(--sw-accent), #ffffff 35%);
+	transition: color 160ms var(--ease-swift);
+}
+.sw-home-link:hover {
+	color: var(--ui-text-highlighted);
+}
+
+/* Home: a section with nothing to show yet */
+.sw-home-empty {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 14px 16px;
+	border-radius: 10px;
+	border: 1px dashed var(--sw-line-strong);
+	font-size: 13px;
+	line-height: 1.45;
+	color: var(--ui-text-muted);
+}
+
 /* Panel: the default card */
 .sw-panel {
 	background: var(--sw-surface);
@@ -409,6 +458,62 @@ textarea::placeholder {
 	box-shadow: var(--shadow-sm);
 	border-radius: var(--sw-radius-panel, 16px);
 	padding: 1.25rem 1.35rem;
+}
+
+/* Settings: the small tile holding a section or row icon */
+.sw-settings-icon {
+	display: flex;
+	width: 38px;
+	height: 38px;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+	background: var(--sw-accent-soft);
+	color: var(--sw-accent);
+}
+.sw-settings-icon-sm {
+	width: 32px;
+	height: 32px;
+	border-radius: 9px;
+	background: var(--sw-surface-2);
+	color: var(--ui-text-muted);
+}
+
+/* Settings: a selectable option card (display mode, update channel…) */
+.sw-option {
+	display: block;
+	min-width: 0;
+	border-radius: 12px;
+	border: 1px solid var(--sw-line);
+	background: var(--sw-surface-2);
+	padding: 0.85rem 0.95rem;
+	text-align: left;
+	transition: background-color 160ms var(--ease-swift), border-color 160ms var(--ease-swift), box-shadow 160ms var(--ease-swift);
+}
+.sw-option:not(:disabled):hover {
+	border-color: var(--sw-line-strong);
+	background: var(--sw-surface-3);
+}
+.sw-option:disabled {
+	opacity: 0.5;
+}
+.sw-option.is-active {
+	border-color: var(--sw-accent);
+	background: color-mix(in srgb, var(--sw-accent) 8%, var(--sw-surface-2));
+	box-shadow: 0 0 0 3px var(--sw-accent-soft);
+}
+.sw-option-dot {
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+	border-radius: 999px;
+	border: 2px solid var(--sw-line-strong);
+	transition: border-color 160ms var(--ease-swift), box-shadow 160ms var(--ease-swift);
+}
+.sw-option.is-active .sw-option-dot {
+	border-color: var(--sw-accent);
+	box-shadow: inset 0 0 0 3px var(--sw-surface-2), inset 0 0 0 8px var(--sw-accent);
 }
 
 /* Selectable chip (theme / language) */

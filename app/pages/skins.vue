@@ -1,13 +1,13 @@
 <template>
   <div class="flex h-full flex-col">
-    <div class="min-h-0 flex-1 overflow-y-auto px-8 py-7">
-      <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[340px_1fr]">
+    <div class="min-h-0 flex-1 overflow-y-auto">
+      <div class="sw-page">
+      <UiPageHeader icon="i-lucide-shirt" :title="$t('skins.title')" :subtitle="$t('skins.subtitle')" />
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-[340px_1fr]">
         <!-- Preview column -->
         <div class="lg:sticky lg:top-0 lg:self-start">
-          <h1 class="sw-page-title  mb-1">{{ $t('skins.title') }}</h1>
-          <p class="mb-5 text-sm text-muted">{{ $t('skins.subtitle') }}</p>
-
-          <div class="sw-settings-card flex flex-col items-center gap-4 !p-5">
+          <div class="sw-settings-card relative flex flex-col items-center gap-4 overflow-hidden !p-5">
+            <div class="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(60%_100%_at_50%_0%,color-mix(in_srgb,var(--sw-accent)_22%,transparent),transparent)]" />
             <div class="relative overflow-hidden rounded-2xl border border-[var(--sw-line)] bg-[radial-gradient(ellipse_at_50%_20%,var(--sw-surface-3)_0%,var(--sw-canvas)_70%)]">
               <div
                 v-if="nickname"
@@ -71,7 +71,7 @@
         <!-- Lists -->
         <div class="space-y-9">
           <section>
-            <h2 class="sw-eyebrow mb-3">{{ $t('skins.saved') }}</h2>
+            <h2 class="sw-section-head"><span class="sw-eyebrow text-[12px]">{{ $t('skins.saved') }}</span></h2>
             <div class="flex flex-wrap gap-3">
               <button
                 type="button"
@@ -113,7 +113,7 @@
           </section>
 
           <section>
-            <h2 class="sw-eyebrow mb-3">{{ $t('skins.defaults') }}</h2>
+            <h2 class="sw-section-head"><span class="sw-eyebrow text-[12px]">{{ $t('skins.defaults') }}</span></h2>
             <p v-if="!defaults.length" class="text-sm text-muted">{{ $t('skins.defaultsEmpty') }}</p>
             <div class="flex flex-wrap gap-3">
               <SkinThumb
@@ -130,10 +130,11 @@
           </section>
         </div>
       </div>
+      </div>
     </div>
 
-    <div v-if="!isMicrosoft" class="shrink-0 border-t border-default bg-white/[0.02] px-6 py-4 lg:px-8">
-      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
+    <div v-if="!isMicrosoft" class="shrink-0 border-t border-[var(--sw-line)] bg-[var(--sw-stage)] py-4">
+      <div class="mx-auto flex max-w-[1320px] flex-wrap items-center justify-between gap-3 px-[clamp(24px,4.5vw,72px)]">
         <div class="flex min-w-0 items-start gap-3">
           <UIcon :name="isOffline ? 'i-lucide-eye' : 'i-lucide-info'" class="mt-0.5 size-5 shrink-0 text-[var(--sw-accent)]" />
           <div class="min-w-0">

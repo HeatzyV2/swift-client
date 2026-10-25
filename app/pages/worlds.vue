@@ -1,118 +1,77 @@
 <template>
-  <div class="h-full overflow-y-auto px-8 py-7">
-    <div class="mx-auto max-w-5xl space-y-6">
-      <div class="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 class="sw-page-title">{{ $t('worldsPage.title') }}</h1>
-          <p class="mt-1 text-sm text-muted">
-            {{ $t('worldsPage.count', { worlds: totalWorlds, instances: groups.length }) }}
-          </p>
-        </div>
-        <UButton
-          icon="i-lucide-refresh-cw"
-          color="neutral"
-          variant="ghost"
-          size="xs"
-          :loading="loading"
-          :label="$t('content.refresh')"
-          @click="load"
-        />
-      </div>
+  <div class="h-full overflow-y-auto">
+    <div class="sw-page">
+      <UiPageHeader icon="i-lucide-globe" :title="$t('worldsPage.title')" :subtitle="$t('worldsPage.count', { worlds: totalWorlds, instances: groups.length })">
+        <UButton icon="i-lucide-refresh-cw" color="neutral" variant="soft" :loading="loading" :label="$t('content.refresh')" @click="load" />
+      </UiPageHeader>
 
       <div v-if="loading" class="space-y-8">
-        <div v-for="g in 2" :key="`g-sk-${g}`" class="space-y-3">
-          <div class="flex items-center gap-2.5">
-            <div class="size-8 sw-skeleton" />
-            <div class="h-4 w-40 sw-skeleton" />
-          </div>
-          <div class="space-y-2">
-            <div v-for="n in 3" :key="`r-sk-${n}`" class="flex items-center gap-3 sw-panel p-3">
-              <div class="size-11 shrink-0 sw-skeleton" />
-              <div class="min-w-0 flex-1 space-y-2">
-                <div class="h-3.5 w-1/3 sw-skeleton" />
-                <div class="h-2.5 w-1/2 sw-skeleton" />
-              </div>
-            </div>
+        <div v-for="g in 2" :key="`g-sk-${g}`">
+          <div class="sw-skeleton mb-4 h-4 w-48" />
+          <div class="grid gap-3.5" :style="GRID">
+            <div v-for="n in 3" :key="`r-sk-${n}`" class="sw-skeleton h-[132px] rounded-[14px]" />
           </div>
         </div>
       </div>
 
-      <div v-else-if="!groups.length" class="flex flex-col items-center justify-center gap-3 py-24 text-center">
-        <BrandMascot class="h-[90px] w-auto" />
-        <p class="text-sm text-muted">{{ $t('worldsPage.empty') }}</p>
-      </div>
+      <UiEmptyState v-else-if="!groups.length" icon="i-lucide-globe" :title="$t('worldsPage.empty')" />
 
-      <template v-else>
+      <div v-else class="space-y-9">
         <section v-for="group in groups" :key="group.instance.id">
-          <button
-            type="button"
-            class="group/h mb-3 flex w-full items-center gap-2.5 text-left"
-            @click="router.push(`/instance/${group.instance.id}`)"
-          >
-            <InstanceIcon :instance="group.instance" class="size-8 rounded-lg text-[14px]" />
-            <span class="font-semibold transition group-hover/h:text-primary-400">{{ group.instance.name }}</span>
-            <span class="font-mono text-[11px] text-neutral-500">{{ group.instance.mc_version }}</span>
-            <div class="h-px flex-1 bg-[var(--sw-line-soft)]" />
-            <span class="text-xs text-neutral-500">{{ $t('worldsPage.instanceWorlds', { n: group.worlds.length }) }}</span>
-          </button>
+          <div class="sw-section-head">
+            <button type="button" class="group/h flex min-w-0 items-center gap-2.5" @click="router.push(`/instance/${group.instance.id}`)">
+              <InstanceIcon :instance="group.instance" class="size-7 rounded-[7px] text-[12px]" />
+              <span class="sw-eyebrow truncate text-[12px] transition-colors group-hover/h:text-highlighted">{{ group.instance.name }}</span>
+              <span class="font-mono text-[11px] text-dimmed">{{ group.instance.mc_version }}</span>
+            </button>
+            <span class="order-last rounded-full bg-[var(--sw-surface-2)] px-2 py-0.5 text-[11px] text-muted">{{ $t('worldsPage.instanceWorlds', { n: group.worlds.length }) }}</span>
+          </div>
 
-          <div class="space-y-2">
-            <div
-              v-for="w in group.worlds"
-              :key="w.folder"
-              class="flex items-center gap-3 sw-panel p-3"
-            >
-              <img
-                v-if="w.icon_path"
-                :src="assetUrl(w.icon_path)"
-                class="size-11 shrink-0 rounded-lg object-cover [image-rendering:pixelated]"
-                :alt="w.name"
-              >
-              <div v-else class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white/5">
-                <UIcon name="i-lucide-globe" class="size-5 text-neutral-500" />
-              </div>
-              <div class="min-w-0 flex-1">
-                <div class="truncate font-medium">{{ w.name }}</div>
-                <div class="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-neutral-400">
-                  <span v-if="w.version" class="font-mono">{{ w.version }}</span>
-                  <span v-if="w.game_mode">· {{ $t(`content.gameMode.${w.game_mode}`) }}</span>
-                  <span v-if="w.last_played">· {{ formatDate(w.last_played) }}</span>
+          <div class="grid gap-3.5" :style="GRID">
+            <div v-for="w in group.worlds" :key="w.folder" class="sw-world group">
+              <div class="flex items-center gap-3.5">
+                <img
+                  v-if="w.icon_path"
+                  :src="assetUrl(w.icon_path)"
+                  class="size-14 shrink-0 rounded-[12px] object-cover [image-rendering:pixelated] shadow-[0_6px_18px_rgb(0_0_0/0.35)]"
+                  :alt="w.name"
+                >
+                <div v-else class="flex size-14 shrink-0 items-center justify-center rounded-[12px] bg-[var(--sw-surface-3)]">
+                  <UIcon name="i-lucide-globe" class="size-6 text-dimmed" />
                 </div>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-[15px] font-bold text-highlighted">{{ w.name }}</p>
+                  <p class="mt-1 flex flex-wrap items-center gap-x-2 text-[12px] text-muted">
+                    <span v-if="w.version" class="font-mono text-toned">{{ w.version }}</span>
+                    <span v-if="w.game_mode">· {{ $t(`content.gameMode.${w.game_mode}`) }}</span>
+                  </p>
+                </div>
+                <button
+                  v-if="supportsQuickPlay(group.instance.mc_version)"
+                  type="button"
+                  class="sw-world-play"
+                  :title="$t('quickPlay.playWorld')"
+                  :aria-label="$t('quickPlay.playWorld')"
+                  @click="playWorld(group.instance.id, w.folder)"
+                >
+                  <UIcon :name="launching === `${group.instance.id}/${w.folder}` ? 'i-lucide-loader-circle' : 'i-lucide-play'" class="size-[18px]" :class="{ 'animate-spin': launching === `${group.instance.id}/${w.folder}` }" />
+                </button>
               </div>
-              <UButton
-                v-if="supportsQuickPlay(group.instance.mc_version)"
-                icon="i-lucide-play"
-                size="xs"
-                color="primary"
-                variant="ghost"
-                :loading="launching === `${group.instance.id}/${w.folder}`"
-                :title="$t('quickPlay.playWorld')"
-                square
-                @click="playWorld(group.instance.id, w.folder)"
-              />
-              <UButton
-                icon="i-lucide-archive"
-                size="xs"
-                color="neutral"
-                variant="ghost"
-                :loading="busyWorld === `${group.instance.id}/${w.folder}`"
-                :title="$t('content.backup')"
-                square
-                @click="backupWorld(group.instance.id, w)"
-              />
-              <UButton
-                icon="i-lucide-trash-2"
-                size="xs"
-                color="error"
-                variant="ghost"
-                :title="$t('common.remove')"
-                square
-                @click="deleteWorld(group.instance.id, w)"
-              />
+
+              <div class="mt-3.5 flex items-center gap-2 border-t border-[var(--sw-line)] pt-3 text-[12px] text-dimmed">
+                <UIcon name="i-lucide-clock" class="size-3.5" />
+                <span class="flex-1 truncate">{{ w.last_played ? formatDate(w.last_played) : '—' }}</span>
+                <UTooltip :text="$t('content.backup')">
+                  <UButton icon="i-lucide-archive" size="xs" color="neutral" variant="ghost" square :loading="busyWorld === `${group.instance.id}/${w.folder}`" :aria-label="$t('content.backup')" @click="backupWorld(group.instance.id, w)" />
+                </UTooltip>
+                <UTooltip :text="$t('common.remove')">
+                  <UButton icon="i-lucide-trash-2" size="xs" color="error" variant="ghost" square :aria-label="$t('common.remove')" @click="deleteWorld(group.instance.id, w)" />
+                </UTooltip>
+              </div>
             </div>
           </div>
         </section>
-      </template>
+      </div>
     </div>
   </div>
 </template>
@@ -125,7 +84,7 @@ import type { Instance, WorldInfo } from '~/types/launcher'
 const instances = useInstancesStore()
 const router = useRouter()
 const toast = useToast()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const mc = useMinecraftLaunch()
 
 const busyWorld = ref<string | null>(null)
@@ -137,7 +96,8 @@ const launching = ref<string | null>(null)
 
 const totalWorlds = computed(() => groups.value.reduce((n, g) => n + g.worlds.length, 0))
 
-const formatDate = (ms: number) => new Date(ms).toLocaleDateString()
+const GRID = 'grid-template-columns:repeat(auto-fill,minmax(300px,1fr))'
+const formatDate = (ms: number) => formatRelative(new Date(ms).toISOString(), locale.value) ?? new Date(ms).toLocaleDateString()
 
 function supportsQuickPlay(ver: string): boolean {
   const [, minorStr = '0'] = ver.split('.')
@@ -198,3 +158,34 @@ async function playWorld(instanceId: string, folder: string) {
 
 onMounted(load)
 </script>
+
+<style scoped>
+.sw-world {
+  padding: 14px 14px 10px;
+  border-radius: 14px;
+  border: 1px solid var(--sw-line);
+  background: var(--sw-surface);
+  transition: transform 180ms var(--ease-swift), border-color 180ms var(--ease-swift), background-color 180ms var(--ease-swift);
+}
+.sw-world:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--sw-accent) 35%, var(--sw-line));
+  background: var(--sw-surface-2);
+}
+.sw-world-play {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--sw-accent-soft);
+  color: var(--sw-accent);
+  transition: background-color 160ms var(--ease-swift), color 160ms var(--ease-swift);
+}
+.sw-world:hover .sw-world-play {
+  background: var(--sw-accent);
+  color: var(--sw-accent-fg);
+}
+</style>

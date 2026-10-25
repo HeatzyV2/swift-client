@@ -1,3 +1,18 @@
+## Changes (v1.8.0)
+
+### 🏠 A new Home
+- Your skin in 3D, alive like in a game lobby: it breathes, follows your mouse, waves now and then, and turns with a drag.
+- A big **Play** button with your version and profile, plus your last three games one click away.
+- **What's new**, your **friends** (accept or decline requests right there) and **partner servers** with live player counts.
+- A slim icon bar on the left and a cleaner top bar with quick actions.
+
+### ⚙️ Settings, redesigned
+- Search across every setting, clearer sections, themes shown as previews, display modes and update channels as cards, memory presets, account cards.
+
+### ✨ One look everywhere
+- Instances, Servers, Worlds, Media and Skins share the new style: big titles, richer cards, play buttons on every card.
+- Live **players online** counter for Swift Client players.
+
 ## Changes (v1.7.0)
 
 ### 🧩 Swift instances for every supported Minecraft version

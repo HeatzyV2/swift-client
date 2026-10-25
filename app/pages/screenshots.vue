@@ -1,72 +1,50 @@
 <template>
-  <div class="h-full overflow-y-auto px-8 py-7">
-    <div class="mx-auto max-w-6xl space-y-6">
-      <div class="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 class="sw-page-title">{{ $t('screenshotsPage.title') }}</h1>
-          <p class="mt-1 text-sm text-muted">
-            {{ $t('screenshotsPage.count', { shots: totalShots, instances: groups.length }) }}
-          </p>
-        </div>
-        <UButton
-          icon="i-lucide-refresh-cw"
-          color="neutral"
-          variant="ghost"
-          size="xs"
-          :loading="loading"
-          :label="$t('content.refresh')"
-          @click="load"
-        />
-      </div>
+  <div class="h-full overflow-y-auto">
+    <div class="sw-page">
+      <UiPageHeader icon="i-lucide-camera" :title="$t('screenshotsPage.title')" :subtitle="$t('screenshotsPage.count', { shots: totalShots, instances: groups.length })">
+        <UButton icon="i-lucide-refresh-cw" color="neutral" variant="soft" :loading="loading" :label="$t('content.refresh')" @click="load" />
+      </UiPageHeader>
 
       <div v-if="loading" class="space-y-8">
-        <div v-for="g in 2" :key="`g-sk-${g}`" class="space-y-3">
-          <div class="flex items-center gap-2.5">
-            <div class="size-8 sw-skeleton" />
-            <div class="h-4 w-40 sw-skeleton" />
-          </div>
-          <div class="grid gap-3" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
-            <div v-for="n in 4" :key="`s-sk-${n}`" class="overflow-hidden sw-panel">
-              <div class="aspect-video w-full sw-skeleton" />
-              <div class="px-2.5 py-1.5"><div class="h-3 w-2/3 sw-skeleton" /></div>
-            </div>
+        <div v-for="g in 2" :key="`g-sk-${g}`">
+          <div class="sw-skeleton mb-4 h-4 w-48" />
+          <div class="grid gap-3.5" :style="GRID">
+            <div v-for="n in 4" :key="`s-sk-${n}`" class="sw-skeleton aspect-video rounded-[14px]" />
           </div>
         </div>
       </div>
 
-      <div v-else-if="!groups.length" class="flex flex-col items-center justify-center gap-3 py-24 text-center">
-        <BrandMascot class="h-[90px] w-auto" />
-        <p class="text-sm text-muted">{{ $t('screenshotsPage.empty') }}</p>
-      </div>
+      <UiEmptyState v-else-if="!groups.length" icon="i-lucide-camera" :title="$t('screenshotsPage.empty')" />
 
-      <template v-else>
+      <div v-else class="space-y-9">
         <section v-for="group in groups" :key="group.instance.id">
-          <button
-            type="button"
-            class="group/h mb-3 flex w-full items-center gap-2.5 text-left"
-            @click="router.push(`/instance/${group.instance.id}`)"
-          >
-            <InstanceIcon :instance="group.instance" class="size-8 rounded-lg text-[14px]" />
-            <span class="font-semibold transition group-hover/h:text-primary-400">{{ group.instance.name }}</span>
-            <span class="font-mono text-[11px] text-neutral-500">{{ group.instance.mc_version }}</span>
-            <div class="h-px flex-1 bg-[var(--sw-line-soft)]" />
-            <span class="text-xs text-neutral-500">{{ $t('screenshotsPage.instanceShots', { n: group.shots.length }) }}</span>
-          </button>
+          <div class="sw-section-head">
+            <button type="button" class="group/h flex min-w-0 items-center gap-2.5" @click="router.push(`/instance/${group.instance.id}`)">
+              <InstanceIcon :instance="group.instance" class="size-7 rounded-[7px] text-[12px]" />
+              <span class="sw-eyebrow truncate text-[12px] transition-colors group-hover/h:text-highlighted">{{ group.instance.name }}</span>
+              <span class="font-mono text-[11px] text-dimmed">{{ group.instance.mc_version }}</span>
+            </button>
+            <span class="order-last rounded-full bg-[var(--sw-surface-2)] px-2 py-0.5 text-[11px] text-muted">{{ $t('screenshotsPage.instanceShots', { n: group.shots.length }) }}</span>
+          </div>
 
-          <div class="grid gap-3" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
+          <div class="grid gap-3.5" :style="GRID">
             <button
               v-for="s in group.shots"
               :key="s.path"
               type="button"
-              class="group overflow-hidden sw-panel text-left transition hover:border-primary-500/40"
+              class="sw-shot group"
               @click="openLightbox(s)"
             >
-              <ThumbImage :path="s.path" :size="440" :alt="s.name" class="aspect-video w-full object-cover transition group-hover:opacity-90" />
-              <div class="truncate px-2.5 py-1.5 text-[11px] text-neutral-400" :title="s.name">{{ s.name }}</div>
+              <ThumbImage :path="s.path" :size="440" :alt="s.name" class="aspect-video w-full object-cover transition-[scale] duration-300 ease-[var(--ease-swift)] group-hover:scale-[1.05]" />
+              <span class="absolute inset-0 bg-[linear-gradient(to_top,rgb(5_7_11/0.85)_0%,transparent_45%)] opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+              <span class="absolute inset-x-0 bottom-0 flex items-center gap-2 px-3 pb-2.5 text-[12px] font-medium text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                <UIcon name="i-lucide-maximize-2" class="size-3.5 shrink-0" />
+                <span class="truncate" :title="s.name">{{ s.name }}</span>
+              </span>
             </button>
           </div>
         </section>
-      </template>
+      </div>
     </div>
 
     <UModal v-model:open="lightboxOpen" :ui="{ content: 'max-w-5xl w-[92vw]' }">
@@ -113,6 +91,8 @@
 import { invoke } from '@tauri-apps/api/core'
 import { save, confirm } from '@tauri-apps/plugin-dialog'
 import type { Instance, ScreenshotInfo } from '~/types/launcher'
+
+const GRID = 'grid-template-columns:repeat(auto-fill,minmax(240px,1fr))'
 
 const instances = useInstancesStore()
 const router = useRouter()
@@ -209,3 +189,21 @@ onMounted(() => {
 })
 onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 </script>
+
+<style scoped>
+.sw-shot {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--sw-line);
+  background: var(--sw-surface);
+  text-align: left;
+  transition: transform 180ms var(--ease-swift), border-color 180ms var(--ease-swift), box-shadow 180ms var(--ease-swift);
+}
+.sw-shot:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--sw-accent) 40%, var(--sw-line));
+  box-shadow: var(--shadow-md);
+}
+</style>

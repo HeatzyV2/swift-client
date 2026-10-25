@@ -376,7 +376,6 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Launcher configuration",
     "nav": {
       "display": "Display",
       "game": "Game",
@@ -387,7 +386,6 @@
       "themeDark": "Dark",
       "themeOled": "OLED",
       "themeDesc": "How dark the interface is.",
-      "preview": "Live preview",
       "themes": {
         "swift": "Swift",
         "oled": "OLED",
@@ -400,7 +398,8 @@
         "cherry": "Cherry Grove",
         "lush": "Lush Caves",
         "frozen": "Frozen"
-      }
+      },
+      "themeHint": "Colours of the whole launcher. Swift is the original."
     },
     "language": {
       "title": "Language",
@@ -424,7 +423,10 @@
       "offlineUsername": "Username",
       "offlineHint": "Offline accounts work for singleplayer and offline-mode servers only.",
       "setActive": "Set active",
-      "noAccounts": "No accounts yet. Sign in to play."
+      "noAccounts": "No accounts yet. Sign in to play.",
+      "listDesc": "The active account is the one you play with.",
+      "use": "Use",
+      "add": "Add an account"
     },
     "swift": {
       "title": "Swift Client account",
@@ -506,6 +508,12 @@
         "light": "suits your mods",
         "heavy": "a heavy modpack needs room",
         "limited": "your computer limits it"
+      },
+      "gb": "GB",
+      "displayDesc": {
+        "windowed": "A window you can resize and move.",
+        "borderless": "Fills the screen, alt-tab stays instant.",
+        "fullscreen": "Exclusive mode, can help on weaker PCs."
       }
     },
     "advanced": {
@@ -536,8 +544,12 @@
       "connected": "Connected",
       "offline": "Not available",
       "updatePrompt": "Install it now: the launcher restarts in a few seconds.",
-      "updateBlocked": "Close the game before updating the launcher."
-    }
+      "updateBlocked": "Close the game before updating the launcher.",
+      "community": "Community",
+      "communityDesc": "News, help and feedback on the Discord."
+    },
+    "search": "Search settings",
+    "noResults": "No setting matches."
   },
   "activity": {
     "idle": "No instance running",
@@ -914,37 +926,44 @@
     },
     "switchInstance": "Switch instance",
     "manageInstances": "All instances",
-    "news": "Latest news",
     "readMore": "Read more",
-    "playedAgo": "Played {when}",
     "background": "Background {n}",
     "noInstances": "No instances yet",
     "join": "Join",
-    "featured": "Featured",
     "server": {
-      "title": "Server status",
       "online": "Online",
       "offline": "Unreachable",
-      "checking": "Checking…",
-      "players": "players",
-      "latency": "latency",
-      "fromInstance": "From {name}",
-      "featured": "Featured server"
-    },
-    "lastSession": {
-      "title": "Last session",
-      "never": "Nothing played yet — your last session will show up here.",
-      "total": "{time} played",
-      "open": "Open instance"
-    },
-    "changelog": {
-      "title": "What's new"
+      "checking": "Checking…"
     },
     "quickStart": {
       "title": "Play",
       "hint": "A Swift Client instance, ready in one click",
       "creating": "Setting up your instance…",
       "failed": "Could not set up the instance"
+    },
+    "whatsNew": "What's new",
+    "allNews": "All news",
+    "newsTag": "News",
+    "noNews": "No news right now.",
+    "viewAll": "View all",
+    "partners": "Partner servers",
+    "noPartners": "No partner servers yet.",
+    "joinOn": "Join with {name}",
+    "recent": {
+      "empty": "Your last games will show up here."
+    },
+    "hero": {
+      "worlds": "{n} world | {n} worlds",
+      "played": "{time} played",
+      "lastPlayed": "Last played {when}"
+    },
+    "friends": {
+      "title": "Friends",
+      "requests": "Requests · {n}",
+      "wantsToBeFriends": "Wants to be friends",
+      "accept": "Accept",
+      "decline": "Decline",
+      "empty": "No friends yet."
     }
   },
   "removeInstance": {
@@ -1080,7 +1099,6 @@
     "check": "Check now",
     "install": "Update",
     "updating": "Downloading {version}",
-    "channelTitle": "Channel",
     "channel": "Update channel",
     "channelDesc": "Stable is for everyone. Beta gets pre-releases first. Local never downloads and uses the build next to the launcher.",
     "channels": {
@@ -1108,7 +1126,12 @@
     "updatedToastDesc": "It will be installed next time you launch a Swift instance.",
     "pinnedToast": "Version {version} will be used",
     "instanceBadge": "Swift mod {version}",
-    "instanceBadgeHint": "Manage the Swift Client mod"
+    "instanceBadgeHint": "Manage the Swift Client mod",
+    "channelHint": {
+      "stable": "Tested releases, for everyone.",
+      "beta": "Pre-releases first, may have bugs.",
+      "local": "Never downloads: uses your own build."
+    }
   },
   "worldBackups": {
     "title": "World backups",
@@ -1133,5 +1156,8 @@
     "exportButton": "Export",
     "done": "Diagnostics saved",
     "show": "Show in folder"
+  },
+  "topbar": {
+    "playersOnline": "{n} player online | {n} players online"
   }
 }

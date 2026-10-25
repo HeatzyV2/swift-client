@@ -1,16 +1,17 @@
 <template>
   <div class="h-full">
     <UContextMenu :items="contextItems">
-      <div class="h-full overflow-y-auto px-8 py-7" @contextmenu.capture="onContext">
-        <UiPageHeader :title="$t('library.title')" :subtitle="$t('library.count', { n: instances.instances.length })">
-          <UInput v-model="search" icon="i-lucide-search" :placeholder="$t('library.search')" class="w-60" />
-          <USelect v-model="loaderFilter" :items="loaderFilterItems" class="w-36" />
-          <UButton icon="i-lucide-plus" :label="$t('nav.newInstance')" @click="openCreate()" />
+      <div class="h-full overflow-y-auto" @contextmenu.capture="onContext">
+      <div class="sw-page">
+        <UiPageHeader icon="i-lucide-layout-grid" :title="$t('library.title')" :subtitle="$t('library.count', { n: instances.instances.length })">
+          <UInput v-model="search" icon="i-lucide-search" :placeholder="$t('library.search')" class="w-60" :ui="{ base: 'h-10 rounded-[10px]' }" />
+          <USelect v-model="loaderFilter" :items="loaderFilterItems" class="w-40" :ui="{ base: 'h-10 rounded-[10px]' }" />
+          <UButton icon="i-lucide-plus" size="lg" :label="$t('nav.newInstance')" @click="openCreate()" />
         </UiPageHeader>
 
         <div v-if="instances.loading && !instances.loaded" class="grid gap-3" :style="GRID">
-          <div v-for="n in 8" :key="n" class="sw-panel flex items-center gap-3 p-3">
-            <div class="sw-skeleton size-11 shrink-0" />
+          <div v-for="n in 8" :key="n" class="sw-panel flex h-[118px] items-center gap-3 p-3.5">
+            <div class="sw-skeleton size-14 shrink-0" />
             <div class="flex-1 space-y-2">
               <div class="sw-skeleton h-3.5 w-3/4" />
               <div class="sw-skeleton h-2.5 w-2/5" />
@@ -55,10 +56,10 @@
           @end="layout.onGroupsReordered()"
         >
           <section v-for="group in layout.groups.value" v-show="!filtering || visibleCount(group) > 0" :key="group.id">
-            <div class="group/h mb-3 flex items-center gap-2">
+            <div class="group/h mb-3.5 flex items-center gap-2">
               <button
                 type="button"
-                class="flex items-center gap-1.5 rounded py-0.5 text-[13px] font-semibold text-toned transition-colors hover:text-highlighted"
+                class="sw-eyebrow flex items-center gap-1.5 rounded py-0.5 text-[12px] transition-colors hover:text-highlighted"
                 @click="layout.toggleCollapse(group.id)"
               >
                 <UIcon
@@ -68,14 +69,14 @@
                 />
                 {{ group.name ?? $t('library.ungrouped') }}
               </button>
-              <span class="font-mono text-[11px] text-dimmed">{{ filtering ? visibleCount(group) : group.items.length }}</span>
+              <span class="rounded-full bg-[var(--sw-surface-2)] px-2 py-0.5 font-mono text-[11px] text-muted">{{ filtering ? visibleCount(group) : group.items.length }}</span>
               <UIcon
                 v-if="group.name && !filtering"
                 name="i-lucide-grip-vertical"
                 class="sw-group-handle size-4 cursor-grab text-dimmed opacity-0 transition hover:text-toned group-hover/h:opacity-100 active:cursor-grabbing"
                 :title="$t('library.dragGroup')"
               />
-              <div class="h-px flex-1 bg-[var(--sw-line-soft)]" />
+              <div class="h-px flex-1 bg-[var(--sw-line)]" />
               <UButton
                 v-if="group.name"
                 icon="i-lucide-trash-2"
@@ -98,7 +99,7 @@
               :fallback-on-body="true"
               :fallback-tolerance="6"
               ghost-class="sw-card-ghost"
-              class="grid min-h-16 gap-3"
+              class="grid min-h-16 gap-3.5"
               :style="GRID"
               @end="onInstanceDragEnd"
               @start="onInstanceDragStart"
@@ -118,6 +119,7 @@
             </VueDraggable>
           </section>
         </VueDraggable>
+      </div>
       </div>
     </UContextMenu>
 
@@ -152,7 +154,7 @@ import { VueDraggable } from 'vue-draggable-plus'
 import type { Instance, LoaderType } from '~/types/launcher'
 import type { DisplayGroup } from '~/composables/useLibraryLayout'
 
-const GRID = 'grid-template-columns:repeat(auto-fill,minmax(260px,1fr))'
+const GRID = 'grid-template-columns:repeat(auto-fill,minmax(290px,1fr))'
 
 const instances = useInstancesStore()
 const layout = useLibraryLayout()

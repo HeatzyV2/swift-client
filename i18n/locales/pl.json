@@ -376,7 +376,6 @@
   },
   "settings": {
     "title": "Ustawienia",
-    "subtitle": "Konfiguracja launchera",
     "nav": {
       "display": "Wyświetlanie",
       "game": "Gra",
@@ -387,7 +386,6 @@
       "themeDark": "Ciemny",
       "themeOled": "OLED",
       "themeDesc": "Wybierz jasność interfejsu.",
-      "preview": "Podgląd na żywo",
       "themes": {
         "swift": "Swift",
         "oled": "OLED",
@@ -400,7 +398,8 @@
         "cherry": "Wiśniowy gaj",
         "lush": "Bujne jaskinie",
         "frozen": "Mróz"
-      }
+      },
+      "themeHint": "Kolory całego launchera. Swift to oryginał."
     },
     "language": {
       "title": "Język",
@@ -424,7 +423,10 @@
       "offlineUsername": "Nazwa gracza",
       "offlineHint": "Konta offline działają tylko w trybie jednoosobowym i na serwerach offline.",
       "setActive": "Ustaw jako aktywne",
-      "noAccounts": "Brak kont. Zaloguj się, aby zagrać."
+      "noAccounts": "Brak kont. Zaloguj się, aby zagrać.",
+      "listDesc": "Aktywne konto to to, którym grasz.",
+      "use": "Użyj",
+      "add": "Dodaj konto"
     },
     "swift": {
       "title": "Konto Swift Client",
@@ -506,6 +508,12 @@
         "light": "pasuje do Twoich modów",
         "heavy": "duży modpack potrzebuje miejsca",
         "limited": "to limit Twojego komputera"
+      },
+      "gb": "GB",
+      "displayDesc": {
+        "windowed": "Okno, które możesz przesuwać i zmieniać.",
+        "borderless": "Wypełnia ekran, alt-tab działa od razu.",
+        "fullscreen": "Tryb wyłączny, może pomóc na słabszych PC."
       }
     },
     "advanced": {
@@ -536,8 +544,12 @@
       "connected": "Połączono",
       "offline": "Niedostępne",
       "updatePrompt": "Zainstaluj teraz: launcher uruchomi się ponownie za kilka sekund.",
-      "updateBlocked": "Zamknij grę przed aktualizacją launchera."
-    }
+      "updateBlocked": "Zamknij grę przed aktualizacją launchera.",
+      "community": "Społeczność",
+      "communityDesc": "Nowości, pomoc i opinie na Discordzie."
+    },
+    "search": "Szukaj ustawień",
+    "noResults": "Brak pasujących ustawień."
   },
   "activity": {
     "idle": "Żadna instancja nie jest włączona",
@@ -914,37 +926,44 @@
     },
     "switchInstance": "Zmień instancję",
     "manageInstances": "Wszystkie instancje",
-    "news": "Aktualności",
     "readMore": "Czytaj więcej",
-    "playedAgo": "Grano {when}",
     "background": "Tło {n}",
     "noInstances": "Brak instancji",
     "join": "Dołącz",
-    "featured": "Wyróżnione",
     "server": {
-      "title": "Status serwera",
       "online": "Online",
       "offline": "Niedostępny",
-      "checking": "Sprawdzanie…",
-      "players": "graczy",
-      "latency": "opóźnienie",
-      "fromInstance": "Z instancji {name}",
-      "featured": "Polecany serwer"
-    },
-    "lastSession": {
-      "title": "Ostatnia sesja",
-      "never": "Jeszcze nic nie grano – tu pojawi się twoja ostatnia sesja.",
-      "total": "Czas gry: {time}",
-      "open": "Otwórz instancję"
-    },
-    "changelog": {
-      "title": "Co nowego"
+      "checking": "Sprawdzanie…"
     },
     "quickStart": {
       "title": "Graj",
       "hint": "Instancja Swift Client gotowa jednym kliknięciem",
       "creating": "Przygotowywanie instancji…",
       "failed": "Nie udało się przygotować instancji"
+    },
+    "whatsNew": "Nowości",
+    "allNews": "Wszystkie wiadomości",
+    "newsTag": "Wiadomość",
+    "noNews": "Na razie brak wiadomości.",
+    "viewAll": "Zobacz wszystko",
+    "partners": "Serwery partnerskie",
+    "noPartners": "Brak serwerów partnerskich.",
+    "joinOn": "Dołącz z {name}",
+    "recent": {
+      "empty": "Tutaj pojawią się twoje ostatnie gry."
+    },
+    "hero": {
+      "worlds": "{n} świat | {n} światów",
+      "played": "{time} gry",
+      "lastPlayed": "Ostatnio grane {when}"
+    },
+    "friends": {
+      "title": "Znajomi",
+      "requests": "Zaproszenia · {n}",
+      "wantsToBeFriends": "Chce zostać znajomym",
+      "accept": "Akceptuj",
+      "decline": "Odrzuć",
+      "empty": "Brak znajomych."
     }
   },
   "removeInstance": {
@@ -1080,7 +1099,6 @@
     "check": "Sprawdź",
     "install": "Aktualizuj",
     "updating": "Pobieranie {version}",
-    "channelTitle": "Kanał",
     "channel": "Kanał aktualizacji",
     "channelDesc": "Stabilny jest dla wszystkich. Beta dostaje wersje wstępne jako pierwsza. Lokalny niczego nie pobiera i używa builda obok launchera.",
     "channels": {
@@ -1108,7 +1126,12 @@
     "updatedToastDesc": "Zostanie zainstalowany przy następnym uruchomieniu instancji Swift.",
     "pinnedToast": "Zostanie użyta wersja {version}",
     "instanceBadge": "Mod Swift {version}",
-    "instanceBadgeHint": "Zarządzaj modem Swift Client"
+    "instanceBadgeHint": "Zarządzaj modem Swift Client",
+    "channelHint": {
+      "stable": "Przetestowane wersje, dla wszystkich.",
+      "beta": "Wersje testowe wcześniej, mogą mieć błędy.",
+      "local": "Nic nie pobiera: używa twojego buildu."
+    }
   },
   "worldBackups": {
     "title": "Kopie zapasowe światów",
@@ -1133,5 +1156,8 @@
     "exportButton": "Eksportuj",
     "done": "Diagnostyka zapisana",
     "show": "Pokaż w folderze"
+  },
+  "topbar": {
+    "playersOnline": "{n} gracz online | {n} graczy online"
   }
 }

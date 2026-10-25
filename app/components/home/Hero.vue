@@ -1,95 +1,84 @@
 <template>
-  <section
-    ref="root"
-    class="relative isolate flex min-h-[clamp(500px,66vh,660px)] flex-col overflow-hidden rounded-[22px] border border-[var(--sw-line)] bg-[var(--sw-canvas)] shadow-xl"
-    @mousemove="onMove"
-    @mouseleave="onLeave"
-  >
-    <!-- Background — follows the cursor slightly -->
+  <section class="relative isolate flex min-h-[250px] overflow-hidden rounded-[16px] border border-[var(--sw-line)] bg-[var(--sw-canvas)] shadow-xl">
+    <!-- Background scene, darkened so the text reads -->
     <img
       :src="rotation.current.value.src"
       alt=""
       draggable="false"
-      class="pointer-events-none absolute inset-[-4%] size-[108%] max-w-none object-cover will-change-transform"
-      :class="reduceMotion ? '' : 'transition-transform duration-700 ease-out'"
-      :style="{
-        objectPosition: rotation.current.value.position ?? '50% 50%',
-        transform: `translate3d(${parallax.x}px, ${parallax.y}px, 0)`,
-      }"
+      class="pointer-events-none absolute inset-0 size-full object-cover opacity-70"
+      :style="{ objectPosition: rotation.current.value.position ?? '50% 50%' }"
     >
+    <div class="sw-scene pointer-events-none absolute inset-0 opacity-[0.75]" />
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgb(5_7_11/0.35)_0%,rgb(5_7_11/0.7)_40%,rgb(5_7_11/0.55)_100%)]" />
 
-    <!-- Navy wash with the Swift glow, a faint block grid, and a dark floor under the dock -->
-    <div class="sw-scene pointer-events-none absolute inset-0 opacity-[0.86]" />
-    <div class="sw-scene-grid pointer-events-none absolute inset-x-0 bottom-0 h-[55%]" />
-    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgb(5_7_11/0.85)_0%,rgb(5_7_11/0.35)_45%,transparent_75%)]" />
-    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-[45%] bg-[linear-gradient(to_top,rgb(5_7_11/0.9),transparent)]" />
-
-    <!-- Player card, floating on the right of the scene -->
-    <div class="absolute right-8 top-8 z-10 w-[280px] max-lg:hidden">
-      <HomeAvatarCard part="identity" />
+    <!-- The player's skin, live, cut by the bottom of the card -->
+    <div class="relative w-[clamp(170px,24%,230px)] shrink-0 self-stretch">
+      <HomeSkinStage :skin="skin" class="absolute inset-x-0 top-1 -bottom-20" />
     </div>
 
-    <!-- Headline: the selected instance -->
-    <Transition name="sw-rise" mode="out-in">
-      <div v-if="instance" :key="instance.id" class="relative flex max-w-[620px] flex-col gap-3 px-10 pt-10">
-        <span class="w-fit rounded-[8px] bg-primary px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] sw-on-accent shadow-[0_0_20px_color-mix(in_srgb,var(--sw-accent)_60%,transparent)]">
-          {{ loaderLabel(instance.loader.type) }} {{ instance.mc_version }}
+    <div class="relative flex min-w-0 flex-1 flex-col justify-center gap-3.5 py-8 pr-8 pl-[clamp(24px,4vw,56px)]">
+      <div class="flex min-w-0 items-center">
+        <h2 class="font-headline truncate text-[clamp(38px,4.2vw,54px)] font-extrabold! uppercase leading-[0.95] text-white">
+          {{ account?.username ?? $t('account.signIn') }}
+        </h2>
+      </div>
+
+      <!-- Selected profile at a glance -->
+      <p v-if="instance" class="flex flex-wrap items-center gap-x-5 gap-y-1 text-[13.5px] text-[#c3cad6]">
+        <span class="inline-flex items-center gap-1.5">
+          <UIcon name="i-lucide-box" class="size-4" />
+          <b class="font-semibold text-white">{{ instance.mc_version }}</b>
+          <span v-if="instance.loader.type !== 'vanilla'">· {{ loaderLabel(instance.loader.type) }}</span>
         </span>
-        <h1 class="text-[clamp(34px,4.4vw,52px)] font-extrabold leading-[1.04] tracking-[-0.03em] text-white">{{ instance.name }}</h1>
-        <p class="text-[15px] text-[#c3cad6]">
-          {{ lastPlayed ? $t('home.playedAgo', { when: lastPlayed }) : $t('instance.neverPlayed') }}
-        </p>
-        <NuxtLink to="/instances" class="w-fit text-[14px] font-semibold text-[#8fb8ff] transition-colors hover:text-white">
-          {{ $t('home.manageInstances') }} →
-        </NuxtLink>
-      </div>
-      <div v-else class="relative flex max-w-[620px] flex-col gap-3 px-10 pt-10">
-        <h1 class="text-[clamp(30px,3.8vw,46px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-white">{{ $t('home.quickStart.hint') }}</h1>
-      </div>
-    </Transition>
+        <span class="inline-flex items-center gap-1.5">
+          <UIcon name="i-lucide-globe" class="size-4" />
+          <i18n-t keypath="home.hero.worlds" :plural="worlds ?? 0" tag="span">
+            <template #n><b class="font-semibold text-white">{{ worlds ?? '—' }}</b></template>
+          </i18n-t>
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <UIcon name="i-lucide-clock" class="size-4" />
+          <i18n-t keypath="home.hero.played" tag="span">
+            <template #time><b class="font-semibold text-white">{{ hours }}</b></template>
+          </i18n-t>
+        </span>
+      </p>
+      <p v-else class="text-[13.5px] text-[#c3cad6]">{{ $t('home.quickStart.hint') }}</p>
 
-    <div class="flex-1" />
+      <HomePlayControl :instance="instance" class="mt-1.5" />
 
-    <!-- Play dock along the bottom of the scene -->
-    <div class="relative z-10 px-6 pb-6">
-      <HomePlayControl :instance="instance" />
+      <p v-if="instance" class="text-[13px] text-[#aab3c2]">
+        {{ lastPlayed ? $t('home.hero.lastPlayed', { when: lastPlayed }) : $t('instance.neverPlayed') }}
+      </p>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import type { Instance } from '~/types/launcher'
+import { invoke } from '@tauri-apps/api/core'
+import type { Instance, WorldInfo } from '~/types/launcher'
 
 const props = defineProps<{ instance?: Instance }>()
 
 const { locale } = useI18n()
-
+const accounts = useAccountStore()
 const rotation = useHeroRotation()
+const { skin } = usePlayerSkin()
 
+const account = computed(() => accounts.activeAccount)
 const lastPlayed = computed(() => formatRelative(props.instance?.last_played, locale.value))
 
-const root = ref<HTMLElement | null>(null)
-const parallax = reactive({ x: 0, y: 0 })
-const reduceMotion = ref(false)
-
-/** Max shift in px — subtle depth, not a full slide. */
-const RANGE = 14
-
-function onMove(e: MouseEvent) {
-  if (reduceMotion.value || !root.value) return
-  const rect = root.value.getBoundingClientRect()
-  const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1
-  const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1
-  parallax.x = nx * RANGE
-  parallax.y = ny * RANGE
-}
-
-function onLeave() {
-  parallax.x = 0
-  parallax.y = 0
-}
-
-onMounted(() => {
-  reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+/** Hours with one decimal, like "5.1 h": the time spent in this profile. */
+const hours = computed(() => {
+  const h = (props.instance?.playtime_seconds ?? 0) / 3600
+  return new Intl.NumberFormat(locale.value, { style: 'unit', unit: 'hour', unitDisplay: 'narrow', maximumFractionDigits: h < 10 ? 1 : 0 }).format(h)
 })
+
+const worlds = ref<number | null>(null)
+watch(() => props.instance?.id, async (id) => {
+  worlds.value = null
+  if (!id) return
+  const list = await invoke<WorldInfo[]>('list_worlds', { id }).catch(() => null)
+  if (props.instance?.id === id && list) worlds.value = list.length
+}, { immediate: true })
 </script>

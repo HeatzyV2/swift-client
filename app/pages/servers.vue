@@ -1,59 +1,56 @@
 <template>
-  <div class="flex h-full min-h-0 flex-col px-8 py-7">
-    <UiPageHeader :title="$t('servers.title')" :subtitle="$t('servers.subtitle')" />
+  <div class="h-full overflow-y-auto">
+    <div class="sw-page">
+      <UiPageHeader icon="i-lucide-server" :title="$t('servers.title')" :subtitle="$t('servers.subtitle')" />
 
-    <div v-if="servers.length" class="min-h-0 flex-1 overflow-y-auto">
-      <div class="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
-        <section v-for="entry in servers" :key="entry.id" class="sw-panel p-4">
-          <div class="flex items-center justify-between gap-3">
-            <span class="flex items-center gap-1.5 text-[11.5px] font-medium" :class="statusClass(entry.status)">
-              <span class="size-1.5 rounded-full bg-current shadow-[0_0_0_3px_color-mix(in_srgb,currentColor_22%,transparent)]" />
-              {{ t(`home.server.${entry.status}`) }}
-            </span>
-            <span v-if="entry.ping" class="font-mono text-[11px] tabular-nums" :class="latencyClass(entry.ping.latency_ms)">
-              {{ entry.ping.latency_ms }} ms
-            </span>
-          </div>
-
-          <div class="mt-3 flex items-center gap-3">
-            <img v-if="entry.ping?.favicon" :src="entry.ping.favicon" alt="" class="size-10 shrink-0 rounded-lg [image-rendering:pixelated]">
-            <div v-else class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[var(--sw-surface-3)]">
-              <UIcon name="i-lucide-server" class="size-5 text-dimmed" />
+      <div v-if="servers.length" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <section v-for="(entry, i) in servers" :key="entry.id" class="sw-server sw-rise-in" :style="{ animationDelay: `${i * 50}ms` }">
+          <!-- Head: the server icon big, its name, the live state -->
+          <div class="flex items-center gap-3.5">
+            <img v-if="entry.ping?.favicon" :src="entry.ping.favicon" alt="" class="size-14 shrink-0 rounded-[12px] [image-rendering:pixelated] shadow-[0_6px_18px_rgb(0_0_0/0.35)]">
+            <div v-else class="flex size-14 shrink-0 items-center justify-center rounded-[12px] bg-[var(--sw-surface-3)]">
+              <UIcon name="i-lucide-server" class="size-6 text-dimmed" />
             </div>
-            <div class="min-w-0">
-              <p class="truncate font-display text-[15px] font-semibold text-highlighted">{{ entry.name }}</p>
-              <p class="truncate font-mono text-[11px] text-dimmed">{{ entry.address }}</p>
+            <div class="min-w-0 flex-1">
+              <p class="font-headline truncate text-[22px] font-extrabold! uppercase leading-none text-highlighted">{{ entry.name }}</p>
+              <p class="mt-1 truncate font-mono text-[11.5px] text-dimmed">{{ entry.address }}</p>
             </div>
           </div>
 
-          <p v-if="entry.ping" class="mt-3 line-clamp-2 text-[12px] leading-relaxed text-muted">
-            {{ stripFormatting(entry.ping.motd) }}
+          <p class="mt-3.5 line-clamp-2 min-h-[2.6em] text-[12.5px] leading-relaxed text-muted">
+            {{ entry.ping ? stripFormatting(entry.ping.motd) : '' }}
           </p>
 
-          <div class="mt-4 flex items-center justify-between gap-2">
-            <p class="font-display text-[13px] font-semibold tabular-nums text-highlighted">
-              {{ entry.ping ? t('server.players', { online: entry.ping.online, max: entry.ping.max }) : '—' }}
-            </p>
-            <div class="flex items-center gap-1.5">
-              <UButton
-                size="xs"
-                color="primary"
-                variant="soft"
-                icon="i-lucide-play"
-                :label="t('servers.join')"
-                :disabled="entry.status === 'offline'"
-                :title="t('servers.joinHint', { name: entry.name })"
-                @click="join(entry)"
-              />
-              <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-clipboard" square @click="copyAddress(entry)" />
-              <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-corner-right-up" square @click="openExternal(`https://${entry.address}`)" />
-            </div>
+          <div class="mt-4 flex items-center gap-4 border-t border-[var(--sw-line)] pt-3.5">
+            <span class="flex items-center gap-2 text-[12px] font-semibold" :class="statusClass(entry.status)">
+              <span class="size-2 rounded-full bg-current shadow-[0_0_0_3px_color-mix(in_srgb,currentColor_22%,transparent)]" />
+              {{ t(`home.server.${entry.status}`) }}
+            </span>
+            <span v-if="entry.ping" class="text-[13px] font-bold tabular-nums text-highlighted">
+              {{ entry.ping.online.toLocaleString() }}<span class="font-medium text-dimmed"> / {{ entry.ping.max.toLocaleString() }}</span>
+            </span>
+            <span v-if="entry.ping" class="font-mono text-[11.5px] tabular-nums" :class="latencyClass(entry.ping.latency_ms)">{{ entry.ping.latency_ms }} ms</span>
+          </div>
+
+          <div class="mt-4 flex items-center gap-2">
+            <UButton
+              icon="i-lucide-play"
+              :label="t('servers.join')"
+              class="font-headline flex-1 justify-center text-[16px] font-extrabold! uppercase tracking-[0.04em]"
+              :disabled="entry.status === 'offline'"
+              :title="t('servers.joinHint', { name: entry.name })"
+              @click="join(entry)"
+            />
+            <UTooltip :text="t('platform.copy')">
+              <UButton color="neutral" variant="soft" icon="i-lucide-clipboard" square :aria-label="t('platform.copy')" @click="copyAddress(entry)" />
+            </UTooltip>
+            <UButton color="neutral" variant="soft" icon="i-lucide-arrow-up-right" square :aria-label="entry.address" @click="openExternal(`https://${entry.address}`)" />
           </div>
         </section>
       </div>
-    </div>
 
-    <UiEmptyState v-else icon="i-lucide-server" :title="t('servers.empty')" :description="t('servers.emptyDesc')" />
+      <UiEmptyState v-else icon="i-lucide-server" :title="t('servers.empty')" :description="t('servers.emptyDesc')" />
+    </div>
   </div>
 </template>
 
@@ -150,3 +147,22 @@ async function copyAddress(entry: ServerCard) {
   }
 }
 </script>
+
+<style scoped>
+.sw-server {
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--sw-line);
+  background:
+    radial-gradient(80% 60% at 0% 0%, color-mix(in srgb, var(--sw-accent) 10%, transparent), transparent 70%),
+    var(--sw-surface);
+  transition: transform 180ms var(--ease-swift), border-color 180ms var(--ease-swift), box-shadow 180ms var(--ease-swift);
+}
+.sw-server:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--sw-accent) 35%, var(--sw-line));
+  box-shadow: var(--shadow-md);
+}
+</style>

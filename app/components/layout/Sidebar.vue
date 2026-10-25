@@ -1,134 +1,137 @@
 <template>
-  <nav class="sw-sidebar" :aria-label="$t('nav.home')">
-    <NuxtLink
-      v-for="(item, i) in items"
-      :key="item.to"
-      :to="item.to"
-      class="sw-nav"
-      :class="{ 'is-active': isActive(item) }"
-      :aria-current="isActive(item) ? 'page' : undefined"
-    >
-      <UIcon :name="item.icon" class="size-[18px] shrink-0" />
-      <span class="min-w-0 flex-1 truncate">{{ $t(item.label) }}</span>
-      <kbd class="sw-nav-key">{{ i + 1 }}</kbd>
-    </NuxtLink>
-
-    <!-- Recent instances: one click selects it and opens Home with its Play dock -->
-    <template v-if="recent.length">
-      <p class="sw-eyebrow mt-6 mb-2 px-3">{{ $t('nav.recent') }}</p>
-      <button
-        v-for="inst in recent"
-        :key="inst.id"
-        type="button"
-        class="sw-inst"
-        :class="{ 'is-active': inst.id === instances.selectedId }"
-        @click="pick(inst.id)"
+  <nav class="sw-rail" :aria-label="$t('nav.home')">
+    <UTooltip v-for="item in top" :key="item.to" :text="`${$t(item.label)}  ·  ${item.key}`" :content="{ side: 'right', sideOffset: 10 }">
+      <NuxtLink
+        :to="item.to"
+        class="sw-rail-item"
+        :class="{ 'is-active': isActive(item) }"
+        :aria-label="$t(item.label)"
+        :aria-current="isActive(item) ? 'page' : undefined"
       >
-        <InstanceIcon :instance="inst" class="size-9 shrink-0 rounded-[9px] text-sm" />
-        <span class="min-w-0 flex-1 text-left">
-          <span class="block truncate text-[13px] font-semibold text-highlighted">{{ inst.name }}</span>
-          <span class="block truncate text-[11.5px] text-dimmed">{{ loaderLabel(inst.loader.type) }} {{ inst.mc_version }}</span>
-        </span>
-      </button>
-    </template>
+        <UIcon :name="item.icon" class="size-[20px]" />
+      </NuxtLink>
+    </UTooltip>
 
     <div class="flex-1" />
 
-    <!-- Zip lives at the bottom of the sidebar, his tips pop up above him -->
+    <!-- Zip lives at the bottom of the rail, his tips pop up beside him -->
     <ZipCompanion />
 
-    <button type="button" class="sw-nav mt-2" @click="createModal.open()">
-      <UIcon name="i-lucide-plus" class="size-[18px] shrink-0" />
-      <span class="min-w-0 flex-1 truncate">{{ $t('nav.newInstance') }}</span>
-    </button>
+    <div class="mx-auto my-2 h-px w-9 bg-[var(--sw-line)]" />
+
+    <UTooltip v-for="item in bottom" :key="item.to" :text="`${$t(item.label)}  ·  ${item.key}`" :content="{ side: 'right', sideOffset: 10 }">
+      <NuxtLink
+        :to="item.to"
+        class="sw-rail-item"
+        :class="{ 'is-active': isActive(item) }"
+        :aria-label="$t(item.label)"
+        :aria-current="isActive(item) ? 'page' : undefined"
+      >
+        <UIcon :name="item.icon" class="size-[20px]" />
+        <span v-if="item.to === '/social' && requests" class="sw-rail-badge">{{ requests > 9 ? '9+' : requests }}</span>
+      </NuxtLink>
+    </UTooltip>
+
+    <div class="mx-auto my-2 h-px w-9 bg-[var(--sw-line)]" />
+
+    <!-- The player: their head, with the dot of a signed-in account -->
+    <UTooltip :text="accounts.activeAccount?.username ?? $t('account.signIn')" :content="{ side: 'right', sideOffset: 10 }">
+      <NuxtLink to="/skins" class="sw-rail-avatar" :aria-label="accounts.activeAccount?.username ?? $t('account.signIn')">
+        <AccountAvatar :account="accounts.activeAccount" :face="face" class="size-9 rounded-[9px]" />
+        <span v-if="accounts.activeAccount" class="sw-rail-dot" />
+      </NuxtLink>
+    </UTooltip>
   </nav>
 </template>
 
 <script setup lang="ts">
-interface Item { to: string, icon: string, label: string, exact?: boolean, match?: string[] }
+interface Item { to: string, icon: string, label: string, key: number, exact?: boolean, match?: string[], bottom?: boolean }
 
-// Order is the number key: press 1–8 anywhere to jump there.
+// `key` is the number shortcut: press 1–8 anywhere to jump there.
 const items: Item[] = [
-  { to: '/', icon: 'i-lucide-house', label: 'nav.home', exact: true },
-  { to: '/instances', icon: 'i-lucide-layout-grid', label: 'nav.instances', match: ['/instances', '/instance/'] },
-  { to: '/social', icon: 'i-lucide-users', label: 'nav.social' },
-  { to: '/servers', icon: 'i-lucide-server', label: 'nav.servers' },
-  { to: '/worlds', icon: 'i-lucide-globe', label: 'nav.worlds' },
-  { to: '/screenshots', icon: 'i-lucide-camera', label: 'nav.screenshots' },
-  { to: '/skins', icon: 'i-lucide-shirt', label: 'nav.skins' },
-  { to: '/settings', icon: 'i-lucide-settings-2', label: 'nav.settings' },
+  { to: '/', icon: 'i-lucide-house', label: 'nav.home', key: 1, exact: true },
+  { to: '/instances', icon: 'i-lucide-layout-grid', label: 'nav.instances', key: 2, match: ['/instances', '/instance/'] },
+  { to: '/social', icon: 'i-lucide-users', label: 'nav.social', key: 3, bottom: true },
+  { to: '/servers', icon: 'i-lucide-server', label: 'nav.servers', key: 4 },
+  { to: '/worlds', icon: 'i-lucide-globe', label: 'nav.worlds', key: 5 },
+  { to: '/screenshots', icon: 'i-lucide-camera', label: 'nav.screenshots', key: 6 },
+  { to: '/skins', icon: 'i-lucide-shirt', label: 'nav.skins', key: 7 },
+  { to: '/settings', icon: 'i-lucide-settings-2', label: 'nav.settings', key: 8, bottom: true },
 ]
+const top = items.filter(i => !i.bottom)
+const bottom = items.filter(i => i.bottom)
 
 const route = useRoute()
 const router = useRouter()
-const instances = useInstancesStore()
-const createModal = useCreateInstanceModal()
+const accounts = useAccountStore()
+const social = useSocialStore()
+const face = usePlayerFace()
 
-const recent = computed(() =>
-  [...instances.instances]
-    .sort((a, b) => (b.last_played ?? '').localeCompare(a.last_played ?? ''))
-    .slice(0, 4),
-)
+const requests = computed(() => social.friends.filter(f => f.status === 'pending_in').length)
 
 function isActive(item: Item) {
   if (item.exact) return route.path === item.to
   return (item.match ?? [item.to]).some(p => route.path.startsWith(p))
 }
 
-function pick(id: string) {
-  instances.select(id)
-  if (route.path !== '/') router.push('/')
-}
-
 function onKey(e: KeyboardEvent) {
   if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return
   const target = e.target as HTMLElement | null
   if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return
-  const n = Number(e.key)
-  const item = Number.isInteger(n) ? items[n - 1] : undefined
+  const item = items.find(i => String(i.key) === e.key)
   if (item) router.push(item.to)
 }
-onMounted(() => window.addEventListener('keydown', onKey))
+onMounted(() => {
+  window.addEventListener('keydown', onKey)
+  social.ensureLoaded()
+})
 onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
+
+// A clicked icon keeps the focus, and its tooltip would stay open on the next page
+watch(() => route.path, () => {
+  const el = document.activeElement as HTMLElement | null
+  if (el?.closest('.sw-rail')) el.blur()
+})
 </script>
 
 <style scoped>
-.sw-sidebar {
+.sw-rail {
   display: flex;
-  width: 240px;
+  width: 76px;
   flex-shrink: 0;
   flex-direction: column;
-  gap: 2px;
-  overflow-y: auto;
-  padding: 16px 12px 16px;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  z-index: 20;
+  padding: 14px 0 16px;
   background: var(--sw-stage);
   border-right: 1px solid var(--sw-line);
 }
-.sw-nav {
+.sw-rail-item {
   position: relative;
   display: flex;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   align-items: center;
-  gap: 12px;
-  padding: 0 12px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
+  justify-content: center;
+  border-radius: 12px;
   color: var(--ui-text-muted);
   transition: background-color 160ms var(--ease-swift), color 160ms var(--ease-swift);
 }
-.sw-nav:hover {
+.sw-rail-item:hover {
   color: var(--ui-text-highlighted);
   background: var(--sw-surface-2);
 }
-.sw-nav.is-active {
+.sw-rail-item.is-active {
   color: var(--ui-text-highlighted);
-  background: var(--sw-accent-soft);
+  background: var(--sw-surface-2);
 }
-.sw-nav.is-active::before {
+.sw-rail-item.is-active::before {
   content: '';
   position: absolute;
-  left: -12px;
+  left: -16px;
   top: 10px;
   bottom: 10px;
   width: 3px;
@@ -136,33 +139,41 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   background: var(--sw-accent);
   box-shadow: 0 0 12px var(--sw-accent);
 }
-.sw-nav.is-active :deep(.iconify) {
-  color: var(--sw-accent);
-}
-.sw-nav-key {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--ui-text-dimmed);
-  opacity: 0;
-  transition: opacity 160ms var(--ease-swift);
-}
-.sw-nav:hover .sw-nav-key {
-  opacity: 1;
-}
-.sw-inst {
+.sw-rail-badge {
+  position: absolute;
+  top: 3px;
+  right: 1px;
   display: flex;
+  min-width: 17px;
+  height: 17px;
   align-items: center;
-  gap: 10px;
-  padding: 7px 9px;
-  border-radius: 12px;
-  border: 1px solid transparent;
-  transition: background-color 160ms var(--ease-swift), border-color 160ms var(--ease-swift);
+  justify-content: center;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--sw-accent);
+  color: var(--sw-accent-fg);
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 0 0 0 2px var(--sw-stage);
 }
-.sw-inst:hover {
-  background: var(--sw-surface-2);
+.sw-rail-avatar {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  border-radius: 10px;
+  transition: transform 160ms var(--ease-swift);
 }
-.sw-inst.is-active {
-  background: var(--sw-accent-soft);
-  border-color: color-mix(in srgb, var(--sw-accent) 40%, transparent);
+.sw-rail-avatar:hover {
+  transform: translateY(-1px);
+}
+.sw-rail-dot {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--sw-success);
+  box-shadow: 0 0 0 2px var(--sw-stage);
 }
 </style>

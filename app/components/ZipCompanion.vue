@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="enabled"
-    class="pointer-events-none relative flex justify-center pt-4 max-[720px]:hidden"
+    class="pointer-events-none relative flex justify-center pt-2 [@media(max-height:700px)]:hidden"
   >
     <button
       type="button"
@@ -9,13 +9,13 @@
       :aria-label="$t('swiftx.zip.tip5')"
       @click="nextTip"
     >
-      <BrandMascot :pose="pose" class="h-[74px] w-auto" />
+      <BrandMascot :pose="pose" class="h-[52px] w-auto" />
     </button>
 
     <Transition name="sw-pop-bubble">
       <p
         v-if="bubble"
-        class="sw-block pointer-events-none absolute bottom-full left-1/2 z-[55] mb-1 w-[200px] -translate-x-1/2 px-3 py-2 text-center text-[13px] font-semibold leading-snug text-highlighted"
+        class="sw-block pointer-events-none absolute bottom-2 left-full z-[55] ml-1 w-[200px] px-3 py-2 text-left text-[13px] font-semibold leading-snug text-highlighted"
       >
         {{ bubble }}
       </p>

@@ -113,6 +113,27 @@ pub async fn swift_home_content() -> Option<serde_json::Value> {
     resp.json().await.ok()
 }
 
+/// Swift players in game right now, from the online service. `None` without a backend or when it
+/// does not answer: the launcher then hides the counter.
+#[tauri::command]
+pub async fn swift_players_online() -> Option<u64> {
+    #[derive(Deserialize)]
+    struct Online {
+        online: u64,
+    }
+    let url = endpoint("/api/players/online").ok()?;
+    let resp = http()
+        .get(&url)
+        .timeout(std::time::Duration::from_secs(5))
+        .send()
+        .await
+        .ok()?;
+    if !resp.status().is_success() {
+        return None;
+    }
+    resp.json::<Online>().await.ok().map(|o| o.online)
+}
+
 #[tauri::command]
 pub fn swift_session() -> Option<SwiftSession> {
     load_session()

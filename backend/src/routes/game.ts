@@ -110,6 +110,17 @@ gameRoutes.get('/subscription/status/:uuid', (c) => {
   return c.json({ active: !!row && swiftPlus(row), until: row?.swift_plus_until ?? null })
 })
 
+/** How many Swift players are in game right now (heartbeat in the last minute). Counted at most every 10 s. */
+let onlineCache = { at: 0, count: 0 }
+gameRoutes.get('/players/online', (c) => {
+  if (Date.now() - onlineCache.at > 10_000) {
+    const since = new Date(Date.now() - ONLINE_WINDOW_MS).toISOString()
+    const row = db.prepare('SELECT COUNT(*) AS n FROM users WHERE last_seen > ?').get(since) as { n: number }
+    onlineCache = { at: Date.now(), count: row.n }
+  }
+  return c.json({ online: onlineCache.count })
+})
+
 gameRoutes.get('/shop/balance/:uuid', (c) => {
   const row = findUserByMinecraft(c.req.param('uuid'))
   return c.json({ coins: row?.coins ?? 0 })

@@ -376,7 +376,6 @@
   },
   "settings": {
     "title": "设置",
-    "subtitle": "启动器配置",
     "nav": {
       "display": "显示",
       "game": "游戏",
@@ -387,7 +386,6 @@
       "themeDark": "深色",
       "themeOled": "OLED",
       "themeDesc": "选择界面的暗度。",
-      "preview": "实时预览",
       "themes": {
         "swift": "Swift",
         "oled": "OLED",
@@ -400,7 +398,8 @@
         "cherry": "樱花树林",
         "lush": "繁茂洞穴",
         "frozen": "冰封"
-      }
+      },
+      "themeHint": "整个启动器的配色。Swift 是原版主题。"
     },
     "language": {
       "title": "语言",
@@ -424,7 +423,10 @@
       "offlineUsername": "用户名",
       "offlineHint": "离线账户仅适用于单人游戏和离线模式服务器。",
       "setActive": "设为活动",
-      "noAccounts": "还没有账户。登录以开始游戏。"
+      "noAccounts": "还没有账户。登录以开始游戏。",
+      "listDesc": "当前账号就是你用来游戏的账号。",
+      "use": "使用",
+      "add": "添加账号"
     },
     "swift": {
       "title": "Swift Client 账号",
@@ -506,6 +508,12 @@
         "light": "适合你的模组",
         "heavy": "大型整合包需要更多空间",
         "limited": "受电脑内存限制"
+      },
+      "gb": "GB",
+      "displayDesc": {
+        "windowed": "可移动、可调整大小的窗口。",
+        "borderless": "铺满屏幕，Alt-Tab 依然即时切换。",
+        "fullscreen": "独占模式，可能对低配电脑有帮助。"
       }
     },
     "advanced": {
@@ -536,8 +544,12 @@
       "connected": "已连接",
       "offline": "不可用",
       "updatePrompt": "立即安装：启动器将在几秒后重启。",
-      "updateBlocked": "请先关闭游戏再更新启动器。"
-    }
+      "updateBlocked": "请先关闭游戏再更新启动器。",
+      "community": "社区",
+      "communityDesc": "在 Discord 获取新闻、帮助和反馈。"
+    },
+    "search": "搜索设置",
+    "noResults": "没有匹配的设置。"
   },
   "activity": {
     "idle": "没有实例在运行",
@@ -914,37 +926,44 @@
     },
     "switchInstance": "切换实例",
     "manageInstances": "全部实例",
-    "news": "最新动态",
     "readMore": "阅读更多",
-    "playedAgo": "{when}玩过",
     "background": "背景 {n}",
     "noInstances": "还没有实例",
     "join": "加入",
-    "featured": "精选",
     "server": {
-      "title": "服务器状态",
       "online": "在线",
       "offline": "无法连接",
-      "checking": "正在检查…",
-      "players": "玩家",
-      "latency": "延迟",
-      "fromInstance": "来自 {name}",
-      "featured": "推荐服务器"
-    },
-    "lastSession": {
-      "title": "上次游玩",
-      "never": "还没有游玩记录，你的上次游玩会显示在这里。",
-      "total": "已游玩 {time}",
-      "open": "打开实例"
-    },
-    "changelog": {
-      "title": "更新内容"
+      "checking": "正在检查…"
     },
     "quickStart": {
       "title": "开始游戏",
       "hint": "一键准备好 Swift Client 实例",
       "creating": "正在准备实例…",
       "failed": "无法准备实例"
+    },
+    "whatsNew": "最新动态",
+    "allNews": "全部新闻",
+    "newsTag": "新闻",
+    "noNews": "暂无新闻。",
+    "viewAll": "查看全部",
+    "partners": "合作服务器",
+    "noPartners": "暂无合作服务器。",
+    "joinOn": "使用 {name} 加入",
+    "recent": {
+      "empty": "你最近玩过的游戏会显示在这里。"
+    },
+    "hero": {
+      "worlds": "{n} 个世界 | {n} 个世界",
+      "played": "已玩 {time}",
+      "lastPlayed": "上次游玩：{when}"
+    },
+    "friends": {
+      "title": "好友",
+      "requests": "好友请求 · {n}",
+      "wantsToBeFriends": "想加你为好友",
+      "accept": "接受",
+      "decline": "拒绝",
+      "empty": "还没有好友。"
     }
   },
   "removeInstance": {
@@ -1080,7 +1099,6 @@
     "check": "立即检查",
     "install": "更新",
     "updating": "正在下载 {version}",
-    "channelTitle": "通道",
     "channel": "更新通道",
     "channelDesc": "稳定版适合所有人。测试版会优先获得预发布版本。本地通道从不下载，使用启动器旁边的构建。",
     "channels": {
@@ -1108,7 +1126,12 @@
     "updatedToastDesc": "将在下次启动 Swift 实例时安装。",
     "pinnedToast": "将使用版本 {version}",
     "instanceBadge": "Swift 模组 {version}",
-    "instanceBadgeHint": "管理 Swift Client 模组"
+    "instanceBadgeHint": "管理 Swift Client 模组",
+    "channelHint": {
+      "stable": "经过测试的版本，适合所有人。",
+      "beta": "抢先体验预发布版，可能有错误。",
+      "local": "不下载：使用你自己的构建。"
+    }
   },
   "worldBackups": {
     "title": "世界备份",
@@ -1133,5 +1156,8 @@
     "exportButton": "导出",
     "done": "诊断信息已保存",
     "show": "在文件夹中显示"
+  },
+  "topbar": {
+    "playersOnline": "{n} 名玩家在线 | {n} 名玩家在线"
   }
 }

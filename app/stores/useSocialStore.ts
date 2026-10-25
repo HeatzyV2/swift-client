@@ -49,6 +49,16 @@ export const useSocialStore = defineStore('social', {
       await this.refresh()
     },
 
+    async acceptFriend(id: string) {
+      await invoke('social_accept_friend', { id })
+      await this.refresh()
+    },
+
+    async declineFriend(id: string) {
+      await invoke('social_decline_friend', { id })
+      await this.refresh()
+    },
+
     async openConversation(friendId: string) {
       const conv = await invoke<ConversationView>('social_get_or_create_conversation', { friendId })
       await this.loadMessages(conv.id)

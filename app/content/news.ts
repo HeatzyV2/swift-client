@@ -18,6 +18,8 @@ export interface NewsItem {
   /** ISO date, shown in the interface language. */
   date: string
   image: string
+  /** Short category shown above the title ("Launcher", "Mods"…). */
+  tag?: Localized
   title: Localized
   summary: Localized
   body: Localized
@@ -32,6 +34,7 @@ export const NEWS: NewsItem[] = [
     id: 'swift-0.1',
     date: '2026-09-23',
     image: '/images/news/coral-reef.png',
+    tag: { en: 'Launcher', fr: 'Launcher', de: 'Launcher', es: 'Launcher', pl: 'Launcher', ru: 'Лаунчер', zh: '启动器' },
     title: { en: 'Swift Client 0.1', fr: 'Swift Client 0.1', de: 'Swift Client 0.1', es: 'Swift Client 0.1', pl: 'Swift Client 0.1', ru: 'Swift Client 0.1', zh: 'Swift Client 0.1' },
     summary: {
       en: 'The first release, built around getting you into the game.',
@@ -56,6 +59,7 @@ export const NEWS: NewsItem[] = [
     id: 'modrinth',
     date: '2026-09-23',
     image: '/images/hero/caves.jpg',
+    tag: { en: 'Mods', fr: 'Mods', de: 'Mods', es: 'Mods', pl: 'Mody', ru: 'Моды', zh: '模组' },
     title: { en: 'Modrinth, built in', fr: 'Modrinth intégré', de: 'Modrinth integriert', es: 'Modrinth integrado', pl: 'Wbudowany Modrinth', ru: 'Встроенный Modrinth', zh: '内置 Modrinth' },
     summary: {
       en: 'Mods, shaders, resource packs and modpacks without leaving the launcher.',
@@ -84,6 +88,7 @@ export const NEWS: NewsItem[] = [
         image: '/images/news/discord.jpg',
         url: LINKS.discord,
         direct: true,
+        tag: { en: 'Community', fr: 'Communauté', de: 'Community', es: 'Comunidad', pl: 'Społeczność', ru: 'Сообщество', zh: '社区' },
         title: { en: 'Join the Discord', fr: 'Rejoindre le Discord', de: 'Tritt dem Discord bei', es: 'Únete al Discord', pl: 'Dołącz do Discorda', ru: 'Присоединяйтесь к Discord', zh: '加入 Discord' },
         summary: {
           en: 'News and help: join the Swift Client community.',

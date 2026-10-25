@@ -1,61 +1,64 @@
 <template>
-  <section v-if="items.length">
-    <div class="mb-4 flex items-baseline gap-2">
-      <h2 class="text-[22px] font-extrabold tracking-[-0.02em] text-highlighted">{{ $t('home.news') }}</h2>
-      <span class="translate-y-[-2px] font-mono text-[12px] text-dimmed">{{ items.length }}</span>
-    </div>
-
-    <!-- Asymmetric: one featured story, the others stacked beside it -->
-    <div class="sw-news-grid" :data-count="Math.min(items.length, 3)">
-      <button
-        v-for="(item, i) in items.slice(0, 3)"
-        :key="item.id"
-        type="button"
-        class="sw-rise-in group relative block overflow-hidden rounded-[18px] border border-[var(--sw-line)] text-left shadow-md transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-1 hover:border-[color-mix(in_srgb,var(--sw-accent)_40%,var(--sw-line))] hover:shadow-xl"
-        :class="[i === 0 ? 'sw-news-featured' : 'sw-news-small', isDiscord(item)
-          ? ''
-          : '']"
-        :style="{ animationDelay: `${120 + i * 55}ms` }"
-        @click="select(item)"
-      >
-        <!-- Discord CTA card -->
-        <template v-if="isDiscord(item)">
-          <div class="absolute inset-0 bg-[linear-gradient(145deg,#5865F2_0%,#404EED_48%,#2c2f6e_100%)]" />
-          <div class="absolute -right-6 -top-8 size-40 bg-white/10 [clip-path:polygon(30%_0,70%_0,100%_30%,100%_70%,70%_100%,30%_100%,0_70%,0_30%)]" />
-          <div class="absolute inset-0 flex flex-col justify-between" :class="i === 0 ? 'p-6' : 'p-4'">
-            <p class="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/70">{{ formatDate(item.date) }}</p>
-            <div>
-              <div class="flex size-11 items-center justify-center rounded-[12px] bg-black/25" :class="i === 0 ? 'mb-3' : 'mb-2'">
-                <UIcon name="i-simple-icons-discord" class="size-6 text-white" />
-              </div>
-              <p class="font-display text-[18px] font-semibold leading-snug text-white">{{ tr(item.title) }}</p>
-              <p class="mt-1 text-[12.5px] leading-relaxed text-white/75" :class="i === 0 ? 'line-clamp-2' : 'line-clamp-1'">{{ tr(item.summary) }}</p>
-            </div>
-          </div>
-        </template>
-
-        <!-- Image news card -->
-        <template v-else>
-          <img
-            :src="item.image"
-            alt=""
-            draggable="false"
-            loading="lazy"
-            class="absolute inset-0 size-full object-cover transition-[scale] duration-300 ease-[var(--ease-swift)] group-hover:scale-[1.05]"
-          >
-          <div class="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/0.88)_0%,rgb(0_0_0/0.35)_45%,transparent_72%)]" />
-          <div class="absolute inset-x-0 bottom-0" :class="i === 0 ? 'p-6' : 'p-4'">
-            <p class="flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/65">
-              <span v-if="i === 0" class="sw-on-accent rounded-[6px] bg-primary px-2 py-0.5 text-[10px] tracking-[0.1em]">{{ $t('home.featured') }}</span>
-              {{ formatDate(item.date) }}
-            </p>
-            <p class="mt-1.5 font-display font-semibold leading-snug text-white" :class="i === 0 ? 'text-[26px] tracking-tight' : 'text-[16px]'">{{ tr(item.title) }}</p>
-            <p class="mt-1 line-clamp-2 leading-relaxed text-white/65" :class="i === 0 ? 'max-w-[46ch] text-[13.5px]' : 'text-[12px]'">{{ tr(item.summary) }}</p>
-          </div>
-        </template>
+  <section>
+    <div class="mb-3 flex items-center justify-between gap-3">
+      <h2 class="sw-eyebrow">{{ $t('home.whatsNew') }}</h2>
+      <button v-if="items.length" type="button" class="sw-home-link" @click="listOpen = true">
+        {{ $t('home.allNews') }}
+        <UIcon name="i-lucide-chevron-right" class="size-3.5" />
       </button>
     </div>
 
+    <div v-if="items.length" class="grid grid-cols-2 gap-4">
+      <button
+        v-for="item in items.slice(0, 2)"
+        :key="item.id"
+        type="button"
+        class="group relative flex min-h-[180px] flex-col justify-end overflow-hidden rounded-[14px] border border-[var(--sw-line)] p-5 text-left shadow-md transition-[transform,border-color] duration-200 ease-[var(--ease-swift)] hover:-translate-y-0.5 hover:border-[color-mix(in_srgb,var(--sw-accent)_40%,var(--sw-line))]"
+        @click="select(item)"
+      >
+        <img
+          :src="item.image"
+          alt=""
+          draggable="false"
+          loading="lazy"
+          class="absolute inset-0 size-full object-cover transition-[scale] duration-300 ease-[var(--ease-swift)] group-hover:scale-[1.04]"
+        >
+        <div class="absolute inset-0 bg-[linear-gradient(to_top,rgb(5_7_11/0.95)_0%,rgb(5_7_11/0.7)_55%,rgb(5_7_11/0.35)_100%)]" />
+        <div class="relative">
+          <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">{{ item.tag ? tr(item.tag) : $t('home.newsTag') }}</p>
+          <p class="font-headline mt-1.5 line-clamp-2 text-[clamp(22px,2.2vw,28px)] font-extrabold! uppercase leading-[1] text-white">{{ tr(item.title) }}</p>
+          <p class="mt-2 flex items-baseline gap-3 text-[12.5px] text-white/70">
+            <span class="min-w-0 flex-1 truncate">{{ tr(item.summary) }}</span>
+            <span class="shrink-0 text-white/55">{{ formatRelative(item.date, locale) }}</span>
+          </p>
+        </div>
+      </button>
+    </div>
+    <p v-else class="sw-home-empty">
+      <UIcon name="i-lucide-newspaper" class="size-4 shrink-0 text-dimmed" />
+      {{ $t('home.noNews') }}
+    </p>
+
+    <!-- Every story -->
+    <UModal v-model:open="listOpen" :title="$t('home.whatsNew')" :ui="{ content: 'max-w-lg' }">
+      <template #body>
+        <ul class="-my-1 space-y-1">
+          <li v-for="item in items" :key="item.id">
+            <button type="button" class="flex w-full items-center gap-3 rounded-[10px] p-2 text-left transition-colors hover:bg-[var(--sw-surface-2)]" @click="listOpen = false; select(item)">
+              <img :src="item.image" alt="" class="h-12 w-20 shrink-0 rounded-[8px] object-cover">
+              <span class="min-w-0 flex-1">
+                <span class="block text-[10.5px] font-bold uppercase tracking-[0.12em] text-primary">{{ item.tag ? tr(item.tag) : $t('home.newsTag') }}</span>
+                <span class="font-headline block truncate text-[17px] uppercase text-highlighted">{{ tr(item.title) }}</span>
+                <span class="block truncate text-[12px] text-dimmed">{{ tr(item.summary) }}</span>
+              </span>
+              <span class="shrink-0 text-[11.5px] text-dimmed">{{ formatRelative(item.date, locale) }}</span>
+            </button>
+          </li>
+        </ul>
+      </template>
+    </UModal>
+
+    <!-- One story -->
     <UModal :open="!!open" :ui="{ content: 'max-w-xl overflow-hidden' }" @update:open="(v: boolean) => { if (!v) open = null }">
       <template #content>
         <article v-if="open">
@@ -81,12 +84,11 @@ import type { NewsItem } from '~/content/news'
 const tr = useLocalized()
 const { locale } = useI18n()
 const open = ref<NewsItem | null>(null)
+const listOpen = ref(false)
 
-const { news: items } = useHomeContent()
-
-function isDiscord(item: NewsItem) {
-  return item.id === 'discord'
-}
+const { news } = useHomeContent()
+/** Newest first, whatever order the backend sends. */
+const items = computed(() => [...news.value].sort((a, b) => b.date.localeCompare(a.date)))
 
 function select(item: NewsItem) {
   track('news_open', { newsId: item.id })
@@ -99,38 +101,3 @@ const formatDate = (iso: string) =>
     .toLocaleDateString(locale.value, { day: 'numeric', month: 'long', year: 'numeric' })
     .toUpperCase()
 </script>
-
-<style scoped>
-.sw-news-grid {
-  display: grid;
-  gap: 14px;
-  grid-template-columns: 1fr;
-}
-.sw-news-featured {
-  aspect-ratio: 16 / 9;
-}
-.sw-news-small {
-  aspect-ratio: 16 / 7;
-}
-
-/* Side by side once there is room: the featured card spans both rows */
-@media (min-width: 900px) {
-  .sw-news-grid:not([data-count='1']) {
-    grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
-    grid-auto-rows: minmax(150px, auto);
-  }
-  .sw-news-grid[data-count='3'] .sw-news-featured {
-    grid-row: span 2;
-  }
-  .sw-news-grid:not([data-count='1']) .sw-news-featured {
-    aspect-ratio: auto;
-    min-height: 340px;
-  }
-  .sw-news-grid:not([data-count='1']) .sw-news-small {
-    aspect-ratio: auto;
-  }
-  .sw-news-grid[data-count='1'] .sw-news-featured {
-    aspect-ratio: 21 / 8;
-  }
-}
-</style>

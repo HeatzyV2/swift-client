@@ -24,6 +24,7 @@ export default defineNuxtConfig({
   // Bundled at build time by @nuxt/fonts, so the launcher never loads fonts at runtime.
   fonts: {
     defaults: { weights: [400, 500, 600, 700], styles: ['normal'], subsets: ['latin', 'latin-ext'] },
+    families: [{ name: 'Barlow Condensed', provider: 'google', weights: [600, 700, 800] }],
   },
 
   vite: {

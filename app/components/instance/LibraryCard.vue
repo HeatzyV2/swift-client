@@ -1,43 +1,44 @@
 <template>
   <div
-    class="sw-panel sw-panel-interactive group relative flex cursor-pointer select-none items-center gap-3 p-3"
-    :class="selected ? 'border-primary/40' : ''"
+    class="sw-inst-card group relative flex cursor-pointer select-none flex-col"
+    :class="{ 'is-selected': selected }"
   >
-    <div class="relative size-11 shrink-0">
-      <InstanceIcon :instance="instance" class="size-full rounded-md text-lg transition duration-150 group-hover:brightness-[0.4]" />
+    <div class="flex items-center gap-3.5">
+      <InstanceIcon :instance="instance" class="size-14 shrink-0 rounded-[12px] text-xl shadow-[0_6px_18px_rgb(0_0_0/0.35)]" />
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2">
+          <span class="truncate text-[15px] font-bold text-highlighted">{{ instance.name }}</span>
+          <span v-if="running" class="size-2 shrink-0 rounded-full bg-[var(--sw-success)] shadow-[0_0_8px_var(--sw-success)]" :title="$t('instance.running')" />
+          <UIcon v-if="selected" name="i-lucide-star" class="size-3.5 shrink-0 text-primary" :title="$t('library.selected')" />
+        </div>
+        <p class="mt-1 flex items-center gap-1.5 text-[12.5px] text-muted">
+          <UIcon name="i-lucide-box" class="size-3.5 text-dimmed" />
+          <b class="font-semibold text-toned">{{ instance.mc_version }}</b>
+          <span v-if="instance.loader.type !== 'vanilla'">· {{ loaderLabel(instance.loader.type) }}</span>
+        </p>
+      </div>
+
+      <!-- Play straight from the card -->
       <button
         type="button"
-        class="absolute inset-0 flex items-center justify-center rounded-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-visible:opacity-100"
+        class="sw-inst-play"
         :aria-label="$t('ctx.play')"
         :title="$t('ctx.play')"
         @click.stop="$emit('play')"
       >
-        <UIcon
-          :name="busy ? 'i-lucide-loader-circle' : 'i-lucide-play'"
-          class="size-5 text-white"
-          :class="{ 'animate-spin': busy }"
-        />
+        <UIcon :name="busy ? 'i-lucide-loader-circle' : 'i-lucide-play'" class="size-[18px]" :class="{ 'animate-spin': busy }" />
       </button>
     </div>
 
-    <div class="min-w-0 flex-1">
-      <div class="flex items-center gap-2">
-        <span class="truncate text-[14px] font-medium text-highlighted">{{ instance.name }}</span>
-        <span v-if="running" class="size-1.5 shrink-0 rounded-full bg-[var(--sw-success)]" :title="$t('instance.running')" />
-      </div>
-      <div class="mt-0.5 truncate font-mono text-[11px] text-muted">{{ instanceSubtitle(instance) }}</div>
-      <div class="mt-0.5 flex min-w-0 items-center gap-1.5 text-[11px] text-dimmed">
+    <div class="mt-3.5 flex items-center gap-3 border-t border-[var(--sw-line)] pt-3 text-[12px] text-dimmed">
+      <span class="inline-flex min-w-0 items-center gap-1.5">
+        <UIcon name="i-lucide-clock" class="size-3.5 shrink-0" />
         <span class="truncate">{{ lastPlayed ?? $t('instance.neverPlayed') }}</span>
-        <template v-if="playtime">
-          <span>·</span>
-          <span class="inline-flex shrink-0 items-center gap-1" :title="$t('instance.playtime')">
-            <UIcon name="i-lucide-hourglass" class="size-3" />{{ playtime }}
-          </span>
-        </template>
-      </div>
+      </span>
+      <span v-if="playtime" class="ml-auto inline-flex shrink-0 items-center gap-1.5" :title="$t('instance.playtime')">
+        <UIcon name="i-lucide-hourglass" class="size-3.5" />{{ playtime }}
+      </span>
     </div>
-
-    <UIcon v-if="selected" name="i-lucide-star" class="size-3.5 shrink-0 text-primary" :title="$t('library.selected')" />
   </div>
 </template>
 
@@ -51,3 +52,42 @@ const { locale } = useI18n()
 const lastPlayed = computed(() => formatRelative(props.instance.last_played, locale.value))
 const playtime = computed(() => props.instance.playtime_seconds ? formatPlaytime(props.instance.playtime_seconds, locale.value) : null)
 </script>
+
+<style scoped>
+.sw-inst-card {
+  padding: 14px 14px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--sw-line);
+  background: var(--sw-surface);
+  transition: transform 180ms var(--ease-swift), border-color 180ms var(--ease-swift), background-color 180ms var(--ease-swift), box-shadow 180ms var(--ease-swift);
+}
+.sw-inst-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--sw-accent) 35%, var(--sw-line));
+  background: var(--sw-surface-2);
+  box-shadow: var(--shadow-md);
+}
+.sw-inst-card.is-selected {
+  border-color: color-mix(in srgb, var(--sw-accent) 55%, var(--sw-line));
+}
+.sw-inst-play {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--sw-accent-soft);
+  color: var(--sw-accent);
+  transition: background-color 160ms var(--ease-swift), color 160ms var(--ease-swift), transform 160ms var(--ease-swift);
+}
+.sw-inst-card:hover .sw-inst-play,
+.sw-inst-play:focus-visible {
+  background: var(--sw-accent);
+  color: var(--sw-accent-fg);
+}
+.sw-inst-play:active {
+  transform: scale(0.94);
+}
+</style>

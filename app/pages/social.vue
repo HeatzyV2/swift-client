@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full min-h-0 flex-col px-8 py-7">
-    <UiPageHeader :title="$t('social.title')" :subtitle="subtitle">
+    <UiPageHeader icon="i-lucide-users" :title="$t('social.title')" :subtitle="subtitle">
       <UBadge
         :color="social.mode === 'remote' ? 'success' : 'neutral'"
         variant="subtle"
