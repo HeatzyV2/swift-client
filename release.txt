@@ -1,3 +1,8 @@
+## Changes (v1.8.2)
+
+### 📦 Installer metadata
+- Correct the copyright information embedded in the installers.
+
 ## Changes (v1.8.1)
 
 ### 🔑 Swift Client account
